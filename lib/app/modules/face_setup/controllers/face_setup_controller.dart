@@ -4,7 +4,6 @@ import 'package:camerawesome/camerawesome_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
-import 'package:rxdart/rxdart.dart';
 
 import '../../../../shared/shared_enum.dart';
 import '../../init/controllers/init_controller.dart';
@@ -13,20 +12,18 @@ class FaceSetupController extends GetxController {
   late final InitController _initC;
   late final CameraController cameraC;
 
-  late final List<CameraDescription> _cameras;
+  // late final List<CameraDescription> _cameras;
 
   final statusSetup = StatusFaceSetup.init.obs;
 
   final options = FaceDetectorOptions(
     enableContours: true,
     enableClassification: true,
-    // enableLandmarks: true,
+    enableLandmarks: true,
     enableTracking: true,
     performanceMode: FaceDetectorMode.accurate,
   );
   late final faceDetector = FaceDetector(options: options);
-
-  // final faceDetectionC = BehaviorSubject<FaceDetectionModel>();
 
   final faceDetectionC = Rxn<FaceDetectionModel>();
 
@@ -34,6 +31,8 @@ class FaceSetupController extends GetxController {
 
   final backgroundColors = Rxn<Color>();
   final textHint = ''.obs;
+
+  late final MediaCapture mediaCapture;
 
   @override
   void onInit() {
@@ -85,6 +84,8 @@ class FaceSetupController extends GetxController {
       final faces = await faceDetector.processImage(inputImage);
 
       if (faces.isNotEmpty) {
+        print('type inputImage = ${inputImage.type.name}');
+
         for (var face in faces) {
           final headEulerAngleY =
               face.headEulerAngleY; // Rotasi vertikal (y-axis)
@@ -93,24 +94,25 @@ class FaceSetupController extends GetxController {
 
           if (headEulerAngleY != null) {
             if (headEulerAngleY > 15) {
-              print("Kepala memutar ke kanan");
+              // print("debug: Kepala memutar ke kanan");
               textHint.value = 'Kepala memutar ke kanan';
             } else if (headEulerAngleY < -15) {
-              print("Kepala memutar ke kiri");
+              // print("debug: Kepala memutar ke kiri");
               textHint.value = 'Kepala memutar ke kiri';
             }
           }
 
           if (headEulerAngleZ != null) {
             if (headEulerAngleZ > 15) {
-              print("Kepala miring ke kanan");
+              // print("Kepala miring ke kanan");
+              textHint.value = 'Kepala miring ke kanan';
             } else if (headEulerAngleZ < -15) {
-              print("Kepala miring ke kiri");
+              // print("Kepala miring ke kiri");
               textHint.value = 'Kepala miring ke kiri';
             }
           }
 
-          print(face);
+          // print(face);
           if (face.trackingId != null) {
             backgroundColors.value = Colors.red;
           }
@@ -136,7 +138,7 @@ class FaceSetupController extends GetxController {
         faceDetectionC.value = null;
       }
 
-      // debugPrint("...sending image resulted with : ${faces?.length} faces");
+      // debugPrint“("...sending image resulted with : ${faces?.length} faces");
     } catch (error) {
       _initC.logger.e("...sending image resulted error $error");
     }

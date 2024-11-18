@@ -24,6 +24,7 @@ class PrepareFaceScreen extends GetView<FaceSetupController> {
             fontWeight: SharedTheme.bold,
             fontSize: 20,
           ),
+          textAlign: TextAlign.center,
         ),
       ],
     );
