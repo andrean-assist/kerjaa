@@ -342,8 +342,6 @@ class FaceSetupController extends GetxController {
       contentType: ContentType.binary.value,
     );
 
-    
-
     final formData = FormData({filename: multipart});
     final res = await _awsS.uploadImage(formData);
 
@@ -360,10 +358,10 @@ class FaceSetupController extends GetxController {
     isLoading.value = true;
 
     if (captureRequest != null) {
-      final urlImage = await _uploadImage(captureRequest!.path);
+      // final urlImage = await _uploadImage(captureRequest!.path);
 
       final reqRegisterFace = ReqRegisterFaceModel(
-        avatar: urlImage,
+        avatar: fotoFerdie,
         isVerified: true,
       );
 

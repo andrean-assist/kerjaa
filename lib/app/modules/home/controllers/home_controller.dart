@@ -108,10 +108,17 @@ class HomeController extends GetxController {
 
   void _prepareStorage() {
     _userId = _initC.localStorage.read<String>(ConstantsKeys.userId);
-    _firstName = _initC.localStorage.read(ConstantsKeys.name);
+    _firstName = _initC.localStorage.read<String>(ConstantsKeys.name);
     profilePicture = _initC.localStorage.read(ConstantsKeys.profilPicture);
     _organizationId =
         _initC.localStorage.read<String>(ConstantsKeys.organizationId);
+
+    _initC.localStorage.listenKey(
+      ConstantsKeys.name,
+      (value) {
+        _firstName = value;
+      },
+    );
   }
 
   void _prepareStorageDateTime() {

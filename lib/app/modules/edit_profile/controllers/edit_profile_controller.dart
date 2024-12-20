@@ -71,24 +71,25 @@ class EditProfileController extends GetxController {
     if (path == null) return null;
 
     final filename = p.basename(path);
-
     final multipart = MultipartFile(
       File(path),
       filename: filename,
       contentType: ContentType.binary.value,
     );
 
+    print('fileName: $filename');
+
     final formData = FormData({filename: multipart});
     final res = await _awsS.uploadImage(formData);
+
+    print('res statusCode = ${res.statusCode}');
+    print('res body = ${res.body}');
+    print('res isOK = ${res.isOk}');
 
     if (res.isOk) {
       final bodyFilename = res.bodyString;
       return bodyFilename;
     }
-
-    print('res statusCode = ${res.statusCode}');
-    print('res body = ${res.body}');
-    print('res isOK = ${res.isOk}');
 
     return null;
   }
@@ -97,30 +98,32 @@ class EditProfileController extends GetxController {
     isLoading.value = true;
 
     try {
-      final fileName = await _uploadImage(imageFile.value?.path);
+      // final fileName = await _uploadImage(imageFile.value?.path);
 
-      print('fileName = $fileName');
+      // print('fileName = $fileName');
 
       final body = {
         "position": positionC.text.toString().trim(),
         "name": fullNameC.text.toString().trim(),
       };
 
-      if (fileName != null) {
-        body.addAll({"avatar": fileName});
-      }
+      // if (fileName != null) {
+      //   body.addAll({"avatar": fileName});
+      // }
 
       final res = await _profileS.updateProfile(body);
 
+      print('res body  ${res.body}');
+
       if (res.isOk) {
-        _updateDataProfileInLocal(fileName);
+        _updateDataProfileInLocal();
 
         Snackbar.success(
           context: Get.context!,
           content: 'Berhasil mengedit data profile',
         );
 
-        Get.back();
+        Get.back(result: true);
       } else {
         if (res.statusCode == HttpStatus.unauthorized) {
           _initC.redirectLogout(Get.context!);
@@ -141,12 +144,14 @@ class EditProfileController extends GetxController {
     }
   }
 
-  void _updateDataProfileInLocal(String? fileName) {
-    print('fileName = $fileName');
+  void _updateDataProfileInLocal(
+      // String? fileName
+      ) {
+    // print('fileName = $fileName');
 
     _initC.localStorage
       ..write(ConstantsKeys.name, fullNameC.text.toString().trim())
-      ..write(ConstantsKeys.position, positionC.text.toString().trim())
-      ..write(ConstantsKeys.profilPicture, fileName);
+      ..write(ConstantsKeys.position, positionC.text.toString().trim());
+    // ..write(ConstantsKeys.profilPicture, fileName);
   }
 }

@@ -49,65 +49,70 @@ class ProfileView extends GetView<ProfileController> {
                   top: Radius.circular(20),
                 ),
               ),
-              child: Column(
-                children: [
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: CachedNetworkImage(
-                      imageUrl: controller.profilePicture ?? '',
-                      imageBuilder: (context, imageProvider) => CircleAvatar(
-                        backgroundImage: imageProvider,
-                        radius: 28,
-                      ),
-                      progressIndicatorBuilder: (context, url, progress) =>
-                          CircleAvatar(
-                        child: CircularProgressIndicator.adaptive(
-                          value: progress.progress,
+              child: Obx(
+                () => Column(
+                  children: [
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: CachedNetworkImage(
+                        imageUrl: controller.profilePicture.value ?? '',
+                        imageBuilder: (context, imageProvider) => CircleAvatar(
+                          backgroundImage: imageProvider,
+                          radius: 28,
+                        ),
+                        progressIndicatorBuilder: (context, url, progress) =>
+                            CircleAvatar(
+                          child: CircularProgressIndicator.adaptive(
+                            value: progress.progress,
+                          ),
+                        ),
+                        errorWidget: (context, url, error) =>
+                            const CircleAvatar(
+                          backgroundImage:
+                              AssetImage(ConstantsAssets.imgNoPhoto),
                         ),
                       ),
-                      errorWidget: (context, url, error) => const CircleAvatar(
-                        backgroundImage: AssetImage(ConstantsAssets.imgNoPhoto),
+                      title: Text(controller.fullName.value ?? '-'),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(controller.position.value ?? '-'),
+                          const SizedBox(height: 4),
+                          Text(controller.email.value ?? '-'),
+                        ],
+                      ),
+                      trailing: IconButton(
+                        onPressed: controller.moveToEditProfile,
+                        icon: SvgPicture.asset(ConstantsAssets.icEdit),
                       ),
                     ),
-                    title: Text(controller.fullName ?? '-'),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(controller.position ?? '-'),
-                        const SizedBox(height: 4),
-                        Text(controller.email ?? '-'),
-                      ],
+                    const SizedBox(height: 24),
+                    _builderItem(
+                      textTheme: textTheme,
+                      label: 'Akun',
+                      iconPath: ConstantsAssets.icActivityHistory,
+                      title: 'Riwayat Aktifitas',
+                      onPressed: controller.moveToActivityHistory,
                     ),
-                    trailing: IconButton(
-                      onPressed: controller.moveToEditProfile,
-                      icon: SvgPicture.asset(ConstantsAssets.icEdit),
+                    const SizedBox(height: 4),
+                    _builderItem(
+                      textTheme: textTheme,
+                      label: 'Info lainnya',
+                      iconPath: ConstantsAssets.icRating,
+                      title: 'Beri Kami Nilai',
+                      subtitle:
+                          'Beri kami nilai agar aplikasi terus berkembang.',
+                      onPressed: () {},
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                  _builderItem(
-                    textTheme: textTheme,
-                    label: 'Akun',
-                    iconPath: ConstantsAssets.icActivityHistory,
-                    title: 'Riwayat Aktifitas',
-                    onPressed: controller.moveToActivityHistory,
-                  ),
-                  const SizedBox(height: 4),
-                  _builderItem(
-                    textTheme: textTheme,
-                    label: 'Info lainnya',
-                    iconPath: ConstantsAssets.icRating,
-                    title: 'Beri Kami Nilai',
-                    subtitle: 'Beri kami nilai agar aplikasi terus berkembang.',
-                    onPressed: () {},
-                  ),
-                  const SizedBox(height: 4),
-                  _builderItem(
-                    textTheme: textTheme,
-                    iconPath: ConstantsAssets.icLogout,
-                    title: 'Keluar',
-                    onPressed: controller.logout,
-                  ),
-                ],
+                    const SizedBox(height: 4),
+                    _builderItem(
+                      textTheme: textTheme,
+                      iconPath: ConstantsAssets.icLogout,
+                      title: 'Keluar',
+                      onPressed: controller.logout,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

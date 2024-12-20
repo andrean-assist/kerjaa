@@ -21,8 +21,8 @@ class ProfileServices extends GetConnect {
   @override
   String? get baseUrl => ConstantsConnect.endPointBaseUrl;
 
-  Future<Response> updateProfile(Map<String, dynamic> body) => post(
-        'Attendances/dashboard',
+  Future<Response> updateProfile(Map<String, dynamic> body) => put(
+        'UserAccounts/updateDetail',
         body,
         headers: headers,
       );

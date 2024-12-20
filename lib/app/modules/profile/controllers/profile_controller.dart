@@ -9,10 +9,10 @@ import '../../widgets/dialog/dialogs.dart';
 class ProfileController extends GetxController {
   late final InitController _initC;
 
-  String? fullName;
-  String? email;
-  String? position;
-  String? profilePicture;
+  final fullName = RxnString();
+  final email = RxnString();
+  final position = RxnString();
+  final profilePicture = RxnString();
 
   @override
   void onInit() {
@@ -29,14 +29,11 @@ class ProfileController extends GetxController {
   }
 
   void _prepareStorage() {
-    fullName = _initC.localStorage.read(ConstantsKeys.name);
-    email = _initC.localStorage.read(ConstantsKeys.email);
-    position = _initC.localStorage.read(ConstantsKeys.position);
-    profilePicture = _initC.localStorage.read(ConstantsKeys.profilPicture);
-
-    print('email = $email');
-    print('position = $position');
-    print('profilePicture = $profilePicture');
+    fullName.value = _initC.localStorage.read(ConstantsKeys.name);
+    email.value = _initC.localStorage.read(ConstantsKeys.email);
+    position.value = _initC.localStorage.read(ConstantsKeys.position);
+    profilePicture.value =
+        _initC.localStorage.read(ConstantsKeys.profilPicture);
   }
 
   void moveToActivityHistory() => Get.toNamed(Routes.ACTIVITY_HISTORY);
@@ -56,13 +53,23 @@ class ProfileController extends GetxController {
     }
   }
 
-  void moveToEditProfile() => Get.toNamed(
-        Routes.EDIT_PROFILE,
-        arguments: UserModel(
-          name: fullName,
-          email: email,
-          avatar: profilePicture,
-          position: position,
-        ),
-      );
+  Future<void> moveToEditProfile() async {
+    final state = await Get.toNamed(
+      Routes.EDIT_PROFILE,
+      arguments: UserModel(
+        name: fullName.value,
+        email: email.value,
+        avatar: profilePicture.value,
+        position: position.value,
+      ),
+    );
+
+    print('state = $state');
+
+    if (state != null) {
+      if (state) {
+        _prepareStorage();
+      }
+    }
+  }
 }
