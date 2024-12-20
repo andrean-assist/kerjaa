@@ -30,7 +30,8 @@ abstract class Buttons {
   static Widget filled({
     double? width,
     double? height,
-    Icon? icon,
+    EdgeInsetsGeometry? margin,
+    Widget? icon,
     IconAlignment? iconAlignment,
     ButtonStyle? style,
     bool state = false,
@@ -41,6 +42,7 @@ abstract class Buttons {
       type: ButtonType.filled,
       width: width,
       height: height,
+      margin: margin,
       icon: icon,
       iconAlignment: iconAlignment,
       onPressed: onPressed,

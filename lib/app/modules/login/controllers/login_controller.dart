@@ -1,9 +1,18 @@
+import 'package:assist_hadir/app/data/model/auth/login/res/data/data_login_model.dart';
+import 'package:assist_hadir/app/data/model/auth/login/req/req_login_model.dart';
+import 'package:assist_hadir/app/data/model/auth/login/res/res_login_model.dart';
 import 'package:assist_hadir/app/modules/init/controllers/init_controller.dart';
+import 'package:assist_hadir/app/helpers/logger_helper.dart';
+import 'package:assist_hadir/shared/shared_enum.dart';
+import 'package:assist_hadir/utils/constants_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/exceptions/exceptions.dart';
 
+import '../../../../services/auth/auth_services.dart';
+import '../../../data/model/navigations/navigation_model.dart';
 import '../../../routes/app_pages.dart';
 import '../../widgets/buttons/buttons.dart';
 import '../../widgets/modal/modals.dart';
@@ -11,21 +20,23 @@ import '../widget/modal/failed_login_modal.dart';
 
 class LoginController extends GetxController {
   late final InitController _initC;
+  late final AuthServices _authS;
+
+  static const emailDummy = 'reza.febriyan@assist.id';
+  static const passwordDummy = '12345678';
 
   final formKey = GlobalKey<FormState>();
-  final emailC = TextEditingController();
-  final passwordC = TextEditingController();
+  final emailC = TextEditingController(text: emailDummy);
+  final passwordC = TextEditingController(text: passwordDummy);
 
   final emailF = FocusNode();
   final passwordF = FocusNode();
 
-  final email = ''.obs;
-  final password = ''.obs;
+  final email = emailDummy.obs;
+  final password = passwordDummy.obs;
 
   final isVisiblePassword = false.obs;
   final isLoading = false.obs;
-
-  final errMsg = RxnString();
 
   @override
   void onInit() {
@@ -37,6 +48,9 @@ class LoginController extends GetxController {
     if (Get.isRegistered<InitController>()) {
       _initC = Get.find<InitController>();
     }
+
+    _authS = AuthServices(_initC);
+
     _initListener();
   }
 
@@ -51,7 +65,7 @@ class LoginController extends GetxController {
   }) =>
       ctr.addListener(() => obs.value = ctr.text);
 
-  void confirm() async {
+  Future<void> confirm() async {
     if (!formKey.currentState!.validate()) {
       return;
     }
@@ -60,22 +74,79 @@ class LoginController extends GetxController {
     _checkAuth();
   }
 
-  Future<void> _checkAuth() async {
-    clearError();
+  void _checkAuth() async {
     isLoading.value = true;
-    await Future.delayed(3.seconds);
 
-    if (emailC.text == 'andrean.ramadhan@assist.id' &&
-        passwordC.text == '12345678') {
-      _moveToFaceSetup();
-    } else {
-      _showDialog();
+    final reqLogin = ReqLoginModel(
+      email: emailC.text.trim().toString(),
+      password: passwordC.text.trim().toString(),
+    );
+
+    try {
+      final res = await _authS.login(reqLogin.toJson());
+
+      if (res.isOk) {
+        final body = res.body;
+
+        if (body != null) {
+          final resLogin = ResLoginModel.fromJson(body);
+          final dataLogin = resLogin.data;
+          final isHasRegisteredFace = dataLogin?.user?.isVerified ?? false;
+
+          // save to storage
+          if (dataLogin != null) {
+            await _saveUserLogin(dataLogin);
+
+            if (isHasRegisteredFace) {
+              _moveToHome();
+            } else {
+              _moveToFaceSetup();
+            }
+          }
+        }
+      } else {
+        if (res.statusCode == 401) {
+          _showDialogWrongEmailOrPassword();
+        } else {
+          _initC.showDialogFailed(
+            onPressed: () {
+              _checkAuth();
+              Get.back();
+            },
+          );
+        }
+      }
+    } on GetHttpException catch (e) {
+      _initC.logger.e('Error: checkAuth $e');
+    } finally {
+      isLoading.value = false;
     }
-
-    isLoading.value = false;
   }
 
-  void _showDialog() {
+  Future<void> _saveUserLogin(DataLoginModel data) async {
+    LoggerHelper.printPrettyJson(data.toJson());
+
+    final user = data.user;
+    final token = data.id;
+    final organizationId = user?.organizationId;
+    final isVerified = user?.isVerified ?? false;
+    final name = user?.name;
+    final position = user?.position;
+    final avatar = user?.avatar;
+    // final firstName = name?.split(' ').first.capitalizeFirst;
+
+    _initC.localStorage
+      ..write(ConstantsKeys.authToken, token)
+      ..write(ConstantsKeys.userId, user?.id)
+      ..write(ConstantsKeys.name, name)
+      ..write(ConstantsKeys.email, email.value)
+      ..write(ConstantsKeys.position, position)
+      ..write(ConstantsKeys.profilPicture, avatar)
+      ..write(ConstantsKeys.organizationId, organizationId)
+      ..write(ConstantsKeys.isVerified, isVerified);
+  }
+
+  void _showDialogWrongEmailOrPassword() {
     Modals.bottomSheet(
       context: Get.context!,
       content: const FailedLoginModal(),
@@ -87,17 +158,12 @@ class LoginController extends GetxController {
     );
   }
 
-  void clearError() => errMsg.value = null;
+  void _moveToFaceSetup() => Get.toNamed(
+        Routes.REGISTER_FACE,
+        arguments: const NavigationModel(
+          absenceType: StatusAbsenceSetup.register,
+        ),
+      );
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void _moveToFaceSetup() => Get.toNamed(Routes.FACE_SETUP);
+  void _moveToHome() => Get.offAllNamed(Routes.HOME);
 }

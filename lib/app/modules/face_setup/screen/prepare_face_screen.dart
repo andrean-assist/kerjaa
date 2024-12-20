@@ -1,11 +1,10 @@
-import 'package:assist_hadir/app/modules/face_setup/controllers/face_setup_controller.dart';
 import 'package:assist_hadir/shared/shared_theme.dart';
 import 'package:assist_hadir/utils/constants_assets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
-class PrepareFaceScreen extends GetView<FaceSetupController> {
+class PrepareFaceScreen extends StatelessWidget {
   const PrepareFaceScreen({super.key});
 
   @override
@@ -15,9 +14,7 @@ class PrepareFaceScreen extends GetView<FaceSetupController> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        SvgPicture.asset(
-          ConstantsAssets.icFrameFaceSetup,
-        ),
+        SvgPicture.asset(ConstantsAssets.icFrameFaceSetup),
         Text(
           'Posisikan wajah Anda dalam bingkai',
           style: textTheme.titleLarge?.copyWith(

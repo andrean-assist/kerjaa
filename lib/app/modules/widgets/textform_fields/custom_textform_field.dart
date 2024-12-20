@@ -218,14 +218,16 @@ class CustomTextFormField extends StatelessWidget {
         errorText: errorText,
         errorMaxLines: errorMaxLines,
         // prefixIcon: (prefixIcon != null) ? prefixIcon : null,
-        prefixIcon: Padding(
-          padding: const EdgeInsets.all(12.0), // Padding to center icon
-          child: Image.asset(
-            assetIconPath ?? '', // Path to your external icon
-            width: 24,
-            height: 24,
-          ),
-        ),
+        prefixIcon: (assetIconPath != null)
+            ? Padding(
+                padding: const EdgeInsets.all(12.0), // Padding to center icon
+                child: Image.asset(
+                  assetIconPath!, // Path to your external icon
+                  width: 24,
+                  height: 24,
+                ),
+              )
+            : null,
         suffixIcon: builderSuffixIcon(theme),
         suffixText: suffixText,
         filled: isFilled,

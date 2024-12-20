@@ -22,9 +22,10 @@ class LoginView extends GetView<LoginController> {
     final textTheme = context.textTheme;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+          padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -50,69 +51,7 @@ class LoginView extends GetView<LoginController> {
                 ),
               ),
               const SizedBox(height: 24),
-              Form(
-                key: controller.formKey,
-                child: Column(
-                  children: [
-                    CustomTextFormFieldNew(
-                      controller: controller.emailC,
-                      focusNode: controller.emailF,
-                      labelText: ConstantsStrings.labelEmail,
-                      hintText: ConstantsStrings.hintEmail,
-                      isFilled: true,
-                      prefixAssetIconPath: ConstantsAssets.icMessage,
-                      keyboardType: TextInputType.emailAddress,
-                      textCapitalization: TextCapitalization.none,
-                      maxLines: 1,
-                      validator: (value) => Validation.formField(
-                        value: value,
-                        titleField: ConstantsStrings.labelEmail,
-                        isEmail: true,
-                      ),
-                      errorText: controller.errMsg.value != null ? '' : null,
-                    ),
-                    const SizedBox(height: 21),
-                    Obx(
-                      () {
-                        final isVisible = controller.isVisiblePassword.value;
-                        return CustomTextFormFieldNew(
-                          controller: controller.passwordC,
-                          focusNode: controller.passwordF,
-                          labelText: ConstantsStrings.labelPassword,
-                          hintText: ConstantsStrings.hintPassword,
-                          isFilled: true,
-                          obscureText: isVisible,
-                          keyboardType: TextInputType.visiblePassword,
-                          textCapitalization: TextCapitalization.none,
-                          maxLines: 1,
-                          textInputAction: TextInputAction.done,
-                          prefixAssetIconPath: ConstantsAssets.icLock,
-                          onFieldSubmitted: (_) => controller.confirm(),
-                          suffixIcon: GestureDetector(
-                            onTap: controller.isVisiblePassword.toggle,
-                            child: SvgPicture.asset(
-                              isVisible
-                                  ? ConstantsAssets.icOpenEye
-                                  : ConstantsAssets.icCloseEye,
-                              width: 24,
-                              height: 24,
-                              colorFilter: const ColorFilter.mode(
-                                SharedTheme.lightIconColor,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                          ),
-                          validator: (value) => Validation.formField(
-                            value: value,
-                            titleField: ConstantsStrings.labelPassword,
-                            minLengthChar: 6,
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
+              _builderForm(),
               // const SizedBox(height: 8),
               // Buttons.text(
               //   onPressed: () {},
@@ -140,9 +79,10 @@ class LoginView extends GetView<LoginController> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextHelper.buildRichMultiText(
-                      text:
-                          'By log in, I agree to the Terms of Service and Privacy Policy',
-                      highlights: ['Terms of Service', 'Privacy Policy'],
+                      text: 'By log in, I agree to the Terms of Service',
+                      // and Privacy Policy
+                      // highlights: ['Terms of Service', 'Privacy Policy'],
+                      highlights: ['Terms of Service'],
                       highlightStyle: TextStyle(
                         fontWeight: SharedTheme.bold,
                         color: theme.colorScheme.onSurface,
@@ -168,6 +108,67 @@ class LoginView extends GetView<LoginController> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _builderForm() {
+    return Form(
+      key: controller.formKey,
+      child: Column(
+        children: [
+          CustomTextFormFieldNew(
+            controller: controller.emailC,
+            focusNode: controller.emailF,
+            labelText: ConstantsStrings.labelEmail,
+            hintText: ConstantsStrings.hintEmail,
+            isFilled: true,
+            prefixAssetIconPath: ConstantsAssets.icMessage,
+            keyboardType: TextInputType.emailAddress,
+            textCapitalization: TextCapitalization.none,
+            maxLines: 1,
+            validator: (value) => Validation.formField(
+              value: value,
+              titleField: ConstantsStrings.labelEmail,
+              isEmail: true,
+            ),
+            onFieldSubmitted: (_) => controller.passwordF.requestFocus(),
+          ),
+          const SizedBox(height: 21),
+          Obx(
+            () {
+              final isVisible = controller.isVisiblePassword.value;
+              return CustomTextFormFieldNew(
+                controller: controller.passwordC,
+                focusNode: controller.passwordF,
+                labelText: ConstantsStrings.labelPassword,
+                hintText: ConstantsStrings.hintPassword,
+                isFilled: true,
+                obscureText: isVisible,
+                keyboardType: TextInputType.visiblePassword,
+                textCapitalization: TextCapitalization.none,
+                maxLines: 1,
+                textInputAction: TextInputAction.done,
+                prefixAssetIconPath: ConstantsAssets.icLock,
+                onFieldSubmitted: (_) => controller.confirm(),
+                suffixIcon: GestureDetector(
+                  onTap: controller.isVisiblePassword.toggle,
+                  child: SvgPicture.asset(
+                    isVisible
+                        ? ConstantsAssets.icOpenEye
+                        : ConstantsAssets.icCloseEye,
+                    width: 24,
+                    height: 24,
+                    colorFilter: const ColorFilter.mode(
+                      SharedTheme.lightIconColor,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

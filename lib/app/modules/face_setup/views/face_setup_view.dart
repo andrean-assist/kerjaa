@@ -6,47 +6,40 @@ import 'package:get/get.dart';
 
 import '../controllers/face_setup_controller.dart';
 import '../screen/prepare_face_screen.dart';
-import '../screen/ready_face_screen_new.dart';
+import '../screen/ready_face_screen.dart';
+import '../screen/success_face_screen.dart';
 
 class FaceSetupView extends GetView<FaceSetupController> {
   const FaceSetupView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // final theme = context.theme;
     final size = context.mediaQuerySize;
     final circleDiameter = size.width * 0.7;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daftarkan Wajah'),
+        title: Text(controller.titleBar),
         centerTitle: false,
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 32,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
         child: SizedBox(
           width: double.infinity,
           child: Obx(
             () => switch (controller.statusSetup.value) {
               StatusFaceSetup.init => Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 32,
-                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
                   child: InitFaceScreen(circleDiameter),
                 ),
               StatusFaceSetup.prepare => const Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 32,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 32),
                   child: PrepareFaceScreen(),
                 ),
-              StatusFaceSetup.ready => ReadyFaceScreenNew(circleDiameter),
-              _ => const SizedBox(),
+              StatusFaceSetup.ready => ReadyFaceScreen(circleDiameter),
+              StatusFaceSetup.success => SuccessFaceScreen(circleDiameter),
+              _ => const SizedBox.shrink(),
             },
           ),
         ),

@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../shared/shared_enum.dart';
+import '../../../../shared/shared_theme.dart';
 
 class CustomButton extends StatelessWidget {
   final ButtonType type;
   final double? width;
   final double? height;
-  final Icon? icon;
+  final EdgeInsetsGeometry? margin;
+  final Widget? icon;
   final IconAlignment? iconAlignment;
   final Widget child;
   final ButtonStyle? style;
@@ -19,6 +21,7 @@ class CustomButton extends StatelessWidget {
     required this.type,
     this.width,
     this.height,
+    this.margin,
     this.icon,
     this.iconAlignment,
     required this.child,
@@ -30,10 +33,11 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colorScheme;
-    final heightCtx = context.height;
+    // final heightCtx = context.height;
 
-    return SizedBox(
+    return Container(
       width: width,
+      margin: margin,
       // height: height ?? heightCtx * 0.055,
       child: builderButton(colors),
     );
@@ -80,11 +84,37 @@ class CustomButton extends StatelessWidget {
             icon: icon!,
             iconAlignment: iconAlignment ?? IconAlignment.start,
             label: child,
-            style: style,
+            style: style?.copyWith(
+                  fixedSize: const WidgetStatePropertyAll(Size.fromHeight(60)),
+                  textStyle: WidgetStatePropertyAll(
+                    Get.context!.textTheme.titleSmall?.copyWith(
+                      fontWeight: SharedTheme.semiBold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ) ??
+                FilledButton.styleFrom(
+                  backgroundColor: SharedTheme.filledBtnColor,
+                  foregroundColor: Colors.white,
+                  fixedSize: const Size.fromHeight(60),
+                  textStyle: Get.context!.textTheme.titleSmall?.copyWith(
+                    fontWeight: SharedTheme.semiBold,
+                    fontSize: 16,
+                  ),
+                ),
           )
         : FilledButton(
             onPressed: state ? null : onPressed,
-            style: style,
+            style: style ??
+                FilledButton.styleFrom(
+                  backgroundColor: SharedTheme.filledBtnColor,
+                  foregroundColor: Colors.white,
+                  fixedSize: const Size.fromHeight(60),
+                  textStyle: const TextStyle(
+                    fontWeight: SharedTheme.semiBold,
+                    fontSize: 16,
+                  ),
+                ),
             child: (state)
                 ? SizedBox(
                     width: 20.0,
@@ -104,11 +134,29 @@ class CustomButton extends StatelessWidget {
             icon: icon!,
             iconAlignment: iconAlignment ?? IconAlignment.start,
             label: child,
-            style: style,
+            style: style ??
+                FilledButton.styleFrom(
+                  backgroundColor: SharedTheme.filledTonalBtnColor,
+                  foregroundColor: SharedTheme.textBtnColor,
+                  fixedSize: const Size.fromHeight(60),
+                  textStyle: const TextStyle(
+                    fontWeight: SharedTheme.semiBold,
+                    fontSize: 16,
+                  ),
+                ),
           )
         : FilledButton.tonal(
             onPressed: state ? null : onPressed,
-            style: style,
+            style: style ??
+                FilledButton.styleFrom(
+                  backgroundColor: SharedTheme.filledTonalBtnColor,
+                  foregroundColor: SharedTheme.textBtnColor,
+                  fixedSize: const Size.fromHeight(60),
+                  textStyle: const TextStyle(
+                    fontWeight: SharedTheme.semiBold,
+                    fontSize: 16,
+                  ),
+                ),
             child: (state)
                 ? SizedBox(
                     width: 20.0,
@@ -151,12 +199,26 @@ class CustomButton extends StatelessWidget {
             onPressed: onPressed,
             icon: icon!,
             label: child,
-            style: style,
+            style: style ??
+                TextButton.styleFrom(
+                  fixedSize: const Size.fromHeight(60),
+                  textStyle: Get.context!.textTheme.titleSmall?.copyWith(
+                    fontWeight: SharedTheme.semiBold,
+                    fontSize: 16,
+                  ),
+                ),
             iconAlignment: iconAlignment ?? IconAlignment.start,
           )
         : TextButton(
             onPressed: state ? null : onPressed,
-            style: style,
+            style: style ??
+                TextButton.styleFrom(
+                  fixedSize: const Size.fromHeight(60),
+                  textStyle: Get.context!.textTheme.titleSmall?.copyWith(
+                    fontWeight: SharedTheme.semiBold,
+                    fontSize: 16,
+                  ),
+                ),
             child: (state)
                 ? SizedBox(
                     width: 20.0,

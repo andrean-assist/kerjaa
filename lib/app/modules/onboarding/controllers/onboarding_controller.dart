@@ -30,14 +30,15 @@ class OnboardingController extends GetxController {
     currentPage.value = pageC.page?.toInt() ?? 0;
   }
 
-  void moveToNextPage() {
+  Future<void> moveToNextPage() async {
     if (currentPage.value < (ConstantsStrings.onboardingList.length - 1)) {
-      pageC.nextPage(
+      currentPage.value++;
+      await pageC.nextPage(
         duration: Durations.long1,
         curve: Curves.easeIn,
       );
-      currentPage.value++;
     } else {
+      await _initC.updateOnboarding();
       Get.offAllNamed(Routes.LOGIN);
     }
   }

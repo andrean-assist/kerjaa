@@ -1,6 +1,7 @@
 import 'package:assist_hadir/shared/shared_theme.dart';
 import 'package:assist_hadir/utils/constants_strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 
@@ -9,6 +10,7 @@ import 'app/routes/app_pages.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  // debugPaintSizeEnabled = true;
   runApp(const MyApp());
 }
 

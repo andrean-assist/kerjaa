@@ -151,14 +151,16 @@ class CustomTextFormFieldNew extends StatelessWidget {
         helperMaxLines: helperMaxLines,
         errorText: errorText,
         errorMaxLines: errorMaxLines,
-        prefixIcon: Padding(
-          padding: const EdgeInsets.all(12),
-          child: SvgPicture.asset(
-            prefixAssetIconPath ?? '',
-            width: 24,
-            height: 24,
-          ),
-        ),
+        prefixIcon: (prefixAssetIconPath != null)
+            ? Padding(
+                padding: const EdgeInsets.all(12),
+                child: SvgPicture.asset(
+                  prefixAssetIconPath ?? '',
+                  width: 24,
+                  height: 24,
+                ),
+              )
+            : null,
         suffixIcon: Padding(
           padding: const EdgeInsets.all(12),
           child: _builderSuffixIcon(theme),
@@ -179,15 +181,10 @@ class CustomTextFormFieldNew extends StatelessWidget {
         //   borderRadius: BorderRadius.circular(30),
         //   borderSide: const BorderSide(color: Colors.blue, width: 1),
         // ),
-        // border: (!isFilled)
-        //     ? OutlineInputBorder(
-        //         borderSide: BorderSide(
-        //           width: 1,
-        //           color: theme.colorScheme.outline,
-        //         ),
-        //         borderRadius: BorderRadius.circular(10000),
-        //       )
-        //     : null,
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: const BorderSide(color: Colors.red),
+        ),
       ),
       keyboardType: keyboardType,
       textCapitalization: textCapitalization,
@@ -205,7 +202,7 @@ class CustomTextFormFieldNew extends StatelessWidget {
       maxLength: (keyboardType == TextInputType.multiline) ? null : maxLength,
       onChanged: onChanged,
       onTap: onTap,
-      onTapOutside: (event) => FocusScope.of(context).unfocus(),
+      // onTapOutside: (event) => FocusScope.of(context).unfocus(),
       onFieldSubmitted:
           onFieldSubmitted ?? (_) => FocusScope.of(context).nextFocus(),
       validator: validator,

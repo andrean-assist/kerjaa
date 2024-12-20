@@ -28,7 +28,14 @@ class SharedTheme {
   );
 
   static const textBtnColor = Color(0xFF329ED8);
+  static const outlinedBtnColor = Color(0xFF329ED8);
   static const filledBtnColor = Color(0xFF329ED8);
+  static const filledTonalBtnColor = Color(0xFFEBF5FB);
+  static const filledBtnRedColor = Color(0xFFEF4444);
+  static const filledRejectedColor = Color(0xFFD93E3E);
+  static const filledPendingColor = Color(0xFFEAB308);
+  static const primaryBtnLightColor = Color(0xFFEBF5FB);
+
   static const lightIconColor = Color(0xFF94A3B8);
   static const secondaryTextColor = Color(0xFF334155);
 
@@ -47,35 +54,29 @@ class SharedTheme {
       Get.isDarkMode ? darkWarningColor : lightWarningColor;
   static final infoColor = Get.isDarkMode ? darkInfoColor : lightInfoColor;
 
-  // static final _textThemeStyle = TextTheme(
-  //   bodyLarge: TextStyle(fontFamily: _primaryTextStyle),
-  //   bodyMedium: TextStyle(fontFamily: _primaryTextStyle),
-  //   bodySmall: TextStyle(fontFamily: _primaryTextStyle),
-  // );
-
   static ThemeData lightThemeMaterial = ThemeData(
     useMaterial3: true,
     colorScheme: _lightColorScheme,
     textTheme: GoogleFonts.plusJakartaSansTextTheme().copyWith(
         // bodyLarge: TextStyle()
         ),
-    filledButtonTheme: FilledButtonThemeData(
-      style: FilledButton.styleFrom(
-        // padding: WidgetStatePropertyAll(
-        //   EdgeInsets.symmetric(
-        //     horizontal: 28,
-        //     vertical: 16,
-        //   ),
-        // ),
-        backgroundColor: filledBtnColor,
-        foregroundColor: Colors.white,
-        fixedSize: const Size.fromHeight(60),
-        textStyle: const TextStyle(
-          fontWeight: semiBold,
-          fontSize: 16,
-        ),
-      ),
-    ),
+    // filledButtonTheme: FilledButtonThemeData(
+    //   style: FilledButton.styleFrom(
+    //     backgroundColor: filledBtnColor,
+    //     foregroundColor: Colors.white,
+    //     fixedSize: const Size.fromHeight(60),
+    //     textStyle: const TextStyle(
+    //       fontWeight: semiBold,
+    //       fontSize: 16,
+    //     ),
+    //     // padding: WidgetStatePropertyAll(
+    //     //   EdgeInsets.symmetric(
+    //     //     horizontal: 28,
+    //     //     vertical: 16,
+    //     //   ),
+    //     // ),
+    //   ),
+    // ),
     textButtonTheme: const TextButtonThemeData(
       style: ButtonStyle(
         foregroundColor: WidgetStatePropertyAll(textBtnColor),

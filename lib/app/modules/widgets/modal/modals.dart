@@ -9,8 +9,8 @@ abstract class Modals {
     BoxConstraints? constraints,
     bool useSafeArea = true,
     bool enableDrag = true,
-    bool showDragHandle = true,
-    bool isDismissible = true,
+    // bool showDragHandle = true,
+    bool isDismissible = false,
     bool isScrollControlled = true,
     required Widget content,
     Widget? actions,
@@ -19,6 +19,7 @@ abstract class Modals {
     String endActionText = 'Simpan',
     VoidCallback? startOnPressed,
     VoidCallback? endOnPressed,
+    VoidCallback? onClosePressed,
   }) {
     Widget widgetActions;
 
@@ -66,29 +67,52 @@ abstract class Modals {
       context: context,
       useSafeArea: useSafeArea,
       constraints: constraints,
-      enableDrag: true,
-      showDragHandle: true,
+      enableDrag: enableDrag,
+      showDragHandle: false,
       isDismissible: isDismissible,
       isScrollControlled: isScrollControlled,
-      builder: (context) => Container(
-        width: double.infinity,
-        margin: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        padding: const EdgeInsets.only(
-          left: 16,
-          right: 16,
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              content,
-              widgetActions,
-            ],
+      backgroundColor: Colors.transparent,
+      builder: (context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            margin: const EdgeInsets.only(right: 16),
+            child: IconButton.filled(
+              style: ButtonStyle(
+                foregroundColor:
+                    WidgetStatePropertyAll(context.theme.colorScheme.onSurface),
+                backgroundColor:
+                    WidgetStatePropertyAll(context.theme.colorScheme.surface),
+              ),
+              onPressed: onClosePressed ?? Get.back,
+              padding: const EdgeInsets.all(16),
+              iconSize: 20,
+              icon: const Icon(Icons.close_rounded),
+            ),
           ),
-        ),
+          const SizedBox(height: 18),
+          Container(
+            width: double.infinity,
+            margin: EdgeInsets.only(
+              bottom: context.mediaQueryViewInsets.bottom,
+            ),
+            decoration: BoxDecoration(
+              color: context.theme.colorScheme.surface,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                content,
+                widgetActions,
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -96,8 +120,8 @@ abstract class Modals {
   static Future<bool?> bottomSheetScroll({
     required BuildContext context,
     bool useSafeArea = true,
-    bool enableDrag = true,
-    bool showDragHandle = true,
+    // bool enableDrag = true,
+    // bool showDragHandle = true,
     bool isDismissible = true,
     bool isScrollControlled = true,
     double initialChildSize = 0.25,
@@ -113,6 +137,7 @@ abstract class Modals {
     String endActionText = 'Simpan',
     VoidCallback? startOnPressed,
     VoidCallback? endOnPressed,
+    VoidCallback? onClosePressed,
   }) {
     Widget widgetActions;
 
@@ -154,17 +179,13 @@ abstract class Modals {
       context: context,
       useSafeArea: useSafeArea,
       enableDrag: true,
-      showDragHandle: true,
+      showDragHandle: false,
       isDismissible: isDismissible,
       isScrollControlled: isScrollControlled,
+      backgroundColor: Colors.transparent,
       builder: (context) => Container(
-        width: double.infinity,
         margin: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        padding: const EdgeInsets.only(
-          left: 16,
-          right: 16,
         ),
         child: DraggableScrollableSheet(
           initialChildSize: initialChildSize,
@@ -177,17 +198,66 @@ abstract class Modals {
             return SingleChildScrollView(
               controller: scrollController,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  content,
-                  widgetActions,
+                  Container(
+                    margin: const EdgeInsets.only(right: 16),
+                    child: IconButton.filled(
+                      style: ButtonStyle(
+                        foregroundColor: WidgetStatePropertyAll(
+                            context.theme.colorScheme.onSurface),
+                        backgroundColor: WidgetStatePropertyAll(
+                            context.theme.colorScheme.surface),
+                      ),
+                      onPressed: onClosePressed ?? Get.back,
+                      padding: const EdgeInsets.all(16),
+                      iconSize: 20,
+                      icon: const Icon(Icons.close_rounded),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  Container(
+                    width: double.infinity,
+                    height: context.height,
+                    // margin: EdgeInsets.only(
+                    //   bottom: MediaQuery.of(context).viewInsets.bottom,
+                    // ),
+                    decoration: BoxDecoration(
+                      color: context.theme.colorScheme.surface,
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(20),
+                      ),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      // crossAxisAlignment: CrossAxisAlignment.start,
+                      // mainAxisSize: MainAxisSize.min,
+                      children: [
+                        content,
+                        widgetActions,
+                      ],
+                    ),
+                  ),
                 ],
               ),
             );
+
+            // return SingleChildScrollView(
+            //   controller: scrollController,
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     mainAxisSize: MainAxisSize.min,
+            //     children: [
+            //       content,
+            //       widgetActions,
+            //     ],
+            //   ),
+            // );
           },
         ),
       ),
     );
   }
+
+  // static closeBottomSheet() {}
 }

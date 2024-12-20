@@ -41,6 +41,8 @@ class DashedCirclePainter extends CustomPainter {
         );
       }
     } else {
+      greenPaint.strokeWidth = 5;
+
       // progress selesai
       canvas.drawCircle(
         Offset(radius, radius),

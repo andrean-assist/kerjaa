@@ -128,7 +128,7 @@ abstract class Dialogs {
     String? textNo,
     String? textYes,
   }) async {
-    final state = await showAdaptiveDialog<bool>(
+    return await showAdaptiveDialog<bool>(
       context: context,
       barrierDismissible: barrierDismissible,
       builder: (context) => AlertDialog.adaptive(
@@ -151,8 +151,5 @@ abstract class Dialogs {
         actionsAlignment: actionsAlignment ?? MainAxisAlignment.end,
       ),
     );
-
-    if (state ?? false) {}
-    return state;
   }
 }

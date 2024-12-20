@@ -74,7 +74,7 @@ class InitFaceScreen extends GetView<FaceSetupController> {
   Widget _builderButton() {
     return Buttons.filled(
       width: double.infinity,
-      onPressed: controller.initCamera,
+      onPressed: controller.initRegister,
       child: const Text('Mulai'),
     );
   }

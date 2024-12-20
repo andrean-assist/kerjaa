@@ -7,7 +7,13 @@ abstract class Routes {
   static const SPLASH = _Paths.SPLASH;
   static const INIT = _Paths.INIT;
   static const LOGIN = _Paths.LOGIN;
-  static const FACE_SETUP = _Paths.FACE_SETUP;
+  static const REGISTER_FACE = _Paths.REGISTER_FACE;
+  static const HOME = _Paths.HOME;
+  static const LOCATION_MAPS = _Paths.LOCATION_MAPS;
+  static const FACE_DETECTION = _Paths.FACE_DETECTION;
+  static const ACTIVITY_HISTORY = _Paths.ACTIVITY_HISTORY;
+  static const PROFILE = _Paths.PROFILE;
+  static const EDIT_PROFILE = _Paths.EDIT_PROFILE;
 }
 
 abstract class _Paths {
@@ -16,5 +22,11 @@ abstract class _Paths {
   static const SPLASH = '/splash';
   static const INIT = '/init';
   static const LOGIN = '/login';
-  static const FACE_SETUP = '/face-setup';
+  static const REGISTER_FACE = '/register-face';
+  static const HOME = '/home';
+  static const LOCATION_MAPS = '/location-maps';
+  static const FACE_DETECTION = '/face-detection';
+  static const ACTIVITY_HISTORY = '/activity-history';
+  static const PROFILE = '/profile';
+  static const EDIT_PROFILE = '/edit-profile';
 }

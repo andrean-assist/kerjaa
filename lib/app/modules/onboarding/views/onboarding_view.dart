@@ -90,7 +90,13 @@ class OnboardingView extends GetView<OnboardingController> {
                 },
               ),
               style: FilledButton.styleFrom(
+                backgroundColor: SharedTheme.filledBtnColor,
+                foregroundColor: Colors.white,
                 maximumSize: const Size.fromHeight(44),
+                textStyle: Get.context!.textTheme.titleSmall?.copyWith(
+                  fontWeight: SharedTheme.semiBold,
+                  fontSize: 16,
+                ),
               ),
             ),
             Obx(
