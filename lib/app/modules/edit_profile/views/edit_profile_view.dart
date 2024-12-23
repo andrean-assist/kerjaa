@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../shared/shared_theme.dart';
+import '../../../../utils/constants_connect.dart';
 import '../../widgets/buttons/buttons.dart';
 import '../controllers/edit_profile_controller.dart';
 
@@ -105,7 +106,8 @@ class EditProfileView extends GetView<EditProfileController> {
         if (controller.imageFile.value != null) {
           fgImage = FileImage(File(controller.imageFile.value!.path));
         } else if (avatar != null) {
-          fgImage = NetworkImage(avatar);
+          fgImage =
+              NetworkImage('${ConstantsConnect.endPointBaseUrlImage}$avatar');
         } else {
           fgImage = const AssetImage(ConstantsAssets.imgNoPhoto);
         }

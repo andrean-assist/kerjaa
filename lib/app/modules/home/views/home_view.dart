@@ -15,8 +15,10 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../shared/shared_theme.dart';
 import '../../../../utils/constants_assets.dart';
+import '../../../../utils/constants_connect.dart';
 import '../../widgets/buttons/buttons.dart';
 import '../../widgets/card/cards.dart';
+import '../../widgets/snackbar/snackbar.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -96,9 +98,22 @@ class HomeView extends GetView<HomeController> {
           onTap: controller.moveToProfile,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
-            child: CircleAvatar(
-              foregroundImage:
-                  CachedNetworkImageProvider(controller.profilePicture ?? ''),
+            child: CachedNetworkImage(
+              imageUrl:
+                  '${ConstantsConnect.endPointBaseUrlImage}${controller.profilePicture}',
+              imageBuilder: (context, imageProvider) => CircleAvatar(
+                backgroundImage: imageProvider,
+                radius: 28,
+              ),
+              progressIndicatorBuilder: (context, url, progress) =>
+                  CircleAvatar(
+                child: CircularProgressIndicator.adaptive(
+                  value: progress.progress,
+                ),
+              ),
+              errorWidget: (context, url, error) => const CircleAvatar(
+                backgroundImage: AssetImage(ConstantsAssets.imgNoPhoto),
+              ),
             ),
           ),
         ),
@@ -268,10 +283,11 @@ class HomeView extends GetView<HomeController> {
           }
 
           if (endTime != null) {
+            statusAbsence = StatusAbsenceSetup.checkIn;
             icon = null;
             style = null;
             textBtn = 'Check in';
-            isVisibleBtnAbsence = false;
+            isVisibleBtnAbsence = true;
           }
         }
 
@@ -360,13 +376,6 @@ class HomeView extends GetView<HomeController> {
                     if (oldState?.position == 0 && state.position == 0) {
                       ctr.setAnchorPosition(0);
                     }
-
-                    // print('oldState position = ${state.position}');
-                    // print(
-                    //     'oldState releasePosition = ${oldState?.releasePosition}');
-                    // print('currentState position = ${state.position}');
-                    // print(
-                    //     'currentState releasePosition = ${state.releasePosition}');
                   },
                   onTap: null,
                 ),
@@ -374,119 +383,6 @@ class HomeView extends GetView<HomeController> {
             ),
           ],
         );
-
-        // // jika user baru absen maka tampilkan halaman checkin
-        // if (controller.startTime.value == null) {
-        //   return Buttons.filled(
-        //     width: double.infinity,
-        //     onPressed: () => controller.moveToMaps(StatusAbsenceSetup.checkIn),
-        //     child: const Text('Check in'),
-        //   );
-        // }
-
-        // // jika user slide memulai istirahat
-        // // maka tampilan slider akan ke kanan ujung atau 1
-
-        // // jika user slide mengakhiri istirahat
-        // // maka tampilan slider akan ke kiri ujung atau angka 0
-        // // dan jika jam istirahat sudah ada maka tampilan slide akan gone
-
-        // // jika user checkout dan berhasil
-        // // maka tampilan checkout akan hilang di tanggal hari itu
-
-        // if (controller.startTime.value != null) {
-        //   return Column(
-        //     mainAxisSize: MainAxisSize.min,
-        //     children: [
-        //       Buttons.filled(
-        //         width: double.infinity,
-        //         icon: SvgPicture.asset(ConstantsAssets.icCheckout),
-        //         style: FilledButton.styleFrom(
-        //           backgroundColor: SharedTheme.filledBtnRedColor,
-        //           foregroundColor: Colors.white,
-        //         ),
-        //         onPressed: () {},
-        //         child: const Text('Check out'),
-        //       ),
-        //       const SizedBox(height: 8),
-        //       Obx(
-        //         () => ActionSlider.custom(
-        //           outerBackgroundBuilder: (context, state, child) => child!,
-        //           foregroundBuilder: (context, state, child) => child!,
-        //           backgroundBuilder: (context, state, child) => child!,
-        //           backgroundColor: Colors.transparent,
-        //           toggleMargin: const EdgeInsets.fromLTRB(8, 7, 6, 7),
-        //           boxShadow: const [],
-        //           outerBackgroundChild: Container(
-        //             decoration: const BoxDecoration(
-        //               border: Border.fromBorderSide(
-        //                 BorderSide(
-        //                   color: SharedTheme.textBtnColor,
-        //                   width: 1,
-        //                 ),
-        //               ),
-        //               borderRadius: BorderRadius.all(Radius.circular(100)),
-        //             ),
-        //           ),
-        //           foregroundChild: Container(
-        //             padding: const EdgeInsets.all(8),
-        //             decoration: const BoxDecoration(
-        //               color: SharedTheme.filledBtnColor,
-        //               borderRadius: BorderRadius.all(Radius.circular(100)),
-        //             ),
-        //             child: SvgPicture.asset(
-        //               ConstantsAssets.icBreak,
-        //               colorFilter: const ColorFilter.mode(
-        //                 SharedTheme.primaryBtnLightColor,
-        //                 BlendMode.srcIn,
-        //               ),
-        //             ),
-        //           ),
-        //           backgroundChild: Center(
-        //             child: Container(
-        //               margin: EdgeInsets.only(
-        //                 left: controller.isRest.value ? 0 : 32,
-        //                 right: controller.isRest.value ? 56 : 0,
-        //               ),
-        //               child: Text(
-        //                 'Slide untuk ${controller.isRest.value ? 'akhiri' : 'memulai'} istirahat',
-        //                 style: textTheme.titleMedium?.copyWith(
-        //                   color: SharedTheme.textBtnColor,
-        //                   fontWeight: SharedTheme.semiBold,
-        //                   fontSize: 16,
-        //                 ),
-        //               ),
-        //             ),
-        //           ),
-        //           movementDuration: Duration.zero,
-        //           actionThresholdType: ThresholdType.release,
-        //           reverseSlideAnimationCurve: Curves.fastLinearToSlowEaseIn,
-        //           reverseSlideAnimationDuration: Duration.zero,
-        //           controller: controller.actionSliderC,
-        //           stateChangeCallback: (oldState, state, ctr) {
-        //             if (oldState?.position == 1 && state.position == 1) {
-        //               ctr.setAnchorPosition(1);
-        //             }
-
-        //             if (oldState?.position == 0 && state.position == 0) {
-        //               ctr.setAnchorPosition(0);
-        //             }
-
-        //             print('oldState position = ${state.position}');
-        //             print(
-        //                 'oldState releasePosition = ${oldState?.releasePosition}');
-        //             print('currentState position = ${state.position}');
-        //             print(
-        //                 'currentState releasePosition = ${state.releasePosition}');
-        //           },
-        //           onTap: null,
-        //         ),
-        //       ),
-        //     ],
-        //   );
-        // }
-
-        // return const SizedBox.shrink();
       },
     );
   }
@@ -725,29 +621,42 @@ class HomeView extends GetView<HomeController> {
   }
 
   void _showModalShift(BuildContext context, TextTheme textTheme) {
-    Modals.bottomSheet(
-      context: context,
-      content: const ShiftModal(),
-      onClosePressed: controller.clearShift,
-      actions: Column(
-        children: [
-          Obx(
-            () => Buttons.filled(
-              width: double.infinity,
-              onPressed: (controller.shift.value != null)
-                  ? controller.checkIsAlreadyCheckin
-                  : null,
-              child: const Text('Mulai bekerja'),
+    final data = controller.dataDashboard?.shift;
+    final isVisibleMorning = data?.pagi?.disabledShift ?? false;
+    final isVisibleDay = data?.siang?.disabledShift ?? false;
+    final isVisibleNight = data?.malam?.disabledShift ?? false;
+
+    if (isVisibleMorning || isVisibleDay || isVisibleNight) {
+      Modals.bottomSheet(
+        context: context,
+        content: const ShiftModal(),
+        onClosePressed: controller.clearShift,
+        actions: Column(
+          children: [
+            Obx(
+              () => Buttons.filled(
+                width: double.infinity,
+                onPressed: (controller.shift.value != null)
+                    ? controller.checkIsAlreadyCheckin
+                    : null,
+                child: const Text('Mulai bekerja'),
+              ),
             ),
-          ),
-          const SizedBox(height: 12),
-          Buttons.text(
-            width: double.infinity,
-            onPressed: Get.back,
-            child: const Text('Nanti saja'),
-          ),
-        ],
-      ),
-    );
+            const SizedBox(height: 12),
+            Buttons.text(
+              width: double.infinity,
+              onPressed: Get.back,
+              child: const Text('Nanti saja'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      Snackbar.success(
+        context: context,
+        content: 'Shift kerja anda belum di atur oleh admin',
+        behavior: SnackBarBehavior.floating,
+      );
+    }
   }
 }

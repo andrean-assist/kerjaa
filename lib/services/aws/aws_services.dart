@@ -11,6 +11,7 @@ class AwsServices extends GetConnect {
     final token = _initC.localStorage.read<String>(ConstantsKeys.authToken);
     headers = {
       'Accept': 'application/json',
+      'ContentType': 'multipart/form-data',
     };
 
     if (token != null) {
@@ -19,7 +20,7 @@ class AwsServices extends GetConnect {
   }
 
   Future<Response> uploadImage(FormData form) => post(
-        ConstantsConnect.endPointBaseUrlUpload,
+        '${ConstantsConnect.endPointBaseUrlUpload}${ConstantsConnect.bucketUploadHospital}',
         form,
         headers: headers,
       );

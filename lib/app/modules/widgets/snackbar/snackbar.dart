@@ -42,6 +42,7 @@ abstract class Snackbar {
     TextStyle? textStyle,
     Duration? duration,
     SnackBarAction? action,
+    SnackBarBehavior? behavior,
   }) =>
       showSnackbar(
         context: context,
@@ -51,6 +52,7 @@ abstract class Snackbar {
         backgroundColor: SharedTheme.successColor,
         duration: duration ?? const Duration(seconds: 5),
         action: action,
+        behavior: behavior,
       );
 
   static void info({

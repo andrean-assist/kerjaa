@@ -9,6 +9,7 @@ part of 'detail_shift_model.dart';
 _$DetailShiftModelImpl _$$DetailShiftModelImplFromJson(
         Map<String, dynamic> json) =>
     _$DetailShiftModelImpl(
+      disabledShift: json['disabledShift'] as bool?,
       absen: json['absen'] == null
           ? null
           : AbsenModel.fromJson(json['absen'] as Map<String, dynamic>),
@@ -20,6 +21,7 @@ _$DetailShiftModelImpl _$$DetailShiftModelImplFromJson(
 Map<String, dynamic> _$$DetailShiftModelImplToJson(
         _$DetailShiftModelImpl instance) =>
     <String, dynamic>{
+      'disabledShift': instance.disabledShift,
       'absen': instance.absen,
       'istirahat': instance.istirahat,
     };

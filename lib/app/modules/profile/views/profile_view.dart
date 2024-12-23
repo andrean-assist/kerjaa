@@ -1,5 +1,6 @@
 import 'package:assist_hadir/shared/shared_theme.dart';
 import 'package:assist_hadir/utils/constants_assets.dart';
+import 'package:assist_hadir/utils/constants_connect.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,8 @@ class ProfileView extends GetView<ProfileController> {
                     ListTile(
                       contentPadding: EdgeInsets.zero,
                       leading: CachedNetworkImage(
-                        imageUrl: controller.profilePicture.value ?? '',
+                        imageUrl:
+                            '${ConstantsConnect.endPointBaseUrlImage}${controller.profilePicture.value}',
                         imageBuilder: (context, imageProvider) => CircleAvatar(
                           backgroundImage: imageProvider,
                           radius: 28,

@@ -52,7 +52,11 @@ class EditProfileController extends GetxController {
   Future<void> pickImage() async {
     final picker = ImagePicker();
     try {
-      imageFile.value = await picker.pickImage(source: ImageSource.gallery);
+      imageFile.value = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 60,
+      );
+      print('pathImageFile = ${imageFile.value?.path}');
     } catch (e) {
       _initC.logger.e('Error: $e');
     }
@@ -70,11 +74,15 @@ class EditProfileController extends GetxController {
   Future<String?> _uploadImage(String? path) async {
     if (path == null) return null;
 
+    print('path = $path');
+
     final filename = p.basename(path);
+    final filenameWithoutExt = p.basenameWithoutExtension(path);
+
     final multipart = MultipartFile(
       File(path),
-      filename: filename,
-      contentType: ContentType.binary.value,
+      filename: filenameWithoutExt,
+      // contentType: ContentType.binary.value,
     );
 
     print('fileName: $filename');
@@ -85,6 +93,7 @@ class EditProfileController extends GetxController {
     print('res statusCode = ${res.statusCode}');
     print('res body = ${res.body}');
     print('res isOK = ${res.isOk}');
+    print('res headers = ${res.headers?.values.join(',')}');
 
     if (res.isOk) {
       final bodyFilename = res.bodyString;
@@ -98,25 +107,25 @@ class EditProfileController extends GetxController {
     isLoading.value = true;
 
     try {
-      // final fileName = await _uploadImage(imageFile.value?.path);
+      final fileName = await _uploadImage(imageFile.value?.path);
 
-      // print('fileName = $fileName');
+      print('fileName from API = $fileName');
 
       final body = {
         "position": positionC.text.toString().trim(),
         "name": fullNameC.text.toString().trim(),
       };
 
-      // if (fileName != null) {
-      //   body.addAll({"avatar": fileName});
-      // }
+      if (fileName != null) {
+        body.addAll({"avatar": fileName});
+      }
 
       final res = await _profileS.updateProfile(body);
 
       print('res body  ${res.body}');
 
       if (res.isOk) {
-        _updateDataProfileInLocal();
+        _updateDataProfileInLocal(fileName);
 
         Snackbar.success(
           context: Get.context!,
@@ -144,14 +153,10 @@ class EditProfileController extends GetxController {
     }
   }
 
-  void _updateDataProfileInLocal(
-      // String? fileName
-      ) {
-    // print('fileName = $fileName');
-
+  void _updateDataProfileInLocal(String? fileName) {
     _initC.localStorage
       ..write(ConstantsKeys.name, fullNameC.text.toString().trim())
-      ..write(ConstantsKeys.position, positionC.text.toString().trim());
-    // ..write(ConstantsKeys.profilPicture, fileName);
+      ..write(ConstantsKeys.position, positionC.text.toString().trim())
+      ..write(ConstantsKeys.profilPicture, fileName);
   }
 }

@@ -136,6 +136,7 @@ class FaceSetupController extends GetxController {
     final navModel = Get.arguments as NavigationModel?;
     statusAbsenceArgs = navModel?.absenceType;
     _reason = navModel?.reason;
+    _shift = navModel?.shift;
     _locationVerification = navModel?.location;
 
     if (statusAbsenceArgs != null) {
@@ -334,6 +335,8 @@ class FaceSetupController extends GetxController {
   Future<String?> _uploadImage(String? path) async {
     if (path == null) return null;
 
+    final imageFile = File(path);
+
     final filename = p.basename(path);
 
     final multipart = MultipartFile(
@@ -358,10 +361,10 @@ class FaceSetupController extends GetxController {
     isLoading.value = true;
 
     if (captureRequest != null) {
-      // final urlImage = await _uploadImage(captureRequest!.path);
+      final urlImage = await _uploadImage(captureRequest!.path);
 
       final reqRegisterFace = ReqRegisterFaceModel(
-        avatar: fotoFerdie,
+        avatar: urlImage,
         isVerified: true,
       );
 
@@ -462,46 +465,6 @@ class FaceSetupController extends GetxController {
         if (res!.isOk) {
           _moveToHome();
         }
-
-        // print('reqAttendance = ${reqAttendance.toJson()}');
-        // return;
-
-        // if (res!.isOk) {
-        //   final body = res.body;
-
-        //   if (body != null) {
-        //     final resBody = ResAttendanceModel.fromJson(body);
-        //     final dataAttendance = resBody.data;
-
-        //     String? keyStorage;
-
-        //     // cek tipe
-        //     switch (statusAbsenceArgs) {
-        //       case StatusAbsenceSetup.checkIn:
-        //         final id = dataAttendance?.id;
-        //         if (id != null) {
-        //           await _initC.localStorage.write(ConstantsKeys.attendanceId, id);
-        //           _attendanceId = id;
-        //         }
-        //         keyStorage = ConstantsKeys.startTimeWork;
-        //         break;
-        //       case StatusAbsenceSetup.restStop:
-        //         keyStorage = ConstantsKeys.restEndTime;
-        //         break;
-        //       case StatusAbsenceSetup.checkOut:
-        //         keyStorage = ConstantsKeys.endTimeWork;
-        //         break;
-        //       default:
-        //     }
-
-        //     if (keyStorage != null) {
-        //       await _initC.setTimeStorage(keyStorage);
-        //       _moveToHome();
-        //     }
-        //   }
-        // } else {
-        //   // _showDialogFailed();
-        // }
       } on GetHttpException catch (e) {
         _initC.logger.e('Error: _actionAttendance $e');
       } finally {

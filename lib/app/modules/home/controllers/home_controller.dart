@@ -119,6 +119,11 @@ class HomeController extends GetxController {
         _firstName = value;
       },
     );
+
+    _initC.localStorage.listenKey(
+      ConstantsKeys.profilPicture,
+      (value) => profilePicture = value,
+    );
   }
 
   void _prepareStorageDateTime() {
@@ -273,12 +278,6 @@ class HomeController extends GetxController {
             final dataEvent = dataDashboard?.events;
 
             if (eventDate != null) {
-              // cek jika tanggal event itu hari ini
-              // final eventDateFormat = FormatDateTime.iso8601ToDateTime(
-              //   pattern: 'yyyy-MM-dd',
-              //   value: eventDate,
-              // );
-
               final attendanceId = dataDashboard?.id;
               final startWork = dataDashboard?.checkIn;
               final endWork = dataDashboard?.checkOut;

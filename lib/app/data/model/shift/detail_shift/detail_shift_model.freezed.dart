@@ -20,6 +20,7 @@ DetailShiftModel _$DetailShiftModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$DetailShiftModel {
+  bool? get disabledShift => throw _privateConstructorUsedError;
   AbsenModel? get absen => throw _privateConstructorUsedError;
   AbsenModel? get istirahat => throw _privateConstructorUsedError;
 
@@ -35,7 +36,7 @@ abstract class $DetailShiftModelCopyWith<$Res> {
           DetailShiftModel value, $Res Function(DetailShiftModel) then) =
       _$DetailShiftModelCopyWithImpl<$Res, DetailShiftModel>;
   @useResult
-  $Res call({AbsenModel? absen, AbsenModel? istirahat});
+  $Res call({bool? disabledShift, AbsenModel? absen, AbsenModel? istirahat});
 
   $AbsenModelCopyWith<$Res>? get absen;
   $AbsenModelCopyWith<$Res>? get istirahat;
@@ -54,10 +55,15 @@ class _$DetailShiftModelCopyWithImpl<$Res, $Val extends DetailShiftModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? disabledShift = freezed,
     Object? absen = freezed,
     Object? istirahat = freezed,
   }) {
     return _then(_value.copyWith(
+      disabledShift: freezed == disabledShift
+          ? _value.disabledShift
+          : disabledShift // ignore: cast_nullable_to_non_nullable
+              as bool?,
       absen: freezed == absen
           ? _value.absen
           : absen // ignore: cast_nullable_to_non_nullable
@@ -102,7 +108,7 @@ abstract class _$$DetailShiftModelImplCopyWith<$Res>
       __$$DetailShiftModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({AbsenModel? absen, AbsenModel? istirahat});
+  $Res call({bool? disabledShift, AbsenModel? absen, AbsenModel? istirahat});
 
   @override
   $AbsenModelCopyWith<$Res>? get absen;
@@ -121,10 +127,15 @@ class __$$DetailShiftModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? disabledShift = freezed,
     Object? absen = freezed,
     Object? istirahat = freezed,
   }) {
     return _then(_$DetailShiftModelImpl(
+      disabledShift: freezed == disabledShift
+          ? _value.disabledShift
+          : disabledShift // ignore: cast_nullable_to_non_nullable
+              as bool?,
       absen: freezed == absen
           ? _value.absen
           : absen // ignore: cast_nullable_to_non_nullable
@@ -140,11 +151,14 @@ class __$$DetailShiftModelImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$DetailShiftModelImpl implements _DetailShiftModel {
-  const _$DetailShiftModelImpl({this.absen, this.istirahat});
+  const _$DetailShiftModelImpl(
+      {this.disabledShift, this.absen, this.istirahat});
 
   factory _$DetailShiftModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$DetailShiftModelImplFromJson(json);
 
+  @override
+  final bool? disabledShift;
   @override
   final AbsenModel? absen;
   @override
@@ -152,7 +166,7 @@ class _$DetailShiftModelImpl implements _DetailShiftModel {
 
   @override
   String toString() {
-    return 'DetailShiftModel(absen: $absen, istirahat: $istirahat)';
+    return 'DetailShiftModel(disabledShift: $disabledShift, absen: $absen, istirahat: $istirahat)';
   }
 
   @override
@@ -160,6 +174,8 @@ class _$DetailShiftModelImpl implements _DetailShiftModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$DetailShiftModelImpl &&
+            (identical(other.disabledShift, disabledShift) ||
+                other.disabledShift == disabledShift) &&
             (identical(other.absen, absen) || other.absen == absen) &&
             (identical(other.istirahat, istirahat) ||
                 other.istirahat == istirahat));
@@ -167,7 +183,7 @@ class _$DetailShiftModelImpl implements _DetailShiftModel {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, absen, istirahat);
+  int get hashCode => Object.hash(runtimeType, disabledShift, absen, istirahat);
 
   @JsonKey(ignore: true)
   @override
@@ -186,12 +202,15 @@ class _$DetailShiftModelImpl implements _DetailShiftModel {
 
 abstract class _DetailShiftModel implements DetailShiftModel {
   const factory _DetailShiftModel(
-      {final AbsenModel? absen,
+      {final bool? disabledShift,
+      final AbsenModel? absen,
       final AbsenModel? istirahat}) = _$DetailShiftModelImpl;
 
   factory _DetailShiftModel.fromJson(Map<String, dynamic> json) =
       _$DetailShiftModelImpl.fromJson;
 
+  @override
+  bool? get disabledShift;
   @override
   AbsenModel? get absen;
   @override

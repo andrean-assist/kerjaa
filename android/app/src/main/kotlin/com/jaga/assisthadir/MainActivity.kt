@@ -1,4 +1,4 @@
-package com.example.assist_hadir
+package com.jaga.assisthadir
 
 import io.flutter.embedding.android.FlutterActivity
 

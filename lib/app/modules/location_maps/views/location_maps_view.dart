@@ -43,7 +43,7 @@ class LocationMapsView extends GetView<LocationMapsController> {
             // Display map tiles from any source
             urlTemplate:
                 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // OSMF's Tile Server
-            userAgentPackageName: 'com.example.assist_hadir',
+            userAgentPackageName: 'com.jaga.assistHadir',
             // And many more recommended properties!
           ),
           Obx(

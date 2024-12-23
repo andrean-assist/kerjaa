@@ -8,6 +8,7 @@ part 'detail_shift_model.g.dart';
 @freezed
 class DetailShiftModel with _$DetailShiftModel {
   const factory DetailShiftModel({
+    bool? disabledShift,
     AbsenModel? absen,
     AbsenModel? istirahat,
   }) = _DetailShiftModel;
