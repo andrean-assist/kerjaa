@@ -413,7 +413,7 @@ class HomeController extends GetxController {
         'organizationId': _organizationId,
       };
 
-      print('req params = $params ');
+      // print('req params = $params ');
 
       try {
         final res = await _homeS.isAlreadyCheckedIn(params);
@@ -669,5 +669,10 @@ class HomeController extends GetxController {
     _startTimeObserver?.cancel();
     _startTimeObserver = null;
     super.onClose();
+  }
+
+  bool isShiftEnabled() {
+    final shift = dataDashboard?.shift;
+    return shift != null;
   }
 }

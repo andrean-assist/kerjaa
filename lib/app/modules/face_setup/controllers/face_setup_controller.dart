@@ -251,6 +251,7 @@ class FaceSetupController extends GetxController {
                     _initC.setTimeStorage(ConstantsKeys.startTimeWork);
                   }
                 }
+                
                 print(
                     "Wajah sedang tersenyum (Probabilitas: $smilingProbability)");
               } else {

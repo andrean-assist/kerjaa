@@ -39,21 +39,7 @@ class HomeView extends GetView<HomeController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              StreamBuilder(
-                  stream: TimeHelper.streamDateTime(),
-                  builder: (context, snapshot) {
-                    final dateTime = snapshot.data;
-                    final message = controller.greetingMessage(dateTime);
-
-                    return Skeletonizer(
-                      enabled: dateTime == null,
-                      child: _builderTextDisplay(
-                        textTheme: textTheme,
-                        title: message.$1,
-                        subtitle: message.$2,
-                      ),
-                    );
-                  }),
+              _builderGreetingMessage(textTheme),
               const SizedBox(height: 28),
               _builderHeaderCard(context),
               const SizedBox(height: 16),
@@ -122,6 +108,25 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
+  Widget _builderGreetingMessage(TextTheme textTheme) {
+    return StreamBuilder(
+      stream: TimeHelper.streamDateTime(),
+      builder: (context, snapshot) {
+        final dateTime = snapshot.data;
+        final message = controller.greetingMessage(dateTime);
+
+        return Skeletonizer(
+          enabled: dateTime == null,
+          child: _builderTextDisplay(
+            textTheme: textTheme,
+            title: message.$1,
+            subtitle: message.$2,
+          ),
+        );
+      },
+    );
+  }
+
   Widget _builderTextDisplay({
     required TextTheme textTheme,
     required String title,
@@ -154,66 +159,98 @@ class HomeView extends GetView<HomeController> {
       context: context,
       inPadding: const EdgeInsets.fromLTRB(16, 24, 16, 28),
       color: theme.colorScheme.surfaceContainerLowest,
-      child: Column(
-        children: [
-          StreamBuilder(
-            stream: TimeHelper.streamDateTime(),
-            builder: (context, snapshot) {
-              final dateTime = snapshot.data;
-
-              var time = '--:--:--';
-              var date = '----, -- --- ----';
-
-              if (dateTime != null) {
-                time = FormatDateTime.dateToString(
-                  newPattern: 'HH:mm:ss',
-                  value: dateTime.toString(),
-                );
-                date = FormatDateTime.dateToString(
-                  newPattern: 'EEEE, dd MMM yyyy',
-                  value: dateTime.toString(),
-                );
-              }
-
-              return Skeletonizer(
-                enabled: dateTime == null,
-                child: Column(
-                  children: [
-                    Text(
-                      time,
-                      style: textTheme.titleLarge?.copyWith(
-                        fontWeight: SharedTheme.bold,
-                        fontSize: 20,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      date,
-                      style: textTheme.bodyMedium
-                          ?.copyWith(color: theme.hintColor),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+      child: SizedBox(
+        width: double.infinity,
+        child: Visibility(
+          visible: controller.isShiftEnabled(),
+          replacement: _builderDisabledShift(context),
+          child: Column(
             children: [
-              _builderCountForwardTimer(context),
-              Text(
-                'Jam',
-                style: textTheme.titleSmall?.copyWith(
-                  fontWeight: SharedTheme.semiBold,
-                  color: theme.hintColor,
-                ),
-              )
+              StreamBuilder(
+                stream: TimeHelper.streamDateTime(),
+                builder: (context, snapshot) {
+                  final dateTime = snapshot.data;
+
+                  var time = '--:--:--';
+                  var date = '----, -- --- ----';
+
+                  if (dateTime != null) {
+                    time = FormatDateTime.dateToString(
+                      newPattern: 'HH:mm:ss',
+                      value: dateTime.toString(),
+                    );
+                    date = FormatDateTime.dateToString(
+                      newPattern: 'EEEE, dd MMM yyyy',
+                      value: dateTime.toString(),
+                    );
+                  }
+
+                  return Skeletonizer(
+                    enabled: dateTime == null,
+                    child: Column(
+                      children: [
+                        Text(
+                          time,
+                          style: textTheme.titleLarge?.copyWith(
+                            fontWeight: SharedTheme.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          date,
+                          style: textTheme.bodyMedium
+                              ?.copyWith(color: theme.hintColor),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _builderCountForwardTimer(context),
+                  Text(
+                    'Jam',
+                    style: textTheme.titleSmall?.copyWith(
+                      fontWeight: SharedTheme.semiBold,
+                      color: theme.hintColor,
+                    ),
+                  )
+                ],
+              ),
+              _builderBtnAbsence(context),
             ],
           ),
-          _builderBtnAbsence(context),
-        ],
+        ),
       ),
+    );
+  }
+
+  Widget _builderDisabledShift(BuildContext context) {
+    final textTheme = context.textTheme;
+    final size = context.mediaQuerySize;
+    return Column(
+      children: [
+        Image.asset(
+          ConstantsAssets.imgNotAllowedAttendance,
+          height: size.height * 0.25,
+        ),
+        const SizedBox(height: 12),
+        Text(
+          'Shift kerja belum diatur',
+          style: textTheme.titleMedium?.copyWith(
+            fontWeight: SharedTheme.semiBold,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Shift kerja Anda belum dibuat oleh atasan, nanti kalau sudah ada bakalan tampil di sini ya!',
+          style: textTheme.bodyMedium,
+        ),
+      ],
     );
   }
 
@@ -303,7 +340,7 @@ class HomeView extends GetView<HomeController> {
                   style: style,
                   onPressed: () {
                     if (statusAbsence == StatusAbsenceSetup.checkIn) {
-                      _showModalShift(context, textTheme);
+                      _showModalShift(context);
                     } else {
                       controller.moveToMaps(statusAbsence);
                     }
@@ -620,43 +657,31 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  void _showModalShift(BuildContext context, TextTheme textTheme) {
-    final data = controller.dataDashboard?.shift;
-    final isVisibleMorning = data?.pagi?.disabledShift ?? false;
-    final isVisibleDay = data?.siang?.disabledShift ?? false;
-    final isVisibleNight = data?.malam?.disabledShift ?? false;
-
-    if (isVisibleMorning || isVisibleDay || isVisibleNight) {
-      Modals.bottomSheet(
-        context: context,
-        content: const ShiftModal(),
-        onClosePressed: controller.clearShift,
-        actions: Column(
-          children: [
-            Obx(
-              () => Buttons.filled(
-                width: double.infinity,
-                onPressed: (controller.shift.value != null)
-                    ? controller.checkIsAlreadyCheckin
-                    : null,
-                child: const Text('Mulai bekerja'),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Buttons.text(
+  void _showModalShift(BuildContext context) {
+    Modals.bottomSheet(
+      context: context,
+      content: const ShiftModal(),
+      onClosePressed: controller.clearShift,
+      actions: Column(
+        children: [
+          Obx(
+            () => Buttons.filled(
               width: double.infinity,
-              onPressed: Get.back,
-              child: const Text('Nanti saja'),
+              state: controller.isLoading.value,
+              onPressed: (controller.shift.value != null)
+                  ? controller.checkIsAlreadyCheckin
+                  : null,
+              child: const Text('Mulai bekerja'),
             ),
-          ],
-        ),
-      );
-    } else {
-      Snackbar.success(
-        context: context,
-        content: 'Shift kerja anda belum di atur oleh admin',
-        behavior: SnackBarBehavior.floating,
-      );
-    }
+          ),
+          const SizedBox(height: 12),
+          Buttons.text(
+            width: double.infinity,
+            onPressed: Get.back,
+            child: const Text('Nanti saja'),
+          ),
+        ],
+      ),
+    );
   }
 }
