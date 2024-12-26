@@ -22,18 +22,18 @@ class LoginController extends GetxController {
   late final InitController _initC;
   late final AuthServices _authS;
 
-  static const emailDummy = 'reza.febriyan@assist.id';
-  static const passwordDummy = '12345678';
+  // static const emailDummy = 'reza.febriyan@assist.id';
+  // static const passwordDummy = '12345678';
 
   final formKey = GlobalKey<FormState>();
-  final emailC = TextEditingController(text: emailDummy);
-  final passwordC = TextEditingController(text: passwordDummy);
+  final emailC = TextEditingController();
+  final passwordC = TextEditingController();
 
   final emailF = FocusNode();
   final passwordF = FocusNode();
 
-  final email = emailDummy.obs;
-  final password = passwordDummy.obs;
+  final email = ''.obs;
+  final password = ''.obs;
 
   final isVisiblePassword = false.obs;
   final isLoading = false.obs;
@@ -133,7 +133,6 @@ class LoginController extends GetxController {
     final name = user?.name;
     final position = user?.position;
     final avatar = user?.avatar;
-    // final firstName = name?.split(' ').first.capitalizeFirst;
 
     _initC.localStorage
       ..write(ConstantsKeys.authToken, token)
