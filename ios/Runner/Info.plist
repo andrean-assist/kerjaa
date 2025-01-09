@@ -46,10 +46,12 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>your usage description here</string>
+	<string>This application requires access to the camera to capture photos or videos, enabling key features and enhancing the user experience.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>your usage description here</string>
+	<string>This application requires access to the microphone to record audio, ensuring proper functionality of audio-related features.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This application requires access to your photo library to upload, edit, or share images, enhancing your interaction with the app.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to location when open.</string>
+	<string>This application requires access to your location while in use to provide personalized location-based features and improve services.</string>
 </dict>
 </plist>
