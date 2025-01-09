@@ -1,4 +1,4 @@
-import 'package:assist_hadir/app/data/model/verifications/location/position/position_model.dart';
+import 'package:assist_hadir/app/data/model/position/position_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../events/events_model.dart';

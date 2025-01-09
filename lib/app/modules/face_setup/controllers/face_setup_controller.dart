@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:image/image.dart' as img;
 
 import 'package:app_settings/app_settings.dart';
 import 'package:assist_hadir/app/data/model/attendance/req/req_attendance_model.dart';
@@ -20,11 +21,10 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/exceptions/exceptions.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
-import 'package:path/path.dart' as p;
 
 import '../../../../services/auth/auth_services.dart';
 import '../../../../shared/shared_enum.dart';
-import '../../../data/model/face_detection_model.dart';
+import '../../../data/db/face_detection/face_detection_model.dart';
 import '../../../routes/app_pages.dart';
 import '../../init/controllers/init_controller.dart';
 import '../../widgets/buttons/buttons.dart';
@@ -39,7 +39,7 @@ class FaceSetupController extends GetxController {
 
   late PhotoCameraState photoState;
   CaptureRequest? captureRequest;
-  late CameraState cameraState;
+  // late CameraState cameraState;
 
   late final FaceDetector _faceDetector;
 
@@ -61,15 +61,13 @@ class FaceSetupController extends GetxController {
   LocationVerificationModel? _locationVerification;
 
   final faceDetectionC = Rxn<FaceDetectionModel>();
-  final textHint = ''.obs;
 
-  var isTakePicture = false;
+  var isBusy = false;
+  var isDoneTakePicture = false;
+  String? imageFilePath;
 
   final isEnabled = true.obs;
   final isLoading = false.obs;
-
-  final fotoFerdie =
-      'https://media.licdn.com/dms/image/v2/D5603AQF86Nsp6CfdyQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1707224683941?e=2147483647&v=beta&t=aaOwgNrIRERWULTwQq61poG3C921g6pKXRp8CjHQ5qo';
 
   @override
   void onInit() {
@@ -100,7 +98,7 @@ class FaceSetupController extends GetxController {
 
         // jika permission kamera ditolak maka
         if (state) {
-          Get.back();
+          // Get.back();
         } else {
           isEnabled.value = false;
           _showModalNotGrantedPermission();
@@ -113,9 +111,9 @@ class FaceSetupController extends GetxController {
     _faceDetector = FaceDetector(
       options: FaceDetectorOptions(
         // enableContours: true,
-        enableClassification: true,
+        enableClassification: true, // Enable classification to detect smiles
         // enableLandmarks: true,
-        enableTracking: true,
+        enableTracking: true, // Enable tracking to detect faces
         performanceMode: FaceDetectorMode.accurate,
       ),
     );
@@ -193,47 +191,91 @@ class FaceSetupController extends GetxController {
   }
 
   Future<void> takePicture() async {
-    isTakePicture = true;
     print('tombol ambil gambar ditekan');
 
     try {
-      captureRequest = await photoState.takePhoto();
+      captureRequest = await photoState.takePhoto(
+        onPhoto: (singleRequest) async {
+          print('singleRequest = ${singleRequest.path}');
+          isDoneTakePicture = true;
+          imageFilePath = singleRequest.path;
+        },
+        onPhotoFailed: (exception) => _initC.logger.e('Error: $exception'),
+      );
       statusSetup.value = StatusFaceSetup.success;
     } catch (e) {
       _initC.logger.e('Error: $e');
     } finally {
-      isTakePicture = false;
+      isBusy = false;
     }
   }
 
-  Future analyzeImage(AnalysisImage img) async {
+  Future<File> setImageOrientationToPortrait(File imageFile) async {
+    try {
+      final image = img.decodeJpg(await imageFile.readAsBytes());
+
+      // print('image width = ${image?.width}');
+      // print('image height = ${image?.height}');
+      // print('image orientation = ${image?.exif}');
+
+      if (image != null) {
+        final orientedImage = img.copyRotate(image, angle: 0);
+        await imageFile.writeAsBytes(img.encodeJpg(orientedImage));
+      }
+    } catch (e) {
+      _initC.logger.e('Error: setImageOrientationToPortrait = $e');
+    }
+
+    return imageFile;
+  }
+
+  Future analyzeImage(AnalysisImage img, Size viewportSize) async {
     final inputImage = img.toInputImage();
 
     try {
       final faces = await _faceDetector.processImage(inputImage);
 
       if (faces.isNotEmpty) {
-        print('muka terdeteksi = ${faces.length}');
-        // textHint.value = 'Muka terdeteksi ${faces.length}';
+        // print('muka terdeteksi = ${faces.length}');
 
         if (faces.length == 1) {
           isEnabled.value = true;
-          // final boundingBox = faces.first.boundingBox; // Area wajah
-          // final width = boundingBox.width;
-          // final height = boundingBox.height;
-          // final center = boundingBox.center;
 
-          // Kriteria sederhana untuk deteksi wajah penuh
-          // if (width > 100 && height > 100) {
-          //   // Wajah cukup besar
-          //   if (center.dx > 50 && center.dy > 50) {
-          //     // Berada di tengah
-          //     print("Wajah terlihat penuh di kamera");
-          //   } else {
-          //     print("Wajah tidak berada di tengah kamera");
+          // final boundingBox = faces.first.boundingBox; // Area wajah
+          // final left = boundingBox.left;
+          // final right = boundingBox.right;
+          // final top = boundingBox.top;
+          // final bottom = boundingBox.bottom;
+
+          // print('FaceSetupController: viewportSize = $viewportSize');
+          // print('FaceSetupController: boundingBox = $boundingBox');
+          // print('FaceSetupController: left = $left');
+          // print('FaceSetupController: right = $right');
+          // print('FaceSetupController: top = $top');
+          // print('FaceSetupController: bottom = $bottom');
+
+          // if (left >= 0 &&
+          //     top >= 0 &&
+          //     right <= viewportSize.width &&
+          //     bottom <= viewportSize.height) {
+          //   print('FaceSetupController: Wajah terlihat sepenuhnya');
+          //   if (statusAbsenceArgs != StatusAbsenceSetup.register) {
+          //     print('FaceSetupController: isBusy = $isBusy');
+          //     print(
+          //         'FaceSetupController: isDoneTakePicture = $isDoneTakePicture');
+
+          // if (!isBusy && !isDoneTakePicture) {
+          //   isBusy = true;
+          //   print('FaceSetupController: takePicture');
+          //   await takePicture();
+          //   isBusy = false;
+
+          // save datetime checkin
+          // _initC.setTimeStorage(ConstantsKeys.startTimeWork);
+          // }
           //   }
           // } else {
-          //   print("Wajah terlalu kecil atau tidak lengkap");
+          //   print('FaceSetupController: Wajah tidak terlihat sepenuhnya');
           // }
 
           if (faces.first.trackingId != null) {
@@ -242,16 +284,16 @@ class FaceSetupController extends GetxController {
             print('smillingProbability = $smilingProbability');
 
             if (smilingProbability != null) {
-              if (smilingProbability > 0.5) {
+              if (smilingProbability > 0.3) {
                 if (statusAbsenceArgs != StatusAbsenceSetup.register) {
-                  if (!isTakePicture) {
+                  if (!isBusy && !isDoneTakePicture) {
+                    isBusy = true;
+                    print('FaceSetupController: takePicture');
                     await takePicture();
-
-                    // save datetime checkin
-                    _initC.setTimeStorage(ConstantsKeys.startTimeWork);
+                    isBusy = false;
                   }
                 }
-                
+
                 print(
                     "Wajah sedang tersenyum (Probabilitas: $smilingProbability)");
               } else {
@@ -316,14 +358,14 @@ class FaceSetupController extends GetxController {
         // print('Wajah tidak terdeteksi');
         faceDetectionC.value = null;
       }
-
-      // debugPrint“("...sending image resulted with : ${faces?.length} faces");
     } catch (error) {
       _initC.logger.e("...sending image resulted error $error");
     }
   }
 
   void action() {
+    print('statusAbsenceArgs = $statusAbsenceArgs');
+
     if (statusAbsenceArgs != null) {
       if (statusAbsenceArgs == StatusAbsenceSetup.register) {
         _actionRegisterFace();
@@ -333,25 +375,17 @@ class FaceSetupController extends GetxController {
     }
   }
 
-  Future<String?> _uploadImage(String? path) async {
-    if (path == null) return null;
+  Future<String?> _uploadImage(File file) async {
+    // if (file == null) return null;
 
-    final imageFile = File(path);
+    print('path = ${file.path}');
 
-    final filename = p.basename(path);
+    final res = await _awsS.uploadImage(file.path);
 
-    final multipart = MultipartFile(
-      File(path),
-      filename: filename,
-      contentType: ContentType.binary.value,
-    );
+    print('res statusCode = ${res.statusCode}');
 
-    final formData = FormData({filename: multipart});
-    final res = await _awsS.uploadImage(formData);
-
-    if (res.isOk) {
-      final bodyFilename = res.bodyString;
-      return bodyFilename;
+    if (res.statusCode == HttpStatus.ok) {
+      return res.data;
     }
 
     return null;
@@ -359,10 +393,12 @@ class FaceSetupController extends GetxController {
 
   // register wajah ke api
   Future<void> _actionRegisterFace() async {
-    isLoading.value = true;
+    if (captureRequest != null && captureRequest?.path != null) {
+      isLoading.value = true;
 
-    if (captureRequest != null) {
-      final urlImage = await _uploadImage(captureRequest!.path);
+      final imageFile = File(captureRequest!.path!);
+      final file = await setImageOrientationToPortrait(imageFile);
+      final urlImage = await _uploadImage(file);
 
       final reqRegisterFace = ReqRegisterFaceModel(
         avatar: urlImage,
@@ -372,26 +408,16 @@ class FaceSetupController extends GetxController {
       try {
         final res = await _authS.registerFace(reqRegisterFace.toJson());
 
-        print('res body = ${res.body}');
-        print('res statusCode = ${res.statusCode}');
-
         if (res.isOk) {
           final body = res.body;
 
           if (body != null) {
+            _initC.localStorage.write(ConstantsKeys.isVerified, true);
+            _initC.localStorage.write(ConstantsKeys.profilPicture, urlImage);
             _moveToHome();
           }
         } else {
-          if (res.statusCode == 401) {
-            _initC.redirectLogout(Get.context!);
-          } else {
-            _initC.showDialogFailed(
-              onPressed: () {
-                _actionRegisterFace();
-                Get.back();
-              },
-            );
-          }
+          _initC.handleError(status: res.status, onLoad: _actionRegisterFace);
         }
       } on GetHttpException catch (e) {
         _initC.logger.e('Error: actionRegisterFace $e');
@@ -409,10 +435,16 @@ class FaceSetupController extends GetxController {
 
   // absen masuk ke api
   Future<void> _actionAttendance() async {
-    if (captureRequest != null) {
+    if (captureRequest != null && captureRequest?.path != null) {
       isLoading.value = true;
 
-      final urlImage = await _uploadImage(captureRequest!.path);
+      print('imageFile from variabel = $imageFilePath');
+      final imageFile = File(imageFilePath!);
+      print('imageFile before set rotation = ${imageFile.path}');
+      final file = await setImageOrientationToPortrait(imageFile);
+      print('imageFile after set rotation = ${file.path}');
+
+      final urlImage = await _uploadImage(file);
 
       final now = FormatDateTime.dateToString(
         newPattern: 'yyyy-MM-dd',
@@ -465,6 +497,8 @@ class FaceSetupController extends GetxController {
 
         if (res!.isOk) {
           _moveToHome();
+        } else {
+          _initC.handleError(status: res.status, onLoad: _actionAttendance);
         }
       } on GetHttpException catch (e) {
         _initC.logger.e('Error: _actionAttendance $e');
@@ -484,6 +518,7 @@ class FaceSetupController extends GetxController {
         onPressed: () async {
           await AppSettings.openAppSettings();
           await CamerawesomePlugin.refresh();
+          Get.back();
 
           // final isGrantedPermission =
           //     await CamerawesomePlugin.checkAndRequestPermissions(true);

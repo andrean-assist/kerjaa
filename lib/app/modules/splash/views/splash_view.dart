@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:get/get.dart';
 
+import '../../../../shared/shared_theme.dart';
 import '../controllers/splash_controller.dart';
 
 class SplashView extends GetView<SplashController> {
@@ -11,19 +12,38 @@ class SplashView extends GetView<SplashController> {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = context.textTheme;
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(21),
           child: Stack(
+            alignment: Alignment.center,
             children: [
-              Align(
-                alignment: Alignment.center,
-                child: SvgPicture.asset(
-                  ConstantsAssets.icLogoSplash,
-                  height: 112,
-                ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(
+                    ConstantsAssets.icLogoLite,
+                    height: 112,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Kerjaa',
+                    style: textTheme.displaySmall?.copyWith(
+                      fontWeight: SharedTheme.extraBold,
+                    ),
+                  )
+                ],
               ),
+              // Align(
+              //   alignment: Alignment.center,
+              //   child: SvgPicture.asset(
+              //     ConstantsAssets.icLogoSplash,
+              //     height: 112,
+              //   ),
+              // ),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: SvgPicture.asset(

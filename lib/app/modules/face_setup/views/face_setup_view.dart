@@ -37,7 +37,8 @@ class FaceSetupView extends GetView<FaceSetupController> {
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 32),
                   child: PrepareFaceScreen(),
                 ),
-              StatusFaceSetup.ready => ReadyFaceScreen(circleDiameter),
+              StatusFaceSetup.ready =>
+                ReadyFaceScreen(circleDiameter, controller),
               StatusFaceSetup.success => SuccessFaceScreen(circleDiameter),
               _ => const SizedBox.shrink(),
             },
@@ -45,42 +46,5 @@ class FaceSetupView extends GetView<FaceSetupController> {
         ),
       ),
     );
-
-    // return Scaffold(
-    //   backgroundColor: Colors.red,
-    //   appBar: AppBar(
-    //     title: const Text('Daftarkan Wajah'),
-    //     centerTitle: false,
-    //   ),
-    //   body: Padding(
-    //     padding: const EdgeInsets.symmetric(
-    //       horizontal: 16,
-    //       vertical: 32,
-    //     ),
-    //     child: SizedBox(
-    //       width: double.infinity,
-    //       child: Obx(
-    //         () => switch (controller.statusSetup.value) {
-    //           StatusFaceSetup.init => Padding(
-    //               padding: const EdgeInsets.symmetric(
-    //                 horizontal: 16,
-    //                 vertical: 32,
-    //               ),
-    //               child: InitFaceScreen(circleDiameter),
-    //             ),
-    //           StatusFaceSetup.prepare => const Padding(
-    //               padding: EdgeInsets.symmetric(
-    //                 horizontal: 16,
-    //                 vertical: 32,
-    //               ),
-    //               child: PrepareFaceScreen(),
-    //             ),
-    //           StatusFaceSetup.ready => ReadyFaceScreenNew(circleDiameter),
-    //           _ => const SizedBox(),
-    //         },
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 }

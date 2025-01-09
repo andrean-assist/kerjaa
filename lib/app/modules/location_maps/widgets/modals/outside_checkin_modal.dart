@@ -1,11 +1,13 @@
+import 'package:assist_hadir/app/modules/location_maps/controllers/location_maps_controller.dart';
 import 'package:assist_hadir/app/modules/widgets/textform_fields/custom_textform_field_new.dart';
 import 'package:assist_hadir/shared/shared_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../../utils/constants_assets.dart';
+import '../../../../helpers/validations.dart';
 
-class OutsideCheckinModal extends StatelessWidget {
+class OutsideCheckinModal extends GetView<LocationMapsController> {
   final TextEditingController reasonC;
 
   const OutsideCheckinModal(this.reasonC, {super.key});
@@ -45,12 +47,20 @@ class OutsideCheckinModal extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
-          CustomTextFormFieldNew(
-            controller: reasonC,
-            labelText: 'Catatan',
-            isRequired: true,
-            isFilled: false,
-            hintText: 'cth: meeting di luar kantor',
+          Form(
+            key: controller.formKey,
+            child: CustomTextFormFieldNew(
+              controller: reasonC,
+              labelText: 'Catatan',
+              isRequired: true,
+              isFilled: false,
+              hintText: 'cth: meeting di luar kantor',
+              validator: (value) => Validation.formField(
+                value: value,
+                titleField: 'Catatan',
+                isRequired: true,
+              ),
+            ),
           ),
         ],
       ),

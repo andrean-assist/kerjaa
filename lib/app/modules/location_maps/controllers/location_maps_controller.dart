@@ -2,8 +2,9 @@ import 'dart:async';
 
 import 'package:assist_hadir/app/data/model/navigations/navigation_model.dart';
 import 'package:assist_hadir/app/data/model/verifications/location/location_verification_model.dart';
-import 'package:assist_hadir/app/data/model/verifications/location/position/position_model.dart';
+import 'package:assist_hadir/app/data/model/position/position_model.dart';
 import 'package:assist_hadir/app/helpers/location_helper.dart';
+import 'package:assist_hadir/app/helpers/logger_helper.dart';
 import 'package:assist_hadir/app/modules/init/controllers/init_controller.dart';
 import 'package:assist_hadir/app/modules/widgets/modal/custom_modal.dart';
 import 'package:assist_hadir/shared/shared_enum.dart';
@@ -26,7 +27,9 @@ class LocationMapsController extends GetxController {
   late final MapController mapC;
   StatusAbsenceSetup? _statusAbsenceArgs;
   StreamSubscription? _streamCurrentPosition;
+  late final LocationHelper _locationHelper;
 
+  final formKey = GlobalKey<FormState>();
   final reasonC = TextEditingController();
 
   NavigationModel? _args;
@@ -40,10 +43,7 @@ class LocationMapsController extends GetxController {
   var radius = 100.0;
   LatLng? clinicPosition;
 
-  // final isModalOpen = false.obs;
   final currentPosition = Rxn<Position>();
-
-  final isLoading = false.obs;
 
   @override
   void onInit() {
@@ -57,8 +57,28 @@ class LocationMapsController extends GetxController {
     }
 
     mapC = MapController();
+    _locationHelper = LocationHelper(_initC);
 
     _initArgs();
+
+    _streamCurrentPosition = currentPosition.listen(
+      (currPosition) {
+        print('currPosition = $currPosition');
+        // cek apakah posisi belum ada
+        if (currPosition != null) {
+          if (currPosition.isMocked) {
+            // user menggunakan fake gps
+            _showDialogUserUsingFakeGPS();
+          } else {
+            position.value = LatLng(
+              currPosition.latitude,
+              currPosition.longitude,
+            );
+            mapC.move(position.value!, 18);
+          }
+        }
+      },
+    );
   }
 
   void _initArgs() {
@@ -86,43 +106,17 @@ class LocationMapsController extends GetxController {
 
   @override
   void onReady() {
+    print('onReady');
     _fetchLocation();
     super.onReady();
   }
 
   Future<void> _fetchLocation() async {
-    isLoading.value = true;
-
     try {
-      LocationHelper.fetchPosition(
-        initC: _initC,
-        obs: currentPosition,
-      );
-
-      _streamCurrentPosition = currentPosition.listen(
-        (currPosition) {
-          print('currPosition = $currPosition');
-          // cek apakah posisi belum ada
-          if (currPosition != null) {
-            if (currPosition.isMocked) {
-              // user menggunakan fake gps
-              _showDialogUserUsingFakeGPS();
-            } else {
-              position.value = LatLng(
-                currPosition.latitude,
-                currPosition.longitude,
-              );
-              mapC.move(position.value!, 18);
-            }
-          }
-        },
-      );
-
+      _locationHelper.fetchPosition(obs: currentPosition);
       print('position = ${position.toJson()}');
     } catch (e) {
       _initC.logger.e('Error: $e');
-    } finally {
-      isLoading.value = false;
     }
   }
 
@@ -165,7 +159,14 @@ class LocationMapsController extends GetxController {
         children: [
           Buttons.filled(
             width: double.infinity,
-            onPressed: _moveToFaceDetect,
+            onPressed: () {
+              if (!formKey.currentState!.validate()) {
+                return;
+              }
+
+              FocusScope.of(Get.context!).unfocus();
+              _moveToFaceDetect();
+            },
             child: const Text('Lanjutkan'),
           ),
           const SizedBox(height: 12),
@@ -214,6 +215,7 @@ class LocationMapsController extends GetxController {
       ),
     );
 
+    // Get.back();
     Get.toNamed(Routes.FACE_DETECTION, arguments: navModel);
   }
 
@@ -222,6 +224,7 @@ class LocationMapsController extends GetxController {
     mapC.dispose();
     _streamCurrentPosition?.cancel();
     _streamCurrentPosition = null;
+    _locationHelper.close();
     super.onClose();
   }
 }

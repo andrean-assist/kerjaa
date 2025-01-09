@@ -18,7 +18,6 @@ import '../../../../utils/constants_assets.dart';
 import '../../../../utils/constants_connect.dart';
 import '../../widgets/buttons/buttons.dart';
 import '../../widgets/card/cards.dart';
-import '../../widgets/snackbar/snackbar.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -84,21 +83,23 @@ class HomeView extends GetView<HomeController> {
           onTap: controller.moveToProfile,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
-            child: CachedNetworkImage(
-              imageUrl:
-                  '${ConstantsConnect.endPointBaseUrlImage}${controller.profilePicture}',
-              imageBuilder: (context, imageProvider) => CircleAvatar(
-                backgroundImage: imageProvider,
-                radius: 28,
-              ),
-              progressIndicatorBuilder: (context, url, progress) =>
-                  CircleAvatar(
-                child: CircularProgressIndicator.adaptive(
-                  value: progress.progress,
+            child: Obx(
+              () => CachedNetworkImage(
+                imageUrl:
+                    '${ConstantsConnect.endPointBaseUrlImage}${controller.profilePicture.value}',
+                imageBuilder: (context, imageProvider) => CircleAvatar(
+                  backgroundImage: imageProvider,
+                  radius: 28,
                 ),
-              ),
-              errorWidget: (context, url, error) => const CircleAvatar(
-                backgroundImage: AssetImage(ConstantsAssets.imgNoPhoto),
+                progressIndicatorBuilder: (context, url, progress) =>
+                    CircleAvatar(
+                  child: CircularProgressIndicator.adaptive(
+                    value: progress.progress,
+                  ),
+                ),
+                errorWidget: (context, url, error) => const CircleAvatar(
+                  backgroundImage: AssetImage(ConstantsAssets.imgNoPhoto),
+                ),
               ),
             ),
           ),
@@ -161,68 +162,73 @@ class HomeView extends GetView<HomeController> {
       color: theme.colorScheme.surfaceContainerLowest,
       child: SizedBox(
         width: double.infinity,
-        child: Visibility(
-          visible: controller.isShiftEnabled(),
-          replacement: _builderDisabledShift(context),
-          child: Column(
-            children: [
-              StreamBuilder(
-                stream: TimeHelper.streamDateTime(),
-                builder: (context, snapshot) {
-                  final dateTime = snapshot.data;
-
-                  var time = '--:--:--';
-                  var date = '----, -- --- ----';
-
-                  if (dateTime != null) {
-                    time = FormatDateTime.dateToString(
-                      newPattern: 'HH:mm:ss',
-                      value: dateTime.toString(),
-                    );
-                    date = FormatDateTime.dateToString(
-                      newPattern: 'EEEE, dd MMM yyyy',
-                      value: dateTime.toString(),
-                    );
-                  }
-
-                  return Skeletonizer(
-                    enabled: dateTime == null,
-                    child: Column(
-                      children: [
-                        Text(
-                          time,
-                          style: textTheme.titleLarge?.copyWith(
-                            fontWeight: SharedTheme.bold,
-                            fontSize: 20,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          date,
-                          style: textTheme.bodyMedium
-                              ?.copyWith(color: theme.hintColor),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+        child: Obx(
+          () => Skeletonizer(
+            enabled: controller.isLoading.value,
+            child: Visibility(
+              visible: controller.isShiftEnabled.value,
+              replacement: _builderDisabledShift(context),
+              child: Column(
                 children: [
-                  _builderCountForwardTimer(context),
-                  Text(
-                    'Jam',
-                    style: textTheme.titleSmall?.copyWith(
-                      fontWeight: SharedTheme.semiBold,
-                      color: theme.hintColor,
-                    ),
-                  )
+                  StreamBuilder(
+                    stream: TimeHelper.streamDateTime(),
+                    builder: (context, snapshot) {
+                      final dateTime = snapshot.data;
+
+                      var time = '--:--:--';
+                      var date = '----, -- --- ----';
+
+                      if (dateTime != null) {
+                        time = FormatDateTime.dateToString(
+                          newPattern: 'HH:mm:ss',
+                          value: dateTime.toString(),
+                        );
+                        date = FormatDateTime.dateToString(
+                          newPattern: 'EEEE, dd MMM yyyy',
+                          value: dateTime.toString(),
+                        );
+                      }
+
+                      return Skeletonizer(
+                        enabled: dateTime == null,
+                        child: Column(
+                          children: [
+                            Text(
+                              time,
+                              style: textTheme.titleLarge?.copyWith(
+                                fontWeight: SharedTheme.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              date,
+                              style: textTheme.bodyMedium
+                                  ?.copyWith(color: theme.hintColor),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _builderCountForwardTimer(context),
+                      Text(
+                        'Jam',
+                        style: textTheme.titleSmall?.copyWith(
+                          fontWeight: SharedTheme.semiBold,
+                          color: theme.hintColor,
+                        ),
+                      )
+                    ],
+                  ),
+                  _builderBtnAbsence(context),
                 ],
               ),
-              _builderBtnAbsence(context),
-            ],
+            ),
           ),
         ),
       ),

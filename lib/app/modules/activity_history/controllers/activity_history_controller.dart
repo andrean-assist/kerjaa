@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:assist_hadir/app/data/model/attendance/res/data/data_attendance_model.dart';
 import 'package:assist_hadir/app/data/model/attendance/res/res_attendance_model.dart';
 import 'package:assist_hadir/app/helpers/format_date_time.dart';
@@ -38,8 +36,6 @@ class ActivityHistoryController extends GetxController
   final selectedFromDate = DateTime.now().obs;
   final selectedToDate = DateTime.now().obs;
 
-  // final isCustomDate = true.obs;
-
   @override
   void onInit() {
     super.onInit();
@@ -52,6 +48,7 @@ class ActivityHistoryController extends GetxController
     }
 
     _initServices();
+    _workerListener();
     _prepareStorage();
     fetchHistory(0);
 
@@ -63,6 +60,19 @@ class ActivityHistoryController extends GetxController
 
   void _initServices() {
     _homeS = HomeServices(_initC);
+  }
+
+  void _workerListener() {
+    // jika interet aktif maka ambil data dashboard
+    ever(
+      _initC.isConnectedInternet,
+      (value) {
+        // ambil data dari internet
+        if (value) {
+          fetchHistory(selectedFilter.value);
+        }
+      },
+    );
   }
 
   void _prepareStorage() {
@@ -161,20 +171,24 @@ class ActivityHistoryController extends GetxController
             }
           }
         } else {
-          if (res.statusCode == HttpStatus.unauthorized) {
-            _initC.redirectLogout(Get.context!);
-          } else {
-            _initC.showDialogFailed(
-              onPressed: () {
-                fetchHistory(index);
-                Get.back();
-              },
-            );
-          }
+          _initC.handleError(
+            status: res.status,
+            onLoad: () => fetchHistory(index),
+          );
+
+          // if (res.statusCode == HttpStatus.unauthorized) {
+          //   _initC.redirectLogout(Get.context!);
+          // } else {
+          //   _initC.showDialogFailed(
+          //     onPressed: () {
+          //       fetchHistory(index);
+          //       Get.back();
+          //     },
+          //   );
+          // }
         }
       } on GetHttpException catch (e) {
         _initC.logger.e('Error: fetchHistory $e');
-        // change(null, status: RxStatus.error(e.message));
       }
     }
   }

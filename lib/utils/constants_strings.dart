@@ -2,12 +2,12 @@ import '../app/data/db/onboarding/onboarding_model.dart';
 import 'constants_assets.dart';
 
 abstract class ConstantsStrings {
-  static const assist = 'Assist Hadir';
+  static const appName = 'Kerjaa';
 
   // WALKTHROUGHT PAGE
   static final onboardingList = [
     OnboardingModel(
-      title: 'Selamat datang di Assist Hadir',
+      title: 'Selamat datang di Kerjaa',
       description: 'Absensi pintar untuk para pejuang kesehatan',
       image: ConstantsAssets.imgOnboard,
     ),
@@ -24,9 +24,9 @@ abstract class ConstantsStrings {
       image: ConstantsAssets.imgOnboard3,
     ),
     OnboardingModel(
-      title: 'Siap beraksi dengan Assist Hadir?',
+      title: 'Siap beraksi dengan Kerjaa?',
       description:
-          'Dengan Assist Hadir. Anda bisa fokus pada yang penting : pasien Anda.',
+          'Dengan Kerjaa. Anda bisa fokus pada yang penting : pasien Anda.',
       image: ConstantsAssets.imgOnboard4,
     ),
   ];

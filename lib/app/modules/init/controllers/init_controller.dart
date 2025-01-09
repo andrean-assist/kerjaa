@@ -6,6 +6,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/status/http_status.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:logger/logger.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -22,7 +23,10 @@ class InitController extends GetxController {
   late final GetStorage _localStorage;
   late final StreamSubscription<List<ConnectivityResult>>
       _subscriptionConnectivity;
-  late final StreamSubscription<ServiceStatus> subscriptionServiceLocation;
+  // late final StreamSubscription<ServiceStatus> subscriptionServiceLocation;
+  // final streamServiceLocation = ServiceStatus.disabled.obs;
+
+  Timer? _serviceStatusTimer;
 
   GetStorage get localStorage => _localStorage;
 
@@ -47,7 +51,7 @@ class InitController extends GetxController {
 
   void _initListen() {
     _listenConnectivity();
-    _listenDeterminePosition();
+    // _listenDeterminePosition();
   }
 
   bool? isUserFirstUsingApp() =>
@@ -96,30 +100,45 @@ class InitController extends GetxController {
         // No available network types
 
         if (Get.currentRoute != Routes.SPLASH && !_isShowModalInternet) {
-          _showModalDisconnected();
+          showModalDisconnected();
         }
       }
     });
   }
 
-  void _listenDeterminePosition() {
-    subscriptionServiceLocation = Geolocator.getServiceStatusStream().listen(
-      (event) {
-        print('event service status = $event');
-      },
-    );
-  }
+  // void _listenDeterminePosition() {
+  // streamServiceLocation.bindStream(Geolocator.getServiceStatusStream());
+
+  // pengecekan manual
+  // _serviceStatusTimer =
+  //     Timer.periodic(const Duration(seconds: 1), (timer) async {
+  //   final isEnabled = await Geolocator.isLocationServiceEnabled();
+  //   final status = isEnabled ? ServiceStatus.enabled : ServiceStatus.disabled;
+
+  //   print('status = $status');
+
+  //   // Perbarui Rx hanya jika status berubah
+  //   if (streamServiceLocation.value != status) {
+  //     streamServiceLocation.value = status;
+  //     print('Manual check detected change: $status');
+  //   }
+
+  //   print('streamServiceLocation = ${streamServiceLocation.value}');
+  // });
+
+  //   subscriptionServiceLocation = Geolocator.getServiceStatusStream().listen(
+  //     (event) {
+  //       print('event service status = $event');
+  //     },
+  //   );
+  // }
 
   Future<void> setTimeStorage(String key) async => await _localStorage.write(
         key,
         DateTime.now().toIso8601String(),
       );
 
-  // void _listenPosition() {
-  //   final streamPosition = Geolocator.getPositionStream();
-  // }
-
-  void _showModalDisconnected() {
+  void showModalDisconnected() {
     _isShowModalInternet = true;
 
     Modals.bottomSheet(
@@ -160,7 +179,9 @@ class InitController extends GetxController {
         },
         child: const Text('Buka pengaturan'),
       ),
-    );
+    ).then((_) {
+      _isShowModalInternet = false;
+    });
   }
 
   Future<(Position?, StatePermission)> determinePosition() async {
@@ -226,7 +247,6 @@ class InitController extends GetxController {
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
     return (
-      // Geolocator.getPositionStream(locationSettings: locationSettings),
       await Geolocator.getCurrentPosition(
         locationSettings: locationSettings,
       ),
@@ -250,16 +270,6 @@ class InitController extends GetxController {
         child: const Text('Muat Ulang'),
       ),
     );
-
-    // if (isLoading.value) {
-    //   Future.delayed(
-    //     5.seconds,
-    //     () {
-    //       isLoading.value = false;
-    //       Get.back();
-    //     },
-    //   );
-    // }
   }
 
   void redirectLogout(BuildContext context) async {
@@ -279,10 +289,40 @@ class InitController extends GetxController {
     }
   }
 
+  void handleError({
+    required HttpStatus status,
+    bool isFromLogin = false,
+    void Function()? onLoad,
+  }) {
+    logger.d('debug: status code error = ${status.code}');
+
+    // jika internet mati
+    if (!isConnectedInternet.value) {
+      showModalDisconnected();
+    } else {
+      // jika otorisasi tidak valid
+      if (status.isUnauthorized) {
+        redirectLogout(Get.context!);
+      } else if (status.hasError) {
+        if (onLoad != null) {
+          // jika gagal load data
+          showDialogFailed(
+            onPressed: () {
+              onLoad();
+              Get.back();
+            },
+          );
+        }
+      }
+    }
+  }
+
   @override
   void onClose() {
     _subscriptionConnectivity.cancel();
-    subscriptionServiceLocation.cancel();
+    // subscriptionServiceLocation.cancel();
+    // streamServiceLocation.close();
+    // _serviceStatusTimer?.cancel();
     super.onClose();
   }
 }

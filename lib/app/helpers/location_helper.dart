@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:assist_hadir/app/modules/init/controllers/init_controller.dart';
 import 'package:assist_hadir/app/modules/widgets/modal/custom_modal.dart';
 import 'package:assist_hadir/utils/constants_assets.dart';
@@ -10,13 +12,22 @@ import '../../shared/shared_enum.dart';
 import '../modules/widgets/buttons/buttons.dart';
 import '../modules/widgets/modal/modals.dart';
 
-abstract class LocationHelper {
-  static Future<void> fetchPosition({
-    required InitController initC,
+class LocationHelper {
+  late final InitController _initC;
+  // late final Stream<ServiceStatus> _subService;
+  StreamSubscription<ServiceStatus>? _subService;
+
+  LocationHelper(this._initC);
+
+  void close() {
+    _subService?.cancel();
+  }
+
+  Future<void> fetchPosition({
     required Rxn<Position> obs,
   }) async {
     try {
-      var record = await initC.determinePosition();
+      var record = await _initC.determinePosition();
 
       print('state services = ${record.$2}');
 
@@ -25,40 +36,38 @@ abstract class LocationHelper {
         _showModalLocation(() async {
           final state = await Geolocator.openLocationSettings();
 
+          print('state open location = $state');
+
           if (state) {
-            final subService = initC.subscriptionServiceLocation;
-            subService.onData(
-              (data) async {
-                if (data == ServiceStatus.enabled) {
+            Get.back();
+
+            _subService = Geolocator.getServiceStatusStream().listen(
+              (event) async {
+                print('state event = $event');
+
+                if (event == ServiceStatus.enabled) {
                   final permission = await Geolocator.checkPermission();
 
+                  print('state permission in onData = $permission');
+
+                  // jika perizinan lokasi ditolak
                   if (permission == LocationPermission.denied) {
                     _showModalLocation(() async {
-                      fetchPosition(initC: initC, obs: obs);
+                      fetchPosition(obs: obs);
                       Get.back();
                     });
                   } else {
-                    // record = (
-                    //   await Geolocator.getCurrentPosition(
-                    //     locationSettings: const LocationSettings(
-                    //       accuracy: LocationAccuracy.high,
-                    //     ),
-                    //   ),
-                    //   StatePermission.active,
-                    // );
-
-                    record = await initC.determinePosition();
+                    record = await _initC.determinePosition();
 
                     print('record: $record');
                     obs.value = record.$1;
-                    subService.cancel();
+                    // _subService.cancel();
                   }
 
-                  print('permission in onData = $permission');
-                  Get.back();
+                  // Get.back();
                 } else {
                   _showModalLocation(() async {
-                    fetchPosition(initC: initC, obs: obs);
+                    fetchPosition(obs: obs);
                     Get.back();
                   });
                 }
@@ -67,6 +76,41 @@ abstract class LocationHelper {
                 print('subService onData');
               },
             );
+
+            // _subService.onData(
+            //   (data) async {
+            //     print('data = $data');
+
+            //     if (data == ServiceStatus.enabled) {
+            //       final permission = await Geolocator.checkPermission();
+
+            //       // jika perizinan lokasi ditolak
+            //       if (permission == LocationPermission.denied) {
+            //         _showModalLocation(() async {
+            //           fetchPosition(obs: obs);
+            //           Get.back();
+            //         });
+            //       } else {
+            //         record = await _initC.determinePosition();
+
+            //         print('record: $record');
+            //         obs.value = record.$1;
+            //         _subService.cancel();
+            //       }
+
+            //       print('permission in onData = $permission');
+            //       // Get.back();
+            //     } else {
+            //       _showModalLocation(() async {
+            //         fetchPosition(obs: obs);
+            //         Get.back();
+            //       });
+            //     }
+
+            //     print('fetchPosition dipanggil');
+            //     print('subService onData');
+            //   },
+            // );
           }
         });
       }
@@ -74,10 +118,7 @@ abstract class LocationHelper {
       // jika lokasi perizinan ditolak
       if (record.$2 == StatePermission.denied) {
         _showModalLocation(() async {
-          fetchPosition(
-            initC: initC,
-            obs: obs,
-          );
+          fetchPosition(obs: obs);
           Get.back();
         });
       }
@@ -90,7 +131,10 @@ abstract class LocationHelper {
         });
       }
 
-      obs.value = record.$1;
+      if (record.$2 == StatePermission.active) {
+        final record = await _initC.determinePosition();
+        obs.value = record.$1;
+      }
 
       print('position = ${record.$1}');
 
@@ -102,67 +146,67 @@ abstract class LocationHelper {
     return null;
   }
 
-  static Stream<Position?> fetchPositionStream(InitController initC) async* {
-    try {
-      var record = await initC.determinePosition();
-      print('state services = ${record.$2}');
+  // static Stream<Position?> fetchPositionStream(InitController initC) async* {
+  //   try {
+  //     var record = await initC.determinePosition();
+  //     print('state services = ${record.$2}');
 
-      switch (record.$2) {
-        case StatePermission.notActive:
-          _showModalLocation(() async {
-            final state = await Geolocator.openLocationSettings();
-            if (state) {
-              final subService = initC.subscriptionServiceLocation;
-              subService.onData((data) async {
-                if (data == ServiceStatus.enabled) {
-                  Get.back();
-                  final permission = await Geolocator.checkPermission();
-                  print('permission after activated location = $permission');
+  //     switch (record.$2) {
+  //       case StatePermission.notActive:
+  //         _showModalLocation(() async {
+  //           final state = await Geolocator.openLocationSettings();
+  //           if (state) {
+  //             final subService = initC.subscriptionServiceLocation;
+  //             subService.onData((data) async {
+  //               if (data == ServiceStatus.enabled) {
+  //                 Get.back();
+  //                 final permission = await Geolocator.checkPermission();
+  //                 print('permission after activated location = $permission');
 
-                  if (permission == LocationPermission.denied) {
-                    _showModalLocation(() async {
-                      Get.back();
-                      fetchPositionStream(initC); // Re-trigger the stream.
-                    });
-                  } else {
-                    record = await initC.determinePosition();
-                    print('record: $record');
-                    // yield record.$1; // Emit the updated position.
-                  }
-                  print('permission in onData = $permission');
-                }
-                print('fetchPosition dipanggil');
-                print('subService onData');
-              });
-            }
-          });
-          break;
+  //                 if (permission == LocationPermission.denied) {
+  //                   _showModalLocation(() async {
+  //                     Get.back();
+  //                     fetchPositionStream(initC); // Re-trigger the stream.
+  //                   });
+  //                 } else {
+  //                   record = await initC.determinePosition();
+  //                   print('record: $record');
+  //                   // yield record.$1; // Emit the updated position.
+  //                 }
+  //                 print('permission in onData = $permission');
+  //               }
+  //               print('fetchPosition dipanggil');
+  //               print('subService onData');
+  //             });
+  //           }
+  //         });
+  //         break;
 
-        case StatePermission.denied:
-          _showModalLocation(() async {
-            fetchPositionStream(initC); // Re-trigger the stream.
-            Get.back();
-          });
-          break;
+  //       case StatePermission.denied:
+  //         _showModalLocation(() async {
+  //           fetchPositionStream(initC); // Re-trigger the stream.
+  //           Get.back();
+  //         });
+  //         break;
 
-        case StatePermission.deniedForever:
-          _showModalLocation(() async {
-            await Geolocator.openAppSettings();
-            Get.back();
-          });
-          break;
+  //       case StatePermission.deniedForever:
+  //         _showModalLocation(() async {
+  //           await Geolocator.openAppSettings();
+  //           Get.back();
+  //         });
+  //         break;
 
-        default:
-          print('state permission default case');
-      }
+  //       default:
+  //         print('state permission default case');
+  //     }
 
-      print('position = ${record.$1}');
-      yield record.$1; // Emit the position.
-    } catch (e) {
-      Logger().d('Error: $e');
-      yield null; // Emit null in case of an error.
-    }
-  }
+  //     print('position = ${record.$1}');
+  //     yield record.$1; // Emit the position.
+  //   } catch (e) {
+  //     Logger().d('Error: $e');
+  //     yield null; // Emit null in case of an error.
+  //   }
+  // }
 
   static void _showModalLocation(Function() onPressed) {
     Modals.bottomSheet(

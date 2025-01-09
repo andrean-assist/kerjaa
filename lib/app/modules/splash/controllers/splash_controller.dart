@@ -22,16 +22,6 @@ class SplashController extends GetxController {
       _initC = Get.find<InitController>();
     }
 
-    // _initC.localStorage
-    //   ..write(ConstantsKeys.authToken, 'testing')
-    //   ..write(ConstantsKeys.userId, '673d669654bb7810dc2f32bd')
-    //   ..write(ConstantsKeys.organizationId, '67455049f7b139bd81ecc42f')
-    //   ..write(ConstantsKeys.isVerified, true);
-
-    // _initC.localStorage.remove(ConstantsKeys.startTimeWork);
-    // _initC.localStorage.remove(ConstantsKeys.restStartTime);
-    // _initC.localStorage.remove(ConstantsKeys.restEndTime);
-
     Future.delayed(5.seconds, _checkAuth);
   }
 

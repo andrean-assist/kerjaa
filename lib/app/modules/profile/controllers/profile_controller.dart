@@ -38,21 +38,6 @@ class ProfileController extends GetxController {
 
   void moveToActivityHistory() => Get.toNamed(Routes.ACTIVITY_HISTORY);
 
-  Future<void> logout() async {
-    final result = await Dialogs.logout(
-      context: Get.context!,
-      initC: _initC,
-    );
-
-    if (result != null) {
-      if (result) {
-        await _initC.localStorage.erase();
-        await _initC.localStorage.write(ConstantsKeys.isFirstUsingApp, false);
-        Get.offAllNamed(Routes.LOGIN);
-      }
-    }
-  }
-
   Future<void> moveToEditProfile() async {
     final state = await Get.toNamed(
       Routes.EDIT_PROFILE,
@@ -64,11 +49,24 @@ class ProfileController extends GetxController {
       ),
     );
 
-    print('state = $state');
-
     if (state != null) {
       if (state) {
         _prepareStorage();
+      }
+    }
+  }
+
+  Future<void> logout() async {
+    final result = await Dialogs.logout(
+      context: Get.context!,
+      initC: _initC,
+    );
+
+    if (result != null) {
+      if (result) {
+        await _initC.localStorage.erase();
+        await _initC.localStorage.write(ConstantsKeys.isFirstUsingApp, false);
+        Get.offAllNamed(Routes.LOGIN);
       }
     }
   }

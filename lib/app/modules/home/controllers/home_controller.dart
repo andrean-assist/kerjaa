@@ -24,7 +24,6 @@ import '../../../helpers/format_date_time.dart';
 import '../../../helpers/time_helper.dart';
 import '../../../routes/app_pages.dart';
 import '../../widgets/buttons/buttons.dart';
-import '../../widgets/dialog/dialogs.dart';
 import '../../widgets/modal/custom_modal.dart';
 import '../../widgets/modal/modals.dart';
 
@@ -38,7 +37,7 @@ class HomeController extends GetxController {
 
   String? _userId;
   String? _firstName = '';
-  String? profilePicture;
+  final profilePicture = RxnString();
   String? _organizationId;
   String? _attendanceId;
   DataDashboardModel? dataDashboard;
@@ -51,11 +50,13 @@ class HomeController extends GetxController {
   final restTime = RxnString();
   final workTime = RxnString();
   final events = RxList<EventsModel>();
+  final isShiftEnabled = false.obs;
 
   // untuk cek apakah slide mulai istirahat atau tidak
   final isRest = false.obs;
   final isLoading = false.obs;
   final countForwardTime = '00:00:00'.obs;
+  final isHasResultMaps = false;
 
   final dataAttributes = [
     ConstantsAssets.icStartTimeWork,
@@ -109,7 +110,8 @@ class HomeController extends GetxController {
   void _prepareStorage() {
     _userId = _initC.localStorage.read<String>(ConstantsKeys.userId);
     _firstName = _initC.localStorage.read<String>(ConstantsKeys.name);
-    profilePicture = _initC.localStorage.read(ConstantsKeys.profilPicture);
+    profilePicture.value =
+        _initC.localStorage.read(ConstantsKeys.profilPicture);
     _organizationId =
         _initC.localStorage.read<String>(ConstantsKeys.organizationId);
 
@@ -122,7 +124,7 @@ class HomeController extends GetxController {
 
     _initC.localStorage.listenKey(
       ConstantsKeys.profilPicture,
-      (value) => profilePicture = value,
+      (value) => profilePicture.value = value,
     );
   }
 
@@ -164,15 +166,20 @@ class HomeController extends GetxController {
 
   // action slider
   void _listenAction() {
-    // actionSliderC =
-    //     ActionSliderController(anchorPosition: isRest.value ? 1 : 0);
     actionSliderC.setAnchorPosition(isRest.value ? 1 : 0);
+    _addListenerAction();
+  }
+
+  void _addListenerAction() {
     actionSliderC.addListener(
       () async {
         final anchorPosition = actionSliderC.value.anchorPosition;
 
+        print('test anchorPosition = $anchorPosition');
+        print('test isRest.value = ${isRest.value}');
+
         // mulai istirahat
-        if (anchorPosition == 1) {
+        if (anchorPosition == 1 && !isRest.value) {
           print('slide mulai istirahat');
 
           Modals.bottomSheet(
@@ -208,7 +215,7 @@ class HomeController extends GetxController {
               ],
             ),
           );
-        } else {
+        } else if (anchorPosition == 0 && isRest.value) {
           print('slide akhiri istirahat');
           rest(true);
         }
@@ -276,6 +283,7 @@ class HomeController extends GetxController {
             dataDashboard = resBody.data;
             final eventDate = dataDashboard?.date;
             final dataEvent = dataDashboard?.events;
+            isShiftEnabled.value = dataDashboard?.shift != null;
 
             if (eventDate != null) {
               final attendanceId = dataDashboard?.id;
@@ -317,62 +325,6 @@ class HomeController extends GetxController {
               _prepareStorageDateTime();
               _prepareStorageAttendanceId();
 
-              // Tanggal absensi hari ini
-              //! SUDAH TIDAK DIGUNAKAN
-              // if (eventDateFormat != null) {
-              //   if (eventDateFormat.compareTo(dateNow) == 0) {
-              //     final attendanceId = dataDashboard?.id;
-              //     final startWork = _dataDashboard?.checkIn;
-              //     final endWork = _dataDashboard?.checkOut;
-              //     final breakStart = _dataDashboard?.breakStart;
-              //     final breakStop = _dataDashboard?.breakStop;
-              //     final breakHours = _dataDashboard?.breakHours;
-              //     final workHours = _dataDashboard?.workHours;
-
-              //     await _checkAndWriteAttendanceId(attendanceId);
-              //     await _checkAndWriteDateTimeInLocalStorage(
-              //       dateTime: startWork,
-              //       keyLocalDateTime: ConstantsKeys.startTimeWork,
-              //     );
-              //     await _checkAndWriteDateTimeInLocalStorage(
-              //       dateTime: breakStart,
-              //       keyLocalDateTime: ConstantsKeys.restStartTime,
-              //     );
-              //     await _checkAndWriteDateTimeInLocalStorage(
-              //       dateTime: breakStop,
-              //       keyLocalDateTime: ConstantsKeys.restEndTime,
-              //     );
-              //     await _checkAndWriteDateTimeInLocalStorage(
-              //       dateTime: endWork,
-              //       keyLocalDateTime: ConstantsKeys.endTimeWork,
-              //     );
-              //     await _checkAndWriteTotalInLocalStorage(
-              //       totalTime: breakHours,
-              //       keyLocalTotalTime: ConstantsKeys.restTime,
-              //     );
-              //     await _checkAndWriteTotalInLocalStorage(
-              //       totalTime: workHours,
-              //       keyLocalTotalTime: ConstantsKeys.workTime,
-              //     );
-
-              //     // setelah ditulis semua ke localstorage
-              //     // lalu tampilkan data semua tadi ke ui
-              //     _prepareStorageDateTime();
-              //     _prepareStorageAttendanceId();
-              //   } else {
-              //     // hapus tanggal dan waktu yang tersimpan sebelumnya di local storage
-              //     //! ini bersifat sementara untuk hari ini jika dia punya shift malam
-              //     //! maka kode dibawah tidak berlaku dan akan direvisi ulang
-              //     _initC.localStorage
-              //       ..remove(ConstantsKeys.startTimeWork)
-              //       ..remove(ConstantsKeys.restStartTime)
-              //       ..remove(ConstantsKeys.restEndTime)
-              //       ..remove(ConstantsKeys.endTimeWork)
-              //       ..remove(ConstantsKeys.restTime)
-              //       ..remove(ConstantsKeys.workTime);
-              //   }
-              // }
-
               // riwayat aktivitas
               if (dataEvent != null) {
                 _writeEvents(dataEvent);
@@ -381,16 +333,8 @@ class HomeController extends GetxController {
             }
           }
         } else {
-          if (res.statusCode == HttpStatus.unauthorized) {
-            _initC.redirectLogout(Get.context!);
-          } else {
-            _initC.showDialogFailed(
-              onPressed: () {
-                fetchDashboard();
-                Get.back();
-              },
-            );
-          }
+          print('isConnectedInternet = ${res.request?.persistentConnection}');
+          _initC.handleError(status: res.status, onLoad: fetchDashboard);
         }
       } on GetHttpException catch (e) {
         _initC.logger.e('Error: fetchDashboard $e');
@@ -398,6 +342,13 @@ class HomeController extends GetxController {
         isLoading.value = false;
       }
     } else {
+      // _initC.showDialogFailed(
+      //   onPressed: () {
+      //     fetchDashboard();
+      //     Get.back();
+      //   },
+      // );
+
       _prepareStorageDateTime();
       _prepareStorageEvents();
       _prepareStorageAttendanceId();
@@ -413,7 +364,7 @@ class HomeController extends GetxController {
         'organizationId': _organizationId,
       };
 
-      // print('req params = $params ');
+      print('req params = $params ');
 
       try {
         final res = await _homeS.isAlreadyCheckedIn(params);
@@ -424,10 +375,14 @@ class HomeController extends GetxController {
         if (res.isOk) {
           moveToMaps(StatusAbsenceSetup.checkIn);
         } else {
-          if (res.statusCode == HttpStatus.unauthorized) {
-            _initC.redirectLogout(Get.context!);
+          if (!_initC.isConnectedInternet.value) {
+            _initC.showModalDisconnected();
           } else {
-            _showModalNotAllowedAttendance();
+            if (res.statusCode == HttpStatus.unauthorized) {
+              _initC.redirectLogout(Get.context!);
+            } else {
+              _showModalNotAllowedAttendance();
+            }
           }
         }
       } on GetHttpException catch (e) {
@@ -494,6 +449,9 @@ class HomeController extends GetxController {
           fApi.toIso8601String(),
         );
       }
+    } else {
+      // hapus data di local storage
+      await _initC.localStorage.remove(keyLocalDateTime);
     }
   }
 
@@ -504,6 +462,9 @@ class HomeController extends GetxController {
     // masukkan ke local storage dulu
     if (totalTime != null) {
       await _initC.localStorage.writeIfNull(keyLocalTotalTime, totalTime);
+    } else {
+      // hapus data di local storage
+      await _initC.localStorage.remove(keyLocalTotalTime);
     }
   }
 
@@ -580,6 +541,8 @@ class HomeController extends GetxController {
   }
 
   void rest(bool isFinish) async {
+    print('function rest dipanggil');
+
     final now = FormatDateTime.dateToString(
       newPattern: 'yyyy-MM-dd',
       value: DateTime.now().toString(),
@@ -588,8 +551,6 @@ class HomeController extends GetxController {
     if (isFinish) {
       moveToMaps(StatusAbsenceSetup.restStop);
     } else {
-      // isLoading.value = true;
-
       // cek jika attendance id belum ada maka cek di local storage
       if (_attendanceId != null) {
         if (_initC.localStorage.hasData(ConstantsKeys.attendanceId)) {
@@ -616,16 +577,7 @@ class HomeController extends GetxController {
           final body = res.body;
           if (body != null) fetchDashboard();
         } else {
-          if (res.statusCode == HttpStatus.unauthorized) {
-            _initC.redirectLogout(Get.context!);
-          } else {
-            _initC.showDialogFailed(
-              onPressed: () {
-                fetchDashboard();
-                Get.back();
-              },
-            );
-          }
+          _initC.handleError(status: res.status, onLoad: fetchDashboard);
         }
       } on GetHttpException catch (e) {
         _initC.logger.e('Error: rest $e');
@@ -636,7 +588,7 @@ class HomeController extends GetxController {
     }
   }
 
-  void moveToMaps(StatusAbsenceSetup typeAbsence) {
+  Future<void> moveToMaps(StatusAbsenceSetup typeAbsence) async {
     final navModel = NavigationModel(
       absenceType: typeAbsence,
       shift: shift.value,
@@ -656,7 +608,15 @@ class HomeController extends GetxController {
     if (typeAbsence == StatusAbsenceSetup.checkIn) {
       Get.offAndToNamed(Routes.LOCATION_MAPS, arguments: navModel);
     } else {
-      Get.toNamed(Routes.LOCATION_MAPS, arguments: navModel);
+      final result =
+          await Get.toNamed(Routes.LOCATION_MAPS, arguments: navModel);
+
+      if (result == null) {
+        // kembalikan action slider ke posisi sebelumnya
+        // jika user tidak jadi melakukan slide
+        actionSliderC.removeListener(() {});
+        _listenAction();
+      }
     }
   }
 
@@ -669,10 +629,5 @@ class HomeController extends GetxController {
     _startTimeObserver?.cancel();
     _startTimeObserver = null;
     super.onClose();
-  }
-
-  bool isShiftEnabled() {
-    final shift = dataDashboard?.shift;
-    return shift != null;
   }
 }

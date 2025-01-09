@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:assist_hadir/app/data/model/user/user_model.dart';
 import 'package:assist_hadir/services/aws/aws_services.dart';
 import 'package:assist_hadir/services/profile/profile_services.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/exceptions/exceptions.dart';
+// import 'package:get/get.dart';
+// import 'package:get/get_connect/http/src/exceptions/exceptions.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
 
@@ -51,6 +53,7 @@ class EditProfileController extends GetxController {
 
   Future<void> pickImage() async {
     final picker = ImagePicker();
+
     try {
       imageFile.value = await picker.pickImage(
         source: ImageSource.gallery,
@@ -58,6 +61,7 @@ class EditProfileController extends GetxController {
       );
       print('pathImageFile = ${imageFile.value?.path}');
     } catch (e) {
+      imageFile.value = null;
       _initC.logger.e('Error: $e');
     }
   }
@@ -76,28 +80,13 @@ class EditProfileController extends GetxController {
 
     print('path = $path');
 
-    final filename = p.basename(path);
-    final filenameWithoutExt = p.basenameWithoutExtension(path);
-
-    final multipart = MultipartFile(
-      File(path),
-      filename: filenameWithoutExt,
-      // contentType: ContentType.binary.value,
-    );
-
-    print('fileName: $filename');
-
-    final formData = FormData({filename: multipart});
-    final res = await _awsS.uploadImage(formData);
+    final res = await _awsS.uploadImage(path);
 
     print('res statusCode = ${res.statusCode}');
-    print('res body = ${res.body}');
-    print('res isOK = ${res.isOk}');
-    print('res headers = ${res.headers?.values.join(',')}');
+    print('res data = ${res.data}');
 
-    if (res.isOk) {
-      final bodyFilename = res.bodyString;
-      return bodyFilename;
+    if (res.statusCode == HttpStatus.ok) {
+      return res.data;
     }
 
     return null;
@@ -134,19 +123,21 @@ class EditProfileController extends GetxController {
 
         Get.back(result: true);
       } else {
-        if (res.statusCode == HttpStatus.unauthorized) {
-          _initC.redirectLogout(Get.context!);
-        } else {
-          _initC.showDialogFailed(
-            onPressed: () {
-              FocusScope.of(Get.context!).unfocus();
-              Get.back();
-              _updateProfile();
-            },
-          );
-        }
+        _initC.handleError(status: res.status, onLoad: _updateProfile);
+
+        // if (res.statusCode == HttpStatus.unauthorized) {
+        //   _initC.redirectLogout(Get.context!);
+        // } else {
+        //   _initC.showDialogFailed(
+        //     onPressed: () {
+        //       FocusScope.of(Get.context!).unfocus();
+        //       Get.back();
+        //       _updateProfile();
+        //     },
+        //   );
+        // }
       }
-    } on GetHttpException catch (e) {
+    } on DioException catch (e) {
       _initC.logger.e('Error: $e');
     } finally {
       isLoading.value = false;
@@ -156,7 +147,10 @@ class EditProfileController extends GetxController {
   void _updateDataProfileInLocal(String? fileName) {
     _initC.localStorage
       ..write(ConstantsKeys.name, fullNameC.text.toString().trim())
-      ..write(ConstantsKeys.position, positionC.text.toString().trim())
-      ..write(ConstantsKeys.profilPicture, fileName);
+      ..write(ConstantsKeys.position, positionC.text.toString().trim());
+
+    if (fileName != null) {
+      _initC.localStorage.write(ConstantsKeys.profilPicture, fileName);
+    }
   }
 }

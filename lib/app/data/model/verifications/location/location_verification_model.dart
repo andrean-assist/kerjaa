@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'position/position_model.dart';
+import '../../position/position_model.dart';
 
 part 'location_verification_model.freezed.dart';
 part 'location_verification_model.g.dart';

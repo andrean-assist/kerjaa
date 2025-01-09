@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "242581042731",
+    "project_id": "jagaanugrahgiatasa-187e5",
+    "storage_bucket": "jagaanugrahgiatasa-187e5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:242581042731:android:4eac98347eac516e035c6e",
+        "android_client_info": {
+          "package_name": "com.assistid.privata"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVlLyuVDcXsaASR4ZJMmMgMngsP5EnidY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:242581042731:android:f61aa7947e3d661d035c6e",
+        "android_client_info": {
+          "package_name": "com.jaga.kerjaa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVlLyuVDcXsaASR4ZJMmMgMngsP5EnidY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

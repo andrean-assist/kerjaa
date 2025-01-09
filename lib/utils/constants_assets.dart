@@ -26,7 +26,7 @@ abstract class ConstantsAssets {
   static const icWorkingHours = '${_icPath}ic_work.svg';
 
   static const icBreakTime = '${_icPath}ic_break_time.svg';
-  static const icCheckout = '${_icPath}ic_checkOut.svg';
+  static const icCheckout = '${_icPath}ic_check_out.svg';
 
   static const icMorningShift = '${_icPath}ic_morning_shift.svg';
   static const icDayShift = '${_icPath}ic_day_shift.svg';

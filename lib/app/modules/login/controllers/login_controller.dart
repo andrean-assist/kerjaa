@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:assist_hadir/app/data/model/auth/login/res/data/data_login_model.dart';
 import 'package:assist_hadir/app/data/model/auth/login/req/req_login_model.dart';
 import 'package:assist_hadir/app/data/model/auth/login/res/res_login_model.dart';
@@ -75,7 +77,7 @@ class LoginController extends GetxController {
   }
 
   void _checkAuth() async {
-    isLoading.value = true;
+    isLoading.value = true; 
 
     final reqLogin = ReqLoginModel(
       email: emailC.text.trim().toString(),
@@ -105,15 +107,19 @@ class LoginController extends GetxController {
           }
         }
       } else {
-        if (res.statusCode == 401) {
-          _showDialogWrongEmailOrPassword();
+        if (!_initC.isConnectedInternet.value) {
+          _initC.showModalDisconnected();
         } else {
-          _initC.showDialogFailed(
-            onPressed: () {
-              _checkAuth();
-              Get.back();
-            },
-          );
+          if (res.statusCode == HttpStatus.unauthorized) {
+            _showDialogWrongEmailOrPassword();
+          } else {
+            _initC.showDialogFailed(
+              onPressed: () {
+                _checkAuth();
+                Get.back();
+              },
+            );
+          }
         }
       }
     } on GetHttpException catch (e) {

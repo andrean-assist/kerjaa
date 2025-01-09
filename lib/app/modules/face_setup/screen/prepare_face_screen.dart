@@ -16,7 +16,7 @@ class PrepareFaceScreen extends StatelessWidget {
       children: [
         SvgPicture.asset(ConstantsAssets.icFrameFaceSetup),
         Text(
-          'Posisikan wajah Anda dalam bingkai',
+          'Posisikan wajah Anda dalam bingkai dan senyum ke arah layar',
           style: textTheme.titleLarge?.copyWith(
             fontWeight: SharedTheme.bold,
             fontSize: 20,

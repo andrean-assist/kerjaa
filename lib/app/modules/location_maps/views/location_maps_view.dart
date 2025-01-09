@@ -96,14 +96,16 @@ class LocationMapsView extends GetView<LocationMapsController> {
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Obx(
-                () => Buttons.filled(
-                  width: double.infinity,
-                  state: controller.isLoading.value,
-                  onPressed: controller.position.value != null
-                      ? controller.checkIn
-                      : null,
-                  child: const Text('Selanjutnya'),
-                ),
+                () {
+                  return Buttons.filled(
+                    width: double.infinity,
+                    state: controller.position.value == null,
+                    onPressed: controller.position.value != null
+                        ? controller.checkIn
+                        : null,
+                    child: const Text('Selanjutnya'),
+                  );
+                },
               ),
             ),
           ),
