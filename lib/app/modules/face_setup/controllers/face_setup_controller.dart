@@ -284,7 +284,7 @@ class FaceSetupController extends GetxController {
             print('smillingProbability = $smilingProbability');
 
             if (smilingProbability != null) {
-              if (smilingProbability > 0.3) {
+              if (smilingProbability > 0.7) {
                 if (statusAbsenceArgs != StatusAbsenceSetup.register) {
                   if (!isBusy && !isDoneTakePicture) {
                     isBusy = true;

@@ -38,7 +38,7 @@ class ShiftModal extends GetView<HomeController> {
             const SizedBox(height: 24),
             _builderCardShift(
               context: context,
-              isVisible: isDisabledShiftMorning,
+              isVisible: !isDisabledShiftMorning,
               isEnabled: controller.shift.value == 'pagi',
               iconPath: ConstantsAssets.icMorningShift,
               text: 'Shift pagi',
@@ -47,7 +47,7 @@ class ShiftModal extends GetView<HomeController> {
             const SizedBox(height: 12),
             _builderCardShift(
               context: context,
-              isVisible: isDisabledShiftDay,
+              isVisible: !isDisabledShiftDay,
               isEnabled: controller.shift.value == 'siang',
               iconPath: ConstantsAssets.icDayShift,
               text: 'Shift siang',
@@ -56,7 +56,7 @@ class ShiftModal extends GetView<HomeController> {
             const SizedBox(height: 12),
             _builderCardShift(
               context: context,
-              isVisible: isDisabledShiftNight,
+              isVisible: !isDisabledShiftNight,
               isEnabled: controller.shift.value == 'malam',
               iconPath: ConstantsAssets.icNightShift,
               text: 'Shift malam',
