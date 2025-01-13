@@ -20,9 +20,11 @@ OrganizationModel _$OrganizationModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$OrganizationModel {
-  String? get organizationId => throw _privateConstructorUsedError;
   PositionModel? get position => throw _privateConstructorUsedError;
   int? get radius => throw _privateConstructorUsedError;
+  String? get id => throw _privateConstructorUsedError;
+  bool? get isShift => throw _privateConstructorUsedError;
+  ShiftModel? get shift => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -36,9 +38,15 @@ abstract class $OrganizationModelCopyWith<$Res> {
           OrganizationModel value, $Res Function(OrganizationModel) then) =
       _$OrganizationModelCopyWithImpl<$Res, OrganizationModel>;
   @useResult
-  $Res call({String? organizationId, PositionModel? position, int? radius});
+  $Res call(
+      {PositionModel? position,
+      int? radius,
+      String? id,
+      bool? isShift,
+      ShiftModel? shift});
 
   $PositionModelCopyWith<$Res>? get position;
+  $ShiftModelCopyWith<$Res>? get shift;
 }
 
 /// @nodoc
@@ -54,15 +62,13 @@ class _$OrganizationModelCopyWithImpl<$Res, $Val extends OrganizationModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? organizationId = freezed,
     Object? position = freezed,
     Object? radius = freezed,
+    Object? id = freezed,
+    Object? isShift = freezed,
+    Object? shift = freezed,
   }) {
     return _then(_value.copyWith(
-      organizationId: freezed == organizationId
-          ? _value.organizationId
-          : organizationId // ignore: cast_nullable_to_non_nullable
-              as String?,
       position: freezed == position
           ? _value.position
           : position // ignore: cast_nullable_to_non_nullable
@@ -71,6 +77,18 @@ class _$OrganizationModelCopyWithImpl<$Res, $Val extends OrganizationModel>
           ? _value.radius
           : radius // ignore: cast_nullable_to_non_nullable
               as int?,
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      isShift: freezed == isShift
+          ? _value.isShift
+          : isShift // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      shift: freezed == shift
+          ? _value.shift
+          : shift // ignore: cast_nullable_to_non_nullable
+              as ShiftModel?,
     ) as $Val);
   }
 
@@ -85,6 +103,18 @@ class _$OrganizationModelCopyWithImpl<$Res, $Val extends OrganizationModel>
       return _then(_value.copyWith(position: value) as $Val);
     });
   }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $ShiftModelCopyWith<$Res>? get shift {
+    if (_value.shift == null) {
+      return null;
+    }
+
+    return $ShiftModelCopyWith<$Res>(_value.shift!, (value) {
+      return _then(_value.copyWith(shift: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -95,10 +125,17 @@ abstract class _$$OrganizationModelImplCopyWith<$Res>
       __$$OrganizationModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? organizationId, PositionModel? position, int? radius});
+  $Res call(
+      {PositionModel? position,
+      int? radius,
+      String? id,
+      bool? isShift,
+      ShiftModel? shift});
 
   @override
   $PositionModelCopyWith<$Res>? get position;
+  @override
+  $ShiftModelCopyWith<$Res>? get shift;
 }
 
 /// @nodoc
@@ -112,15 +149,13 @@ class __$$OrganizationModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? organizationId = freezed,
     Object? position = freezed,
     Object? radius = freezed,
+    Object? id = freezed,
+    Object? isShift = freezed,
+    Object? shift = freezed,
   }) {
     return _then(_$OrganizationModelImpl(
-      organizationId: freezed == organizationId
-          ? _value.organizationId
-          : organizationId // ignore: cast_nullable_to_non_nullable
-              as String?,
       position: freezed == position
           ? _value.position
           : position // ignore: cast_nullable_to_non_nullable
@@ -129,6 +164,18 @@ class __$$OrganizationModelImplCopyWithImpl<$Res>
           ? _value.radius
           : radius // ignore: cast_nullable_to_non_nullable
               as int?,
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      isShift: freezed == isShift
+          ? _value.isShift
+          : isShift // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      shift: freezed == shift
+          ? _value.shift
+          : shift // ignore: cast_nullable_to_non_nullable
+              as ShiftModel?,
     ));
   }
 }
@@ -137,21 +184,25 @@ class __$$OrganizationModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$OrganizationModelImpl implements _OrganizationModel {
   const _$OrganizationModelImpl(
-      {this.organizationId, this.position, this.radius});
+      {this.position, this.radius, this.id, this.isShift, this.shift});
 
   factory _$OrganizationModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$OrganizationModelImplFromJson(json);
 
   @override
-  final String? organizationId;
-  @override
   final PositionModel? position;
   @override
   final int? radius;
+  @override
+  final String? id;
+  @override
+  final bool? isShift;
+  @override
+  final ShiftModel? shift;
 
   @override
   String toString() {
-    return 'OrganizationModel(organizationId: $organizationId, position: $position, radius: $radius)';
+    return 'OrganizationModel(position: $position, radius: $radius, id: $id, isShift: $isShift, shift: $shift)';
   }
 
   @override
@@ -159,17 +210,18 @@ class _$OrganizationModelImpl implements _OrganizationModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OrganizationModelImpl &&
-            (identical(other.organizationId, organizationId) ||
-                other.organizationId == organizationId) &&
             (identical(other.position, position) ||
                 other.position == position) &&
-            (identical(other.radius, radius) || other.radius == radius));
+            (identical(other.radius, radius) || other.radius == radius) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.isShift, isShift) || other.isShift == isShift) &&
+            (identical(other.shift, shift) || other.shift == shift));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, organizationId, position, radius);
+      Object.hash(runtimeType, position, radius, id, isShift, shift);
 
   @JsonKey(ignore: true)
   @override
@@ -188,19 +240,25 @@ class _$OrganizationModelImpl implements _OrganizationModel {
 
 abstract class _OrganizationModel implements OrganizationModel {
   const factory _OrganizationModel(
-      {final String? organizationId,
-      final PositionModel? position,
-      final int? radius}) = _$OrganizationModelImpl;
+      {final PositionModel? position,
+      final int? radius,
+      final String? id,
+      final bool? isShift,
+      final ShiftModel? shift}) = _$OrganizationModelImpl;
 
   factory _OrganizationModel.fromJson(Map<String, dynamic> json) =
       _$OrganizationModelImpl.fromJson;
 
   @override
-  String? get organizationId;
-  @override
   PositionModel? get position;
   @override
   int? get radius;
+  @override
+  String? get id;
+  @override
+  bool? get isShift;
+  @override
+  ShiftModel? get shift;
   @override
   @JsonKey(ignore: true)
   _$$OrganizationModelImplCopyWith<_$OrganizationModelImpl> get copyWith =>

@@ -9,17 +9,23 @@ part of 'organization_model.dart';
 _$OrganizationModelImpl _$$OrganizationModelImplFromJson(
         Map<String, dynamic> json) =>
     _$OrganizationModelImpl(
-      organizationId: json['organizationId'] as String?,
       position: json['position'] == null
           ? null
           : PositionModel.fromJson(json['position'] as Map<String, dynamic>),
       radius: (json['radius'] as num?)?.toInt(),
+      id: json['id'] as String?,
+      isShift: json['isShift'] as bool?,
+      shift: json['shift'] == null
+          ? null
+          : ShiftModel.fromJson(json['shift'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$OrganizationModelImplToJson(
         _$OrganizationModelImpl instance) =>
     <String, dynamic>{
-      'organizationId': instance.organizationId,
       'position': instance.position,
       'radius': instance.radius,
+      'id': instance.id,
+      'isShift': instance.isShift,
+      'shift': instance.shift,
     };
