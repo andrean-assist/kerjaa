@@ -9,5 +9,5 @@ abstract class ConstantsConnect {
       'https://dev-upload-file-medicaboo.s3.ap-southeast-1.amazonaws.com/';
 
   // BUCKET
-  static const bucketUploadHospital = 'hospitalImageTest';
+  static const bucketUploadHospital = 'hospitalImageTest'; 
 }

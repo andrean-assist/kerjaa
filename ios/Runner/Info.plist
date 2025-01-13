@@ -45,6 +45,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- <key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict> -->
 	<key>NSCameraUsageDescription</key>
 	<string>This application requires access to the camera to capture photos or videos, enabling key features and enhancing the user experience.</string>
 	<key>NSMicrophoneUsageDescription</key>
