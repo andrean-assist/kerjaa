@@ -281,18 +281,21 @@ class HomeController extends GetxController {
           if (body != null) {
             final resBody = ResDashboardModel.fromJson(body);
             dataDashboard = resBody.data;
-            final eventDate = dataDashboard?.date;
-            final dataEvent = dataDashboard?.events;
-            isShiftEnabled.value = dataDashboard?.shift != null;
+            final attendance = dataDashboard?.attendance;
+            final organization = dataDashboard?.organization;
+
+            final eventDate = attendance?.date;
+            final dataEvent = attendance?.events;
+            isShiftEnabled.value = organization?.shift != null;
 
             if (eventDate != null) {
-              final attendanceId = dataDashboard?.id;
-              final startWork = dataDashboard?.checkIn;
-              final endWork = dataDashboard?.checkOut;
-              final breakStart = dataDashboard?.breakStart;
-              final breakStop = dataDashboard?.breakStop;
-              final breakHours = dataDashboard?.breakHours;
-              final workHours = dataDashboard?.workHours;
+              final attendanceId = attendance?.id;
+              final startWork = attendance?.checkIn;
+              final endWork = attendance?.checkOut;
+              final breakStart = attendance?.breakStart;
+              final breakStop = attendance?.breakStop;
+              final breakHours = attendance?.breakHours;
+              final workHours = attendance?.workHours;
 
               await _checkAndWriteAttendanceId(attendanceId);
               await _checkAndWriteDateTimeInLocalStorage(
@@ -589,17 +592,19 @@ class HomeController extends GetxController {
   }
 
   Future<void> moveToMaps(StatusAbsenceSetup typeAbsence) async {
+    final organization = dataDashboard?.organization;
+
     final navModel = NavigationModel(
       absenceType: typeAbsence,
       shift: shift.value,
-      clinicPosition: (dataDashboard?.position != null)
+      clinicPosition: (organization != null && organization.position != null)
           ? LatLng(
-              dataDashboard!.position!.lat ?? 0,
-              dataDashboard!.position!.lng ?? 0,
+              organization.position!.lat ?? 0,
+              organization.position!.lng ?? 0,
             )
           : null,
-      radius: (dataDashboard?.radius != null)
-          ? dataDashboard?.radius?.toDouble()
+      radius: (organization?.radius != null)
+          ? organization?.radius?.toDouble()
           : 0.0,
     );
 
