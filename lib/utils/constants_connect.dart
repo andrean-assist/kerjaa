@@ -5,7 +5,8 @@ abstract class ConstantsConnect {
   //     'https://4a69-182-253-249-74.ngrok-free.app/api/';
 
   static const endPointBaseUrlUpload = 'https://api-new-image.assist.id/';
-   
+  static const endPointBaseUrlImage =
+      'https://dev-upload-file-medicaboo.s3.ap-southeast-1.amazonaws.com/';
 
   // BUCKET
   static const bucketUploadHospital = 'hospitalImageTest';
