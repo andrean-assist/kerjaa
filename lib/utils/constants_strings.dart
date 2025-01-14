@@ -40,4 +40,7 @@ abstract class ConstantsStrings {
 
   static const labelPassword = 'Password';
   static const hintPassword = 'Masukkan password';
+
+  static const labelPosition = 'Posisi';
+  static const labelName = 'Nama';
 }
