@@ -272,6 +272,8 @@ class HomeController extends GetxController {
     if (_organizationId != null) {
       isLoading.value = true;
 
+      print('organizationId = $_organizationId');
+
       try {
         final res = await _homeS.dashboard(organizationId: _organizationId!);
 
@@ -336,7 +338,6 @@ class HomeController extends GetxController {
             }
           }
         } else {
-          print('isConnectedInternet = ${res.request?.persistentConnection}');
           _initC.handleError(status: res.status, onLoad: fetchDashboard);
         }
       } on GetHttpException catch (e) {

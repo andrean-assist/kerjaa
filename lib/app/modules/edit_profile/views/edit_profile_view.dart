@@ -100,7 +100,7 @@ class EditProfileView extends GetView<EditProfileController> {
           () => Buttons.filled(
             width: double.infinity,
             state: controller.isLoading.value,
-            onPressed: controller.save,
+            onPressed: controller.isEnabled.value ? controller.save : null,
             child: const Text('Simpan'),
           ),
         ),

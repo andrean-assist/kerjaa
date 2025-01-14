@@ -162,11 +162,17 @@ class HomeView extends GetView<HomeController> {
       color: theme.colorScheme.surfaceContainerLowest,
       child: SizedBox(
         width: double.infinity,
-        child: Obx(
-          () => Skeletonizer(
+        child: Obx(() {
+          final organization = controller.dataDashboard?.organization;
+          final isShift = organization?.isShift;
+          final shift = organization?.shift;
+          final haveShift = isShift != null && shift != null;
+          final shiftNotBeenSet = haveShift && isShift;
+
+          return Skeletonizer(
             enabled: controller.isLoading.value,
             child: Visibility(
-              visible: controller.isShiftEnabled.value,
+              visible: shiftNotBeenSet,
               replacement: _builderDisabledShift(context),
               child: Column(
                 children: [
@@ -229,8 +235,8 @@ class HomeView extends GetView<HomeController> {
                 ],
               ),
             ),
-          ),
-        ),
+          );
+        }),
       ),
     );
   }

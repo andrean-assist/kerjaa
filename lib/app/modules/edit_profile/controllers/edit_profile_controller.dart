@@ -9,7 +9,6 @@ import 'package:get/get.dart';
 // import 'package:get/get.dart';
 // import 'package:get/get_connect/http/src/exceptions/exceptions.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as p;
 
 import '../../../../utils/constants_keys.dart';
 import '../../init/controllers/init_controller.dart';
@@ -30,6 +29,7 @@ class EditProfileController extends GetxController {
   final imageFile = Rxn<XFile>();
 
   final isLoading = false.obs;
+  final isEnabled = false.obs;
 
   @override
   void onInit() {
@@ -44,11 +44,21 @@ class EditProfileController extends GetxController {
 
     _awsS = AwsServices(_initC);
     _profileS = ProfileServices(_initC);
+    _initListenerC();
 
     userModel = Get.arguments as UserModel?;
     fullNameC.text = userModel?.name ?? '';
     positionC.text = userModel?.position ?? '';
     emailC.text = userModel?.email ?? '';
+  }
+
+  void _initListenerC() {
+    fullNameC.addListener(_changeEnabled);
+    emailC.addListener(_changeEnabled);
+  }
+
+  void _changeEnabled() {
+    isEnabled.value = fullNameC.text.isNotEmpty && emailC.text.isNotEmpty;
   }
 
   Future<void> pickImage() async {
