@@ -167,12 +167,11 @@ class HomeView extends GetView<HomeController> {
           final isShift = organization?.isShift;
           final shift = organization?.shift;
           final haveShift = isShift != null && shift != null;
-          final shiftNotBeenSet = haveShift && isShift;
 
           return Skeletonizer(
             enabled: controller.isLoading.value,
             child: Visibility(
-              visible: shiftNotBeenSet,
+              visible: haveShift,
               replacement: _builderDisabledShift(context),
               child: Column(
                 children: [
@@ -231,7 +230,7 @@ class HomeView extends GetView<HomeController> {
                       )
                     ],
                   ),
-                  _builderBtnAbsence(context),
+                  _builderBtnAbsence(context, isShift),
                 ],
               ),
             ),
@@ -296,7 +295,7 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  Widget _builderBtnAbsence(BuildContext context) {
+  Widget _builderBtnAbsence(BuildContext context, [bool? isShift = false]) {
     final textTheme = context.textTheme;
 
     return Obx(
@@ -327,7 +326,8 @@ class HomeView extends GetView<HomeController> {
           isVisibleBtnSlider = true;
 
           // jika jam istirahat sudah ada maka tampilan slide akan gone
-          if (restStartTime != null && restEndTime != null) {
+          if ((restStartTime != null && restEndTime != null) ||
+              endTime != null) {
             isVisibleBtnSlider = false;
           }
 
@@ -352,7 +352,11 @@ class HomeView extends GetView<HomeController> {
                   style: style,
                   onPressed: () {
                     if (statusAbsence == StatusAbsenceSetup.checkIn) {
-                      _showModalShift(context);
+                      if (isShift ?? false) {
+                        _showModalShift(context);
+                      } else {
+                        controller.moveToMaps(statusAbsence);
+                      }
                     } else {
                       controller.moveToMaps(statusAbsence);
                     }

@@ -138,13 +138,14 @@ class LoginView extends GetView<LoginController> {
           Obx(
             () {
               final isVisible = controller.isVisiblePassword.value;
+
               return CustomTextFormFieldNew(
                 controller: controller.passwordC,
                 focusNode: controller.passwordF,
                 labelText: ConstantsStrings.labelPassword,
                 hintText: ConstantsStrings.hintPassword,
                 isFilled: true,
-                obscureText: isVisible,
+                obscureText: !isVisible,
                 keyboardType: TextInputType.visiblePassword,
                 textCapitalization: TextCapitalization.none,
                 maxLines: 1,

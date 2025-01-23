@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:dio/dio.dart';
 import '../../app/modules/init/controllers/init_controller.dart';

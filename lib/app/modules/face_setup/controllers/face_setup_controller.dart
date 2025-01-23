@@ -91,20 +91,22 @@ class FaceSetupController extends GetxController {
   }
 
   void _initListen() {
-    _streamPermissionResult =
-        CamerawesomePlugin.listenPermissionResult()!.listen(
-      (state) {
-        print('stream camera permission = $state');
+    if (GetPlatform.isAndroid) {
+      _streamPermissionResult =
+          CamerawesomePlugin.listenPermissionResult()!.listen(
+        (state) {
+          print('stream camera permission = $state');
 
-        // jika permission kamera ditolak maka
-        if (state) {
-          // Get.back();
-        } else {
-          isEnabled.value = false;
-          _showModalNotGrantedPermission();
-        }
-      },
-    );
+          // jika permission kamera ditolak maka
+          if (state) {
+            // Get.back();
+          } else {
+            isEnabled.value = false;
+            _showModalNotGrantedPermission();
+          }
+        },
+      );
+    }
   }
 
   void _initFaceDetector() {
@@ -112,7 +114,7 @@ class FaceSetupController extends GetxController {
       options: FaceDetectorOptions(
         // enableContours: true,
         enableClassification: true, // Enable classification to detect smiles
-        // enableLandmarks: true,
+        enableLandmarks: true,
         enableTracking: true, // Enable tracking to detect faces
         performanceMode: FaceDetectorMode.accurate,
       ),

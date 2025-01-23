@@ -6,8 +6,7 @@ import 'package:assist_hadir/services/profile/profile_services.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:get/get.dart';
-// import 'package:get/get_connect/http/src/exceptions/exceptions.dart';
+import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../utils/constants_keys.dart';
@@ -65,15 +64,38 @@ class EditProfileController extends GetxController {
     final picker = ImagePicker();
 
     try {
-      imageFile.value = await picker.pickImage(
+      final xFile = await picker.pickImage(
         source: ImageSource.gallery,
         imageQuality: 60,
       );
+
+      print('xFile = ${xFile?.path}');
+
+      if (xFile != null) {
+        imageFile.value = await setImageOrientationToPortrait(xFile);
+      }
+
       print('pathImageFile = ${imageFile.value?.path}');
     } catch (e) {
       imageFile.value = null;
       _initC.logger.e('Error: $e');
     }
+  }
+
+  Future<XFile?> setImageOrientationToPortrait(XFile imageFile) async {
+    try {
+      final image = img.decodeJpg(await imageFile.readAsBytes());
+
+      if (image != null) {
+        final orientedImage = img.copyRotate(image, angle: 0);
+        return XFile.fromData(img.encodeJpg(orientedImage));
+        // await imageFile.writeAsBytes();
+      }
+    } catch (e) {
+      _initC.logger.e('Error: setImageOrientationToPortrait = $e');
+    }
+
+    return null;
   }
 
   Future<void> save() async {

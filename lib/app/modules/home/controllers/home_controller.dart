@@ -277,6 +277,10 @@ class HomeController extends GetxController {
       try {
         final res = await _homeS.dashboard(organizationId: _organizationId!);
 
+        print('res = ${res.isOk}');
+
+        print('res statusText = ${res.statusText}');
+
         if (res.isOk) {
           final body = res.body;
 
@@ -575,7 +579,13 @@ class HomeController extends GetxController {
           type: 'breakStart',
         );
 
+        LoggerHelper.logPrettyJson(reqAttendance.toJson());
+
+        // return;
+
         final res = await _attendanceS.updateAttendance(reqAttendance.toJson());
+
+        print('res status text = ${res.statusText}');
 
         if (res.isOk) {
           final body = res.body;
@@ -594,10 +604,11 @@ class HomeController extends GetxController {
 
   Future<void> moveToMaps(StatusAbsenceSetup typeAbsence) async {
     final organization = dataDashboard?.organization;
+    final isShift = organization?.isShift ?? false;
 
     final navModel = NavigationModel(
       absenceType: typeAbsence,
-      shift: shift.value,
+      shift: isShift ? shift.value : 'general',
       clinicPosition: (organization != null && organization.position != null)
           ? LatLng(
               organization.position!.lat ?? 0,
@@ -612,7 +623,7 @@ class HomeController extends GetxController {
     LoggerHelper.logPrettyJson(navModel.toJson());
 
     if (typeAbsence == StatusAbsenceSetup.checkIn) {
-      Get.offAndToNamed(Routes.LOCATION_MAPS, arguments: navModel);
+      Get.toNamed(Routes.LOCATION_MAPS, arguments: navModel);
     } else {
       final result =
           await Get.toNamed(Routes.LOCATION_MAPS, arguments: navModel);

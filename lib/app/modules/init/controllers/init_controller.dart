@@ -26,7 +26,7 @@ class InitController extends GetxController {
   // late final StreamSubscription<ServiceStatus> subscriptionServiceLocation;
   // final streamServiceLocation = ServiceStatus.disabled.obs;
 
-  Timer? _serviceStatusTimer;
+  // Timer? _serviceStatusTimer;
 
   GetStorage get localStorage => _localStorage;
 
