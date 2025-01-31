@@ -22,6 +22,7 @@ DataDashboardModel _$DataDashboardModelFromJson(Map<String, dynamic> json) {
 mixin _$DataDashboardModel {
   DataAttendanceModel? get attendance => throw _privateConstructorUsedError;
   OrganizationModel? get organization => throw _privateConstructorUsedError;
+  UserModel? get user => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -35,10 +36,14 @@ abstract class $DataDashboardModelCopyWith<$Res> {
           DataDashboardModel value, $Res Function(DataDashboardModel) then) =
       _$DataDashboardModelCopyWithImpl<$Res, DataDashboardModel>;
   @useResult
-  $Res call({DataAttendanceModel? attendance, OrganizationModel? organization});
+  $Res call(
+      {DataAttendanceModel? attendance,
+      OrganizationModel? organization,
+      UserModel? user});
 
   $DataAttendanceModelCopyWith<$Res>? get attendance;
   $OrganizationModelCopyWith<$Res>? get organization;
+  $UserModelCopyWith<$Res>? get user;
 }
 
 /// @nodoc
@@ -56,6 +61,7 @@ class _$DataDashboardModelCopyWithImpl<$Res, $Val extends DataDashboardModel>
   $Res call({
     Object? attendance = freezed,
     Object? organization = freezed,
+    Object? user = freezed,
   }) {
     return _then(_value.copyWith(
       attendance: freezed == attendance
@@ -66,6 +72,10 @@ class _$DataDashboardModelCopyWithImpl<$Res, $Val extends DataDashboardModel>
           ? _value.organization
           : organization // ignore: cast_nullable_to_non_nullable
               as OrganizationModel?,
+      user: freezed == user
+          ? _value.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as UserModel?,
     ) as $Val);
   }
 
@@ -92,6 +102,18 @@ class _$DataDashboardModelCopyWithImpl<$Res, $Val extends DataDashboardModel>
       return _then(_value.copyWith(organization: value) as $Val);
     });
   }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $UserModelCopyWith<$Res>? get user {
+    if (_value.user == null) {
+      return null;
+    }
+
+    return $UserModelCopyWith<$Res>(_value.user!, (value) {
+      return _then(_value.copyWith(user: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -102,12 +124,17 @@ abstract class _$$DataDashboardModelImplCopyWith<$Res>
       __$$DataDashboardModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({DataAttendanceModel? attendance, OrganizationModel? organization});
+  $Res call(
+      {DataAttendanceModel? attendance,
+      OrganizationModel? organization,
+      UserModel? user});
 
   @override
   $DataAttendanceModelCopyWith<$Res>? get attendance;
   @override
   $OrganizationModelCopyWith<$Res>? get organization;
+  @override
+  $UserModelCopyWith<$Res>? get user;
 }
 
 /// @nodoc
@@ -123,6 +150,7 @@ class __$$DataDashboardModelImplCopyWithImpl<$Res>
   $Res call({
     Object? attendance = freezed,
     Object? organization = freezed,
+    Object? user = freezed,
   }) {
     return _then(_$DataDashboardModelImpl(
       attendance: freezed == attendance
@@ -133,6 +161,10 @@ class __$$DataDashboardModelImplCopyWithImpl<$Res>
           ? _value.organization
           : organization // ignore: cast_nullable_to_non_nullable
               as OrganizationModel?,
+      user: freezed == user
+          ? _value.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as UserModel?,
     ));
   }
 }
@@ -140,7 +172,8 @@ class __$$DataDashboardModelImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$DataDashboardModelImpl implements _DataDashboardModel {
-  const _$DataDashboardModelImpl({this.attendance, this.organization});
+  const _$DataDashboardModelImpl(
+      {this.attendance, this.organization, this.user});
 
   factory _$DataDashboardModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$DataDashboardModelImplFromJson(json);
@@ -149,10 +182,12 @@ class _$DataDashboardModelImpl implements _DataDashboardModel {
   final DataAttendanceModel? attendance;
   @override
   final OrganizationModel? organization;
+  @override
+  final UserModel? user;
 
   @override
   String toString() {
-    return 'DataDashboardModel(attendance: $attendance, organization: $organization)';
+    return 'DataDashboardModel(attendance: $attendance, organization: $organization, user: $user)';
   }
 
   @override
@@ -163,12 +198,13 @@ class _$DataDashboardModelImpl implements _DataDashboardModel {
             (identical(other.attendance, attendance) ||
                 other.attendance == attendance) &&
             (identical(other.organization, organization) ||
-                other.organization == organization));
+                other.organization == organization) &&
+            (identical(other.user, user) || other.user == user));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, attendance, organization);
+  int get hashCode => Object.hash(runtimeType, attendance, organization, user);
 
   @JsonKey(ignore: true)
   @override
@@ -188,7 +224,8 @@ class _$DataDashboardModelImpl implements _DataDashboardModel {
 abstract class _DataDashboardModel implements DataDashboardModel {
   const factory _DataDashboardModel(
       {final DataAttendanceModel? attendance,
-      final OrganizationModel? organization}) = _$DataDashboardModelImpl;
+      final OrganizationModel? organization,
+      final UserModel? user}) = _$DataDashboardModelImpl;
 
   factory _DataDashboardModel.fromJson(Map<String, dynamic> json) =
       _$DataDashboardModelImpl.fromJson;
@@ -197,6 +234,8 @@ abstract class _DataDashboardModel implements DataDashboardModel {
   DataAttendanceModel? get attendance;
   @override
   OrganizationModel? get organization;
+  @override
+  UserModel? get user;
   @override
   @JsonKey(ignore: true)
   _$$DataDashboardModelImplCopyWith<_$DataDashboardModelImpl> get copyWith =>

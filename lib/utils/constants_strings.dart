@@ -41,6 +41,9 @@ abstract class ConstantsStrings {
   static const labelPassword = 'Password';
   static const hintPassword = 'Masukkan password';
 
+  static const labelRepeatPassword = 'Ulangi Password';
+  static const hintRepeatPassword = 'Masukkan password sebelumnya';
+
   static const labelPosition = 'Posisi';
   static const labelName = 'Nama';
 }

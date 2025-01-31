@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_links/app_links.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:assist_hadir/app/modules/widgets/modal/custom_modal.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -23,6 +24,9 @@ class InitController extends GetxController {
   late final GetStorage _localStorage;
   late final StreamSubscription<List<ConnectivityResult>>
       _subscriptionConnectivity;
+  final _navigatorKey = GlobalKey<NavigatorState>();
+  late AppLinks _appLinks;
+  StreamSubscription<Uri>? _linkSubscription;
   // late final StreamSubscription<ServiceStatus> subscriptionServiceLocation;
   // final streamServiceLocation = ServiceStatus.disabled.obs;
 
@@ -47,11 +51,26 @@ class InitController extends GetxController {
   void _init() {
     _localStorage = GetStorage();
     _initListen();
+    _initDeepLinks();
   }
 
   void _initListen() {
     _listenConnectivity();
     // _listenDeterminePosition();
+  }
+
+  Future<void> _initDeepLinks() async {
+    _appLinks = AppLinks();
+
+    // Handle links
+    _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
+      debugPrint('onAppLink: $uri');
+      _openAppLink(uri);
+    });
+  }
+
+  void _openAppLink(Uri uri) {
+    _navigatorKey.currentState?.pushNamed(uri.fragment);
   }
 
   bool? isUserFirstUsingApp() =>
@@ -320,6 +339,8 @@ class InitController extends GetxController {
   @override
   void onClose() {
     _subscriptionConnectivity.cancel();
+    _linkSubscription?.cancel();
+
     // subscriptionServiceLocation.cancel();
     // streamServiceLocation.close();
     // _serviceStatusTimer?.cancel();

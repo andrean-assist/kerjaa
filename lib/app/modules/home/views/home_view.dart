@@ -685,7 +685,7 @@ class HomeView extends GetView<HomeController> {
               width: double.infinity,
               state: controller.isLoading.value,
               onPressed: (controller.shift.value != null)
-                  ? controller.checkIsAlreadyCheckin
+                  ? controller.isAlreadyCheckin
                   : null,
               child: const Text('Mulai bekerja'),
             ),

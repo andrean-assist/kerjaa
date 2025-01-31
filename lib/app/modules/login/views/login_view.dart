@@ -52,12 +52,14 @@ class LoginView extends GetView<LoginController> {
               ),
               const SizedBox(height: 24),
               _builderForm(),
-              // const SizedBox(height: 8),
-              // Buttons.text(
-              //   onPressed: () {},
-              //   child: const Text('Lupa Password ?'),
-              // ),
-              const SizedBox(height: 24),
+              TextButton(
+                onPressed: controller.moveToForgotPassword,
+                child: const Text(
+                  'Lupa Password ?',
+                  style: TextStyle(fontWeight: SharedTheme.semiBold),
+                ),
+              ),
+              const SizedBox(height: 14),
               Obx(
                 () {
                   final isEnabled = controller.email.value.isNotEmpty &&
@@ -80,8 +82,6 @@ class LoginView extends GetView<LoginController> {
                   children: [
                     TextHelper.buildRichMultiText(
                       text: 'By log in, I agree to the Terms of Service',
-                      // and Privacy Policy
-                      // highlights: ['Terms of Service', 'Privacy Policy'],
                       highlights: ['Terms of Service'],
                       highlightStyle: TextStyle(
                         fontWeight: SharedTheme.bold,
@@ -169,6 +169,7 @@ class LoginView extends GetView<LoginController> {
               );
             },
           ),
+        
         ],
       ),
     );

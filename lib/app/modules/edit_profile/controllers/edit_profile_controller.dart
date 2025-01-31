@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_exif_rotation/flutter_exif_rotation.dart';
 
 import '../../../../utils/constants_keys.dart';
 import '../../init/controllers/init_controller.dart';
@@ -25,7 +26,7 @@ class EditProfileController extends GetxController {
 
   UserModel? userModel;
 
-  final imageFile = Rxn<XFile>();
+  final imageFile = Rxn<File>();
 
   final isLoading = false.obs;
   final isEnabled = false.obs;
@@ -69,11 +70,20 @@ class EditProfileController extends GetxController {
         imageQuality: 60,
       );
 
+      print('length = ${xFile?.path.length}');
       print('xFile = ${xFile?.path}');
 
       if (xFile != null) {
-        imageFile.value = await setImageOrientationToPortrait(xFile);
+        final rotatedImage = await fixImageOrientation(xFile.path);
+        imageFile.value = rotatedImage;
       }
+
+      // if (xFile != null) {
+      //   imageFile.value = await setImageOrientationToPortrait(xFile);
+      //   print('imageFile.value = ${imageFile.value?.path}');
+      // }
+
+      // imageFile.value = xFile;
 
       print('pathImageFile = ${imageFile.value?.path}');
     } catch (e) {
@@ -82,20 +92,15 @@ class EditProfileController extends GetxController {
     }
   }
 
-  Future<XFile?> setImageOrientationToPortrait(XFile imageFile) async {
+  Future<File> fixImageOrientation(String filePath) async {
     try {
-      final image = img.decodeJpg(await imageFile.readAsBytes());
-
-      if (image != null) {
-        final orientedImage = img.copyRotate(image, angle: 0);
-        return XFile.fromData(img.encodeJpg(orientedImage));
-        // await imageFile.writeAsBytes();
-      }
+      final correctedFile =
+          await FlutterExifRotation.rotateImage(path: filePath);
+      return correctedFile;
     } catch (e) {
-      _initC.logger.e('Error: setImageOrientationToPortrait = $e');
+      print('Error fixing orientation: $e');
+      return File(filePath); // Return original file if there's an error
     }
-
-    return null;
   }
 
   Future<void> save() async {
@@ -110,12 +115,7 @@ class EditProfileController extends GetxController {
   Future<String?> _uploadImage(String? path) async {
     if (path == null) return null;
 
-    print('path = $path');
-
     final res = await _awsS.uploadImage(path);
-
-    print('res statusCode = ${res.statusCode}');
-    print('res data = ${res.data}');
 
     if (res.statusCode == HttpStatus.ok) {
       return res.data;
@@ -156,18 +156,6 @@ class EditProfileController extends GetxController {
         Get.back(result: true);
       } else {
         _initC.handleError(status: res.status, onLoad: _updateProfile);
-
-        // if (res.statusCode == HttpStatus.unauthorized) {
-        //   _initC.redirectLogout(Get.context!);
-        // } else {
-        //   _initC.showDialogFailed(
-        //     onPressed: () {
-        //       FocusScope.of(Get.context!).unfocus();
-        //       Get.back();
-        //       _updateProfile();
-        //     },
-        //   );
-        // }
       }
     } on DioException catch (e) {
       _initC.logger.e('Error: $e');

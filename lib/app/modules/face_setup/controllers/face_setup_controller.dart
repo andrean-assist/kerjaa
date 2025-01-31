@@ -216,10 +216,6 @@ class FaceSetupController extends GetxController {
     try {
       final image = img.decodeJpg(await imageFile.readAsBytes());
 
-      // print('image width = ${image?.width}');
-      // print('image height = ${image?.height}');
-      // print('image orientation = ${image?.exif}');
-
       if (image != null) {
         final orientedImage = img.copyRotate(image, angle: 0);
         await imageFile.writeAsBytes(img.encodeJpg(orientedImage));
@@ -521,43 +517,6 @@ class FaceSetupController extends GetxController {
           await AppSettings.openAppSettings();
           await CamerawesomePlugin.refresh();
           Get.back();
-
-          // final isGrantedPermission =
-          //     await CamerawesomePlugin.checkAndRequestPermissions(true);
-          // final isGrantedCamera = isGrantedPermission?.firstWhereOrNull(
-          //   (element) => element == CamerAwesomePermission.camera,
-          // );
-
-          // if (isGrantedCamera != null) {
-
-          // }
-
-          // print(
-          //     'isGrantedCamera = index: ${isGrantedCamera?.index}, name: ${isGrantedCamera?.name}');
-
-          // try {
-          //   if (GetPlatform.isAndroid) {
-          //     // final device = await DeviceInfoPlugin().androidInfo;
-          //     // final androidVersion = int.tryParse(device.version.release) ?? 0;
-
-          //     AppSettings.openAppSettings(type: AppSettingsType.settings);
-          //     // if (androidVersion >= 10) {
-          //     //   AppSettings.openAppSettingsPanel(
-          //     //     AppSettingsPanelType.internetConnectivity,
-          //     //   );
-          //     // } else {
-          //     // }
-          //     // print('version android = ${device.version.release}');
-          //   }
-
-          //   if (GetPlatform.isIOS) {
-          //     AppSettings.openAppSettings(type: AppSettingsType.settings);
-          //   }
-          // } catch (e) {
-          //   _initC.logger.e('Error: $e');
-          // } finally {
-          //   Get.back();
-          // }
         },
         child: const Text('Pergi ke pengaturan'),
       ),

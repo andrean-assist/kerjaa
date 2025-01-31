@@ -2,6 +2,10 @@ import 'package:get/get.dart';
 
 import '../modules/activity_history/bindings/activity_history_binding.dart';
 import '../modules/activity_history/views/activity_history_view.dart';
+import '../modules/check_email/bindings/check_email_binding.dart';
+import '../modules/check_email/views/check_email_view.dart';
+import '../modules/create_new_password/bindings/create_new_password_binding.dart';
+import '../modules/create_new_password/views/create_new_password_view.dart';
 import '../modules/edit_profile/bindings/edit_profile_binding.dart';
 import '../modules/edit_profile/views/edit_profile_view.dart';
 import '../modules/face_setup/bindings/face_setup_binding.dart';
@@ -45,6 +49,16 @@ class AppPages {
       binding: LoginBinding(),
     ),
     GetPage(
+      name: _Paths.FORGOT_PASSWORD,
+      page: () => const ForgotPasswordView(),
+      binding: ForgotPasswordBinding(),
+    ),
+    GetPage(
+      name: _Paths.CHECK_EMAIL,
+      page: () => const CheckEmailView(),
+      binding: CheckEmailBinding(),
+    ),
+    GetPage(
       name: _Paths.REGISTER_FACE,
       page: () => const FaceSetupView(),
       binding: FaceSetupBinding(),
@@ -82,9 +96,9 @@ class AppPages {
       binding: EditProfileBinding(),
     ),
     GetPage(
-      name: _Paths.FORGOT_PASSWORD,
-      page: () => const ForgotPasswordView(),
-      binding: ForgotPasswordBinding(),
+      name: _Paths.CREATE_NEW_PASSWORD,
+      page: () => const CreateNewPasswordView(),
+      binding: CreateNewPasswordBinding(),
     ),
   ];
 }

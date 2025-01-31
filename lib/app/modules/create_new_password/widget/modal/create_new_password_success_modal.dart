@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 
 import '../../../../../utils/constants_assets.dart';
 
-class NotAllowedAttendanceModal extends StatelessWidget {
-  const NotAllowedAttendanceModal(String title, String description, {super.key});
+class CreateNewPasswordSuccessModal extends StatelessWidget {
+  const CreateNewPasswordSuccessModal({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +19,13 @@ class NotAllowedAttendanceModal extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Image.asset(
-            ConstantsAssets.imgNotAllowedAttendance,
+            ConstantsAssets.imgCreateNewPasswordSuccess,
             height: 250,
             fit: BoxFit.cover,
           ),
           const SizedBox(height: 24),
           Text(
-            'Opps.. Anda tidak bisa menggunakan absen mobile di hari ini!',
+            'Password Anda berhasil diganti',
             style: textTheme.titleMedium?.copyWith(
               fontWeight: SharedTheme.semiBold,
             ),
@@ -33,7 +33,7 @@ class NotAllowedAttendanceModal extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            'Karena di awal Anda absen di Website, untuk saat ini hanya bisa istirahat dan checkout di Website ya.',
+            'Kembali ke halaman login, dan masuk menggunakan password baru.',
             style: textTheme.bodyMedium?.copyWith(
               fontWeight: SharedTheme.semiBold,
               color: theme.hintColor,

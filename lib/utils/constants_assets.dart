@@ -16,6 +16,7 @@ abstract class ConstantsAssets {
   static const icClear = '${_icPath}ic_clear.svg';
   static const icNotification = '${_icPath}ic_bell.svg';
   static const icNotificationActive = '${_icPath}ic_bell_active.svg';
+  static const icEmail = '${_icPath}ic_email.svg';
 
   static const icHintFaceSetup = '${_icPath}ic_hint_face_setup.svg';
   static const icFrameFaceSetup = '${_icPath}ic_frame_face_setup.svg';
@@ -46,6 +47,8 @@ abstract class ConstantsAssets {
   static const imgOnboard4 = '${_imgPath}img_onboarding4.png';
 
   // IMAGE MODAL
+  static const imgCreateNewPasswordSuccess =
+      '${_imgPath}img_create_new_password_success.png';
   static const imgLoginFailed = '${_imgPath}img_login_failed.png';
   static const imgPrepare = '${_imgPath}img_prepare.png';
   static const imgOffline = '${_imgPath}img_offline.png';

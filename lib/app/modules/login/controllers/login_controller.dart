@@ -156,7 +156,7 @@ class LoginController extends GetxController {
   void _showDialogWrongEmailOrPassword() {
     Modals.bottomSheet(
       context: Get.context!,
-      content: const FailedLoginModal(),
+      content: const FailedLoginModal(), 
       actions: Buttons.filled(
         width: double.infinity,
         onPressed: Get.back,
@@ -173,4 +173,6 @@ class LoginController extends GetxController {
       );
 
   void _moveToHome() => Get.offAllNamed(Routes.HOME);
+
+  void moveToForgotPassword() => Get.toNamed(Routes.FORGOT_PASSWORD);
 }

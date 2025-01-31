@@ -5,6 +5,7 @@ import 'package:action_slider/action_slider.dart';
 import 'package:assist_hadir/app/data/model/dashboard/res/res_dashboard_model.dart';
 import 'package:assist_hadir/app/data/model/events/events_model.dart';
 import 'package:assist_hadir/app/data/model/navigations/navigation_model.dart';
+import 'package:assist_hadir/app/data/model/user/user_model.dart';
 import 'package:assist_hadir/app/modules/home/widgets/not_allowed_attendance_modal.dart';
 import 'package:assist_hadir/app/modules/init/controllers/init_controller.dart';
 import 'package:assist_hadir/app/helpers/logger_helper.dart';
@@ -78,7 +79,6 @@ class HomeController extends GetxController {
 
     _homeS = HomeServices(_initC);
     _attendanceS = AttendanceServices(_initC);
-
     actionSliderC = ActionSliderController();
 
     _prepareStorage();
@@ -272,13 +272,10 @@ class HomeController extends GetxController {
     if (_organizationId != null) {
       isLoading.value = true;
 
-      print('organizationId = $_organizationId');
-
       try {
         final res = await _homeS.dashboard(organizationId: _organizationId!);
 
         print('res = ${res.isOk}');
-
         print('res statusText = ${res.statusText}');
 
         if (res.isOk) {
@@ -287,8 +284,10 @@ class HomeController extends GetxController {
           if (body != null) {
             final resBody = ResDashboardModel.fromJson(body);
             dataDashboard = resBody.data;
+
             final attendance = dataDashboard?.attendance;
             final organization = dataDashboard?.organization;
+            final user = dataDashboard?.user;
 
             final eventDate = attendance?.date;
             final dataEvent = attendance?.events;
@@ -340,6 +339,12 @@ class HomeController extends GetxController {
                 _prepareStorageEvents();
               }
             }
+
+            if (user != null) {
+              profilePicture.value = user.avatar;
+
+              await _checkAndWriteProfile(user);
+            }
           }
         } else {
           _initC.handleError(status: res.status, onLoad: fetchDashboard);
@@ -363,22 +368,21 @@ class HomeController extends GetxController {
     }
   }
 
-  void checkIsAlreadyCheckin() async {
+  void isAlreadyCheckin() async {
     if (_organizationId != null) {
       isLoading.value = true;
 
       final params = {
         'shift': shift.value,
         'organizationId': _organizationId,
+        'date': FormatDateTime.dateToString(
+          newPattern: 'yyyy-MM-dd',
+          value: DateTime.now().toString(),
+        ),
       };
-
-      print('req params = $params ');
 
       try {
         final res = await _homeS.isAlreadyCheckedIn(params);
-
-        print('res statusCode = ${res.statusCode}');
-        print('res body = ${res.body}');
 
         if (res.isOk) {
           moveToMaps(StatusAbsenceSetup.checkIn);
@@ -389,7 +393,20 @@ class HomeController extends GetxController {
             if (res.statusCode == HttpStatus.unauthorized) {
               _initC.redirectLogout(Get.context!);
             } else {
-              _showModalNotAllowedAttendance();
+              String title;
+              String description;
+
+              if (res.statusCode == HttpStatus.preconditionFailed) {
+                title = 'Opps.. Anda tidak bisa menggunakan absen!';
+                description = 'Kamu sudah absen sebelumnya pada shift ini';
+              } else {
+                title =
+                    'Opps.. Anda tidak bisa menggunakan absen mobile di hari ini!';
+                description =
+                    'Karena di awal Anda absen di Website, untuk saat ini hanya bisa istirahat dan checkout di Website ya.';
+              }
+
+              _showModalNotAllowedAttendance(title, description);
             }
           }
         }
@@ -401,10 +418,10 @@ class HomeController extends GetxController {
     }
   }
 
-  void _showModalNotAllowedAttendance() {
+  void _showModalNotAllowedAttendance(String title, String description) {
     Modals.bottomSheet(
       context: Get.context!,
-      content: const NotAllowedAttendanceModal(),
+      content: NotAllowedAttendanceModal(title, description),
       actions: Buttons.filled(
         width: double.infinity,
         onPressed: Get.back,
@@ -426,6 +443,15 @@ class HomeController extends GetxController {
         await _initC.localStorage.write(ConstantsKeys.attendanceId, id);
       }
     }
+  }
+
+  Future<void> _checkAndWriteProfile(UserModel user) async {
+    _initC.localStorage
+      ..write(ConstantsKeys.name, user.name)
+      ..write(ConstantsKeys.profilPicture, user.avatar)
+      ..write(ConstantsKeys.organizationId, user.organizationId)
+      ..write(ConstantsKeys.position, user.position)
+      ..write(ConstantsKeys.email, user.email);
   }
 
   Future<void> _checkAndWriteDateTimeInLocalStorage({
@@ -500,9 +526,6 @@ class HomeController extends GetxController {
       final localTime = _initC.localStorage.read<String>(keyLocalDateTime);
       final fLocal = FormatDateTime.iso8601ToDateTime(value: localTime)!;
 
-      print('keyLocalDateTime = $keyLocalDateTime');
-      print('localTime = $localTime');
-
       switch (keyLocalDateTime) {
         // jika jam masuk maka jalankan timer kedepan
         case ConstantsKeys.startTimeWork:
@@ -549,8 +572,6 @@ class HomeController extends GetxController {
   }
 
   void rest(bool isFinish) async {
-    print('function rest dipanggil');
-
     final now = FormatDateTime.dateToString(
       newPattern: 'yyyy-MM-dd',
       value: DateTime.now().toString(),
@@ -580,8 +601,6 @@ class HomeController extends GetxController {
         );
 
         LoggerHelper.logPrettyJson(reqAttendance.toJson());
-
-        // return;
 
         final res = await _attendanceS.updateAttendance(reqAttendance.toJson());
 

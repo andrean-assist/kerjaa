@@ -17,6 +17,9 @@ _$DataDashboardModelImpl _$$DataDashboardModelImplFromJson(
           ? null
           : OrganizationModel.fromJson(
               json['organization'] as Map<String, dynamic>),
+      user: json['user'] == null
+          ? null
+          : UserModel.fromJson(json['user'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$DataDashboardModelImplToJson(
@@ -24,4 +27,5 @@ Map<String, dynamic> _$$DataDashboardModelImplToJson(
     <String, dynamic>{
       'attendance': instance.attendance,
       'organization': instance.organization,
+      'user': instance.user,
     };
