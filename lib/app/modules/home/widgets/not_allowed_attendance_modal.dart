@@ -5,7 +5,10 @@ import 'package:get/get.dart';
 import '../../../../../utils/constants_assets.dart';
 
 class NotAllowedAttendanceModal extends StatelessWidget {
-  const NotAllowedAttendanceModal(String title, String description, {super.key});
+  final String title;
+  final String description;
+
+  const NotAllowedAttendanceModal(this.title, this.description, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +28,7 @@ class NotAllowedAttendanceModal extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Text(
-            'Opps.. Anda tidak bisa menggunakan absen mobile di hari ini!',
+            title,
             style: textTheme.titleMedium?.copyWith(
               fontWeight: SharedTheme.semiBold,
             ),
@@ -33,7 +36,7 @@ class NotAllowedAttendanceModal extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            'Karena di awal Anda absen di Website, untuk saat ini hanya bisa istirahat dan checkout di Website ya.',
+            description,
             style: textTheme.bodyMedium?.copyWith(
               fontWeight: SharedTheme.semiBold,
               color: theme.hintColor,

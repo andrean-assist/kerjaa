@@ -64,6 +64,7 @@ class EditProfileView extends GetView<EditProfileController> {
                 labelText: 'Nama',
                 isFilled: false,
                 isRequired: true,
+                isEnable: false,
                 validator: (value) => Validation.formField(
                   value: value,
                   titleField: ConstantsStrings.labelPosition,
@@ -76,6 +77,7 @@ class EditProfileView extends GetView<EditProfileController> {
                 labelText: 'Posisi',
                 isFilled: false,
                 isRequired: true,
+                isEnable: false,
                 validator: (value) => Validation.formField(
                   value: value,
                   titleField: ConstantsStrings.labelPosition,

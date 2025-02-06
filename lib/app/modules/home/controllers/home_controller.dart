@@ -275,8 +275,10 @@ class HomeController extends GetxController {
       try {
         final res = await _homeS.dashboard(organizationId: _organizationId!);
 
-        print('res = ${res.isOk}');
+        print('res isOk = ${res.isOk}');
+        print('res statusCode = ${res.statusCode}');
         print('res statusText = ${res.statusText}');
+        print('res ${res.headers}');
 
         if (res.isOk) {
           final body = res.body;
@@ -395,6 +397,10 @@ class HomeController extends GetxController {
             } else {
               String title;
               String description;
+
+              print('statusCode = ${res.statusCode}');
+              print(
+                  'isPreconditionFailed = ${res.statusCode == HttpStatus.preconditionFailed}');
 
               if (res.statusCode == HttpStatus.preconditionFailed) {
                 title = 'Opps.. Anda tidak bisa menggunakan absen!';
@@ -638,8 +644,6 @@ class HomeController extends GetxController {
           ? organization?.radius?.toDouble()
           : 0.0,
     );
-
-    LoggerHelper.logPrettyJson(navModel.toJson());
 
     if (typeAbsence == StatusAbsenceSetup.checkIn) {
       Get.toNamed(Routes.LOCATION_MAPS, arguments: navModel);

@@ -35,7 +35,6 @@ class LoginView extends GetView<LoginController> {
               const SizedBox(height: 14),
               Text(
                 'Masuk ke Akun',
-                // minFontSize: 20,
                 style: textTheme.headlineSmall?.copyWith(
                   fontSize: 20,
                   fontWeight: SharedTheme.bold,
@@ -52,14 +51,14 @@ class LoginView extends GetView<LoginController> {
               ),
               const SizedBox(height: 24),
               _builderForm(),
-              TextButton(
-                onPressed: controller.moveToForgotPassword,
-                child: const Text(
-                  'Lupa Password ?',
-                  style: TextStyle(fontWeight: SharedTheme.semiBold),
-                ),
-              ),
-              const SizedBox(height: 14),
+              // TextButton(
+              //   onPressed: controller.moveToForgotPassword,
+              //   child: const Text(
+              //     'Lupa Password ?',
+              //     style: TextStyle(fontWeight: SharedTheme.semiBold),
+              //   ),
+              // ),
+              const SizedBox(height: 18),
               Obx(
                 () {
                   final isEnabled = controller.email.value.isNotEmpty &&
@@ -169,7 +168,6 @@ class LoginView extends GetView<LoginController> {
               );
             },
           ),
-        
         ],
       ),
     );

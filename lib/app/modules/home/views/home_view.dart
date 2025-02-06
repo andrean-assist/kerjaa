@@ -62,6 +62,7 @@ class HomeView extends GetView<HomeController> {
           alignment: Alignment.topLeft,
         ),
       ),
+      backgroundColor: SharedTheme.filledBtnColor,
       leadingWidth: 100,
       toolbarHeight: 68,
       forceMaterialTransparency: true,

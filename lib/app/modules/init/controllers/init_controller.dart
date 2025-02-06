@@ -27,6 +27,7 @@ class InitController extends GetxController {
   final _navigatorKey = GlobalKey<NavigatorState>();
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
+
   // late final StreamSubscription<ServiceStatus> subscriptionServiceLocation;
   // final streamServiceLocation = ServiceStatus.disabled.obs;
 
@@ -36,6 +37,7 @@ class InitController extends GetxController {
 
   final isConnectedInternet = true.obs;
   var _isShowModalInternet = false;
+  var _isShowModalError = false;
 
   final logger = Logger(
       printer: PrettyPrinter(
@@ -159,6 +161,7 @@ class InitController extends GetxController {
 
   void showModalDisconnected() {
     _isShowModalInternet = true;
+    _isShowModalError = true;
 
     Modals.bottomSheet(
       context: Get.context!,
@@ -200,7 +203,9 @@ class InitController extends GetxController {
       ),
     ).then((_) {
       _isShowModalInternet = false;
-    });
+    }).whenComplete(
+      () => _isShowModalError = false,
+    );
   }
 
   Future<(Position?, StatePermission)> determinePosition() async {
@@ -274,6 +279,8 @@ class InitController extends GetxController {
   }
 
   Future<void> showDialogFailed({required dynamic Function() onPressed}) async {
+    _isShowModalError = true;
+
     Modals.bottomSheet(
       context: Get.context!,
       isDismissible: true,
@@ -288,6 +295,8 @@ class InitController extends GetxController {
         onPressed: onPressed,
         child: const Text('Muat Ulang'),
       ),
+    ).whenComplete(
+      () => _isShowModalError = false,
     );
   }
 
@@ -315,22 +324,24 @@ class InitController extends GetxController {
   }) {
     logger.d('debug: status code error = ${status.code}');
 
-    // jika internet mati
-    if (!isConnectedInternet.value) {
-      showModalDisconnected();
-    } else {
-      // jika otorisasi tidak valid
-      if (status.isUnauthorized) {
-        redirectLogout(Get.context!);
-      } else if (status.hasError) {
-        if (onLoad != null) {
-          // jika gagal load data
-          showDialogFailed(
-            onPressed: () {
-              onLoad();
-              Get.back();
-            },
-          );
+    if (!_isShowModalError) {
+      // jika internet mati
+      if (!isConnectedInternet.value) {
+        showModalDisconnected();
+      } else {
+        // jika otorisasi tidak valid
+        if (status.isUnauthorized) {
+          redirectLogout(Get.context!);
+        } else if (status.hasError) {
+          if (onLoad != null) {
+            // jika gagal load data
+            showDialogFailed(
+              onPressed: () {
+                onLoad();
+                Get.back();
+              },
+            );
+          }
         }
       }
     }
