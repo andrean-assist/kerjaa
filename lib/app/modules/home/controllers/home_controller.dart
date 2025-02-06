@@ -398,10 +398,6 @@ class HomeController extends GetxController {
               String title;
               String description;
 
-              print('statusCode = ${res.statusCode}');
-              print(
-                  'isPreconditionFailed = ${res.statusCode == HttpStatus.preconditionFailed}');
-
               if (res.statusCode == HttpStatus.preconditionFailed) {
                 title = 'Opps.. Anda tidak bisa menggunakan absen!';
                 description = 'Kamu sudah absen sebelumnya pada shift ini';
