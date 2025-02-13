@@ -24,8 +24,8 @@ class SplashView extends GetView<SplashController> {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SvgPicture.asset(
-                    ConstantsAssets.icLogoLite,
+                  Image.asset(
+                    ConstantsAssets.imgLogo,
                     height: 112,
                   ),
                   const SizedBox(height: 8),
@@ -37,13 +37,6 @@ class SplashView extends GetView<SplashController> {
                   )
                 ],
               ),
-              // Align(
-              //   alignment: Alignment.center,
-              //   child: SvgPicture.asset(
-              //     ConstantsAssets.icLogoSplash,
-              //     height: 112,
-              //   ),
-              // ),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: SvgPicture.asset(

@@ -28,6 +28,7 @@ class SharedTheme {
   );
 
   static const textBtnColor = Color(0xFF329ED8);
+  static const textSuccessColor = Color(0xFF22C55E);
   static const outlinedBtnColor = Color(0xFF329ED8);
   static const filledBtnColor = Color(0xFF329ED8);
   static const filledTonalBtnColor = Color(0xFFEBF5FB);
@@ -35,6 +36,7 @@ class SharedTheme {
   static const filledRejectedColor = Color(0xFFD93E3E);
   static const filledPendingColor = Color(0xFFEAB308);
   static const primaryBtnLightColor = Color(0xFFEBF5FB);
+  static const disabledColor = Color(0xFF475569);
 
   static const lightIconColor = Color(0xFF94A3B8);
   static const secondaryTextColor = Color(0xFF334155);

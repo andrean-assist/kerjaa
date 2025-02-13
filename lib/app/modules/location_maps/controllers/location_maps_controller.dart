@@ -4,7 +4,6 @@ import 'package:assist_hadir/app/data/model/navigations/navigation_model.dart';
 import 'package:assist_hadir/app/data/model/verifications/location/location_verification_model.dart';
 import 'package:assist_hadir/app/data/model/position/position_model.dart';
 import 'package:assist_hadir/app/helpers/location_helper.dart';
-import 'package:assist_hadir/app/helpers/logger_helper.dart';
 import 'package:assist_hadir/app/modules/init/controllers/init_controller.dart';
 import 'package:assist_hadir/app/modules/widgets/modal/custom_modal.dart';
 import 'package:assist_hadir/shared/shared_enum.dart';

@@ -29,9 +29,6 @@ Map<String, dynamic> _$$ReqAttendanceModelImplToJson(
     'userId': instance.userId,
     'organizationId': instance.organizationId,
     'date': instance.date,
-    'shift': instance.shift,
-    'type': instance.type,
-    'userReasonLocation': instance.userReasonLocation,
   };
 
   void writeNotNull(String key, dynamic value) {
@@ -40,6 +37,9 @@ Map<String, dynamic> _$$ReqAttendanceModelImplToJson(
     }
   }
 
+  writeNotNull('shift', instance.shift);
+  val['type'] = instance.type;
+  writeNotNull('userReasonLocation', instance.userReasonLocation);
   writeNotNull('attendanceId', instance.attendanceId);
   writeNotNull('approved', instance.approved);
   writeNotNull('verifications', instance.verifications);

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_links/app_links.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:assist_hadir/app/modules/widgets/modal/custom_modal.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -23,15 +24,20 @@ class InitController extends GetxController {
   late final GetStorage _localStorage;
   late final StreamSubscription<List<ConnectivityResult>>
       _subscriptionConnectivity;
+  final _navigatorKey = GlobalKey<NavigatorState>();
+  late AppLinks _appLinks;
+  StreamSubscription<Uri>? _linkSubscription;
+
   // late final StreamSubscription<ServiceStatus> subscriptionServiceLocation;
   // final streamServiceLocation = ServiceStatus.disabled.obs;
 
-  Timer? _serviceStatusTimer;
+  // Timer? _serviceStatusTimer;
 
   GetStorage get localStorage => _localStorage;
 
   final isConnectedInternet = true.obs;
   var _isShowModalInternet = false;
+  var _isShowModalError = false;
 
   final logger = Logger(
       printer: PrettyPrinter(
@@ -47,11 +53,26 @@ class InitController extends GetxController {
   void _init() {
     _localStorage = GetStorage();
     _initListen();
+    _initDeepLinks();
   }
 
   void _initListen() {
     _listenConnectivity();
     // _listenDeterminePosition();
+  }
+
+  Future<void> _initDeepLinks() async {
+    _appLinks = AppLinks();
+
+    // Handle links
+    _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
+      debugPrint('onAppLink: $uri');
+      _openAppLink(uri);
+    });
+  }
+
+  void _openAppLink(Uri uri) {
+    _navigatorKey.currentState?.pushNamed(uri.fragment);
   }
 
   bool? isUserFirstUsingApp() =>
@@ -140,6 +161,7 @@ class InitController extends GetxController {
 
   void showModalDisconnected() {
     _isShowModalInternet = true;
+    _isShowModalError = true;
 
     Modals.bottomSheet(
       context: Get.context!,
@@ -181,7 +203,9 @@ class InitController extends GetxController {
       ),
     ).then((_) {
       _isShowModalInternet = false;
-    });
+    }).whenComplete(
+      () => _isShowModalError = false,
+    );
   }
 
   Future<(Position?, StatePermission)> determinePosition() async {
@@ -255,6 +279,8 @@ class InitController extends GetxController {
   }
 
   Future<void> showDialogFailed({required dynamic Function() onPressed}) async {
+    _isShowModalError = true;
+
     Modals.bottomSheet(
       context: Get.context!,
       isDismissible: true,
@@ -269,6 +295,8 @@ class InitController extends GetxController {
         onPressed: onPressed,
         child: const Text('Muat Ulang'),
       ),
+    ).whenComplete(
+      () => _isShowModalError = false,
     );
   }
 
@@ -296,22 +324,24 @@ class InitController extends GetxController {
   }) {
     logger.d('debug: status code error = ${status.code}');
 
-    // jika internet mati
-    if (!isConnectedInternet.value) {
-      showModalDisconnected();
-    } else {
-      // jika otorisasi tidak valid
-      if (status.isUnauthorized) {
-        redirectLogout(Get.context!);
-      } else if (status.hasError) {
-        if (onLoad != null) {
-          // jika gagal load data
-          showDialogFailed(
-            onPressed: () {
-              onLoad();
-              Get.back();
-            },
-          );
+    if (!_isShowModalError) {
+      // jika internet mati
+      if (!isConnectedInternet.value) {
+        showModalDisconnected();
+      } else {
+        // jika otorisasi tidak valid
+        if (status.isUnauthorized) {
+          redirectLogout(Get.context!);
+        } else if (status.hasError) {
+          if (onLoad != null) {
+            // jika gagal load data
+            showDialogFailed(
+              onPressed: () {
+                onLoad();
+                Get.back();
+              },
+            );
+          }
         }
       }
     }
@@ -320,6 +350,8 @@ class InitController extends GetxController {
   @override
   void onClose() {
     _subscriptionConnectivity.cancel();
+    _linkSubscription?.cancel();
+
     // subscriptionServiceLocation.cancel();
     // streamServiceLocation.close();
     // _serviceStatusTimer?.cancel();

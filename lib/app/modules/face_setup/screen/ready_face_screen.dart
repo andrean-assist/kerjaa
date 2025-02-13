@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:assist_hadir/shared/shared_enum.dart';
 import 'package:camerawesome/camerawesome_plugin.dart';
 import 'package:camerawesome/pigeon.dart';
 import 'package:flutter/material.dart';

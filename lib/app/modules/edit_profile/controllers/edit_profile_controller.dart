@@ -6,10 +6,9 @@ import 'package:assist_hadir/services/profile/profile_services.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:get/get.dart';
-// import 'package:get/get_connect/http/src/exceptions/exceptions.dart';
+import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as p;
+import 'package:flutter_exif_rotation/flutter_exif_rotation.dart';
 
 import '../../../../utils/constants_keys.dart';
 import '../../init/controllers/init_controller.dart';
@@ -27,9 +26,10 @@ class EditProfileController extends GetxController {
 
   UserModel? userModel;
 
-  final imageFile = Rxn<XFile>();
+  final imageFile = Rxn<File>();
 
   final isLoading = false.obs;
+  final isEnabled = false.obs;
 
   @override
   void onInit() {
@@ -44,6 +44,7 @@ class EditProfileController extends GetxController {
 
     _awsS = AwsServices(_initC);
     _profileS = ProfileServices(_initC);
+    _initListenerC();
 
     userModel = Get.arguments as UserModel?;
     fullNameC.text = userModel?.name ?? '';
@@ -51,18 +52,54 @@ class EditProfileController extends GetxController {
     emailC.text = userModel?.email ?? '';
   }
 
+  void _initListenerC() {
+    fullNameC.addListener(_changeEnabled);
+    emailC.addListener(_changeEnabled);
+  }
+
+  void _changeEnabled() {
+    isEnabled.value = fullNameC.text.isNotEmpty && emailC.text.isNotEmpty;
+  }
+
   Future<void> pickImage() async {
     final picker = ImagePicker();
 
     try {
-      imageFile.value = await picker.pickImage(
+      final xFile = await picker.pickImage(
         source: ImageSource.gallery,
         imageQuality: 60,
       );
+
+      print('length = ${xFile?.path.length}');
+      print('xFile = ${xFile?.path}');
+
+      if (xFile != null) {
+        final rotatedImage = await fixImageOrientation(xFile.path);
+        imageFile.value = rotatedImage;
+      }
+
+      // if (xFile != null) {
+      //   imageFile.value = await setImageOrientationToPortrait(xFile);
+      //   print('imageFile.value = ${imageFile.value?.path}');
+      // }
+
+      // imageFile.value = xFile;
+
       print('pathImageFile = ${imageFile.value?.path}');
     } catch (e) {
       imageFile.value = null;
       _initC.logger.e('Error: $e');
+    }
+  }
+
+  Future<File> fixImageOrientation(String filePath) async {
+    try {
+      final correctedFile =
+          await FlutterExifRotation.rotateImage(path: filePath);
+      return correctedFile;
+    } catch (e) {
+      print('Error fixing orientation: $e');
+      return File(filePath); // Return original file if there's an error
     }
   }
 
@@ -78,12 +115,7 @@ class EditProfileController extends GetxController {
   Future<String?> _uploadImage(String? path) async {
     if (path == null) return null;
 
-    print('path = $path');
-
     final res = await _awsS.uploadImage(path);
-
-    print('res statusCode = ${res.statusCode}');
-    print('res data = ${res.data}');
 
     if (res.statusCode == HttpStatus.ok) {
       return res.data;
@@ -124,18 +156,6 @@ class EditProfileController extends GetxController {
         Get.back(result: true);
       } else {
         _initC.handleError(status: res.status, onLoad: _updateProfile);
-
-        // if (res.statusCode == HttpStatus.unauthorized) {
-        //   _initC.redirectLogout(Get.context!);
-        // } else {
-        //   _initC.showDialogFailed(
-        //     onPressed: () {
-        //       FocusScope.of(Get.context!).unfocus();
-        //       Get.back();
-        //       _updateProfile();
-        //     },
-        //   );
-        // }
       }
     } on DioException catch (e) {
       _initC.logger.e('Error: $e');
