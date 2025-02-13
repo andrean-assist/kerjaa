@@ -13,7 +13,7 @@ class ShiftModal extends GetView<HomeController> {
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
 
-    final data = controller.dataDashboard?.shift;
+    final data = controller.dataDashboard?.organization?.shift;
     final isDisabledShiftMorning = data?.pagi?.disabledShift ?? true;
     final isDisabledShiftDay = data?.siang?.disabledShift ?? true;
     final isDisabledShiftNight = data?.malam?.disabledShift ?? true;

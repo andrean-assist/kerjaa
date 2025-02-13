@@ -77,7 +77,7 @@ class LoginController extends GetxController {
   }
 
   void _checkAuth() async {
-    isLoading.value = true; 
+    isLoading.value = true;
 
     final reqLogin = ReqLoginModel(
       email: emailC.text.trim().toString(),
@@ -86,6 +86,8 @@ class LoginController extends GetxController {
 
     try {
       final res = await _authS.login(reqLogin.toJson());
+
+      print('res isOk = ${res.isOk}');
 
       if (res.isOk) {
         final body = res.body;
@@ -154,7 +156,7 @@ class LoginController extends GetxController {
   void _showDialogWrongEmailOrPassword() {
     Modals.bottomSheet(
       context: Get.context!,
-      content: const FailedLoginModal(),
+      content: const FailedLoginModal(), 
       actions: Buttons.filled(
         width: double.infinity,
         onPressed: Get.back,
@@ -171,4 +173,6 @@ class LoginController extends GetxController {
       );
 
   void _moveToHome() => Get.offAllNamed(Routes.HOME);
+
+  void moveToForgotPassword() => Get.toNamed(Routes.FORGOT_PASSWORD);
 }
