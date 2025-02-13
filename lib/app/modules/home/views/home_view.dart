@@ -57,8 +57,8 @@ class HomeView extends GetView<HomeController> {
       title: null,
       leading: Padding(
         padding: const EdgeInsets.fromLTRB(16, 12, 0, 12),
-        child: SvgPicture.asset(
-          ConstantsAssets.icLogoLite,
+        child: Image.asset(
+          ConstantsAssets.imgLogo,
           alignment: Alignment.topLeft,
         ),
       ),
@@ -67,19 +67,6 @@ class HomeView extends GetView<HomeController> {
       toolbarHeight: 68,
       forceMaterialTransparency: true,
       actions: [
-        // IconButton(
-        //   onPressed: () {},
-        //   icon: SvgPicture.asset(
-        //     ConstantsAssets.icNotification,
-        //     colorFilter: const ColorFilter.mode(
-        //       SharedTheme.lightIconColor,
-        //       BlendMode.srcIn,
-        //     ),
-        //     width: 24,
-        //     height: 24,
-        //   ),
-        // ),
-        // const SizedBox(width: 4),
         GestureDetector(
           onTap: controller.moveToProfile,
           child: Padding(

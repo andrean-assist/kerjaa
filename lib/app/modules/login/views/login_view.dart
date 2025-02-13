@@ -29,8 +29,9 @@ class LoginView extends GetView<LoginController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SvgPicture.asset(
-                ConstantsAssets.icLogoLite,
+              Image.asset(
+                ConstantsAssets.imgLogo,
+                width: 48,
               ),
               const SizedBox(height: 14),
               Text(

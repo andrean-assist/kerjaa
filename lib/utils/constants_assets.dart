@@ -40,6 +40,7 @@ abstract class ConstantsAssets {
   static const icGSProfile = '${_icPath}ic_gs_profile.svg';
 
   // IMAGE
+  static const imgLogo = '${_imgPath}img_logo.png';
   static const imgNoPhoto = '${_imgPath}img_no_photo.png';
   static const imgOnboard = '${_imgPath}img_onboarding.png';
   static const imgOnboard2 = '${_imgPath}img_onboarding2.png';
