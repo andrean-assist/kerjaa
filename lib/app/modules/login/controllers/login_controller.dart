@@ -102,7 +102,7 @@ class LoginController extends GetxController {
             await _saveUserLogin(dataLogin);
 
             if (isHasRegisteredFace) {
-              _moveToHome();
+              _moveToMain();
             } else {
               _moveToFaceSetup();
             }
@@ -156,7 +156,7 @@ class LoginController extends GetxController {
   void _showDialogWrongEmailOrPassword() {
     Modals.bottomSheet(
       context: Get.context!,
-      content: const FailedLoginModal(), 
+      content: const FailedLoginModal(),
       actions: Buttons.filled(
         width: double.infinity,
         onPressed: Get.back,
@@ -172,7 +172,7 @@ class LoginController extends GetxController {
         ),
       );
 
-  void _moveToHome() => Get.offAllNamed(Routes.HOME);
+  void _moveToMain() => Get.offAllNamed(Routes.MAIN);
 
   void moveToForgotPassword() => Get.toNamed(Routes.FORGOT_PASSWORD);
 }

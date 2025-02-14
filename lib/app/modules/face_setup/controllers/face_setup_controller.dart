@@ -82,7 +82,7 @@ class FaceSetupController extends GetxController {
 
     _authS = AuthServices(_initC);
     _attendanceS = AttendanceServices(_initC);
-    _awsS = AwsServices(_initC);
+    _awsS = AwsServices();
 
     _initListen();
     _initFaceDetector();
@@ -412,7 +412,7 @@ class FaceSetupController extends GetxController {
           if (body != null) {
             _initC.localStorage.write(ConstantsKeys.isVerified, true);
             _initC.localStorage.write(ConstantsKeys.profilPicture, urlImage);
-            _moveToHome();
+            _moveToMain();
           }
         } else {
           _initC.handleError(status: res.status, onLoad: _actionRegisterFace);
@@ -494,7 +494,7 @@ class FaceSetupController extends GetxController {
         print('res body = ${res?.body}');
 
         if (res!.isOk) {
-          _moveToHome();
+          _moveToMain();
         } else {
           _initC.handleError(status: res.status, onLoad: _actionAttendance);
         }
@@ -523,7 +523,7 @@ class FaceSetupController extends GetxController {
     );
   }
 
-  void _moveToHome() => Get.offAllNamed(Routes.HOME);
+  void _moveToMain() => Get.offAllNamed(Routes.MAIN);
 
   @override
   void onClose() {

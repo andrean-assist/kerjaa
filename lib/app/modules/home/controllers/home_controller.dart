@@ -19,6 +19,7 @@ import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/exceptions/exceptions.dart';
 
 import '../../../../services/home/home_services.dart';
+import '../../../data/db/menu_home/menu_home_model.dart';
 import '../../../data/model/attendance/req/req_attendance_model.dart';
 import '../../../data/model/dashboard/res/data/data_dashboard_model.dart';
 import '../../../helpers/format_date_time.dart';
@@ -32,9 +33,45 @@ class HomeController extends GetxController {
   late final InitController _initC;
   late final HomeServices _homeS;
   late final AttendanceServices _attendanceS;
+
   StreamSubscription<Duration>? _startTimeObserver;
 
+  final scrollC = ScrollController();
+
   late final ActionSliderController actionSliderC;
+
+  final listMenu = [
+    MenuHomeModel(
+      icon: ConstantsAssets.icTimeOff,
+      color: const Color(0xFFF1CC5A),
+      label: 'Time Off',
+      onPressed: () {},
+    ),
+    MenuHomeModel(
+      icon: ConstantsAssets.icLogAbsence,
+      color: const Color(0xFF0E766E),
+      label: 'Absensi Log',
+      onPressed: () {},
+    ),
+    MenuHomeModel(
+      icon: ConstantsAssets.icOvertime,
+      color: const Color(0xFF5BB1E0),
+      label: 'Lembur',
+      onPressed: () {},
+    ),
+    MenuHomeModel(
+      icon: ConstantsAssets.icMySlip,
+      color: const Color(0xFF6466F1),
+      label: 'My Slip',
+      onPressed: () {},
+    ),
+    MenuHomeModel(
+      icon: ConstantsAssets.icClientMeeting,
+      color: const Color(0xFF5BB1E0),
+      label: 'Temu Client',
+      onPressed: () {},
+    ),
+  ];
 
   String? _userId;
   String? _firstName = '';
@@ -66,6 +103,8 @@ class HomeController extends GetxController {
     ConstantsAssets.icWorkingHours,
   ];
 
+  final isScroll = false.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -85,6 +124,7 @@ class HomeController extends GetxController {
     _workerListener();
     await fetchDashboard();
     _listenAction();
+    _listenerScroll();
   }
 
   void _workerListener() {
@@ -222,6 +262,10 @@ class HomeController extends GetxController {
       },
     );
   }
+
+  void _listenerScroll() => scrollC.addListener(
+        () => isScroll.value = scrollC.offset > 10,
+      );
 
   void setShift(String shiftName) => shift.value = shiftName;
 
@@ -655,6 +699,8 @@ class HomeController extends GetxController {
       }
     }
   }
+
+  void _moveOffTime() {}
 
   void moveToActivityHistory() => Get.toNamed(Routes.ACTIVITY_HISTORY);
 

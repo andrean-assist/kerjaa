@@ -35,7 +35,7 @@ class SplashController extends GetxController {
     } else {
       if (token != null) {
         if (isHasRegisteredFace) {
-          _moveToHome();
+          _moveToMain();
         } else {
           _moveToFaceSetup();
         }
@@ -49,7 +49,7 @@ class SplashController extends GetxController {
 
   void _moveToLogin() => Get.offAllNamed(Routes.LOGIN);
 
-  void _moveToHome() => Get.offAllNamed(Routes.HOME);
+  void _moveToMain() => Get.offAllNamed(Routes.MAIN);
 
   void _moveToFaceSetup() => Get.offAllNamed(
         Routes.REGISTER_FACE,

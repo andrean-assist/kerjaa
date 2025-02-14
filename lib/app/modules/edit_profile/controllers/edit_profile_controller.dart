@@ -42,7 +42,7 @@ class EditProfileController extends GetxController {
       _initC = Get.find<InitController>();
     }
 
-    _awsS = AwsServices(_initC);
+    _awsS = AwsServices();
     _profileS = ProfileServices(_initC);
     _initListenerC();
 

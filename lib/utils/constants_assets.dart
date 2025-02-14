@@ -3,11 +3,16 @@ abstract class ConstantsAssets {
   static const _icPath = 'assets/ic/';
 
   // ICON
-  static const icLogoApp = '${_icPath}ic_logo_app.png';
-  static const icLogoSplash = '${_icPath}ic_logo_splash.svg';
+
   static const icLogoLite = '${_icPath}ic_logo_lite.svg';
   static const icLogoAssist = '${_icPath}ic_logo_assist.png';
   static const icLogoPoweredAssist = '${_icPath}ic_logo_powered_assist.svg';
+
+  // BOTTOM NAVIGATION BAR
+  static const icHomeNavbar = '${_icPath}ic_home_navbar.svg';
+  static const icEmployeeNavbar = '${_icPath}ic_employee_navbar.svg';
+  static const icMessageNavbar = '${_icPath}ic_message_navbar.svg';
+  static const icProfileNavbar = '${_icPath}ic_profile_navbar.svg';
 
   static const icMessage = '${_icPath}ic_message.svg';
   static const icLock = '${_icPath}ic_lock.svg';
@@ -20,6 +25,13 @@ abstract class ConstantsAssets {
 
   static const icHintFaceSetup = '${_icPath}ic_hint_face_setup.svg';
   static const icFrameFaceSetup = '${_icPath}ic_frame_face_setup.svg';
+
+  static const icTimeOff = '${_icPath}ic_time_off.svg';
+  static const icLogAbsence = '${_icPath}ic_calendar_time.svg';
+  static const icOvertime = '${_icPath}ic_overtime.svg';
+  static const icMySlip = '${_icPath}ic_my_slip.svg';
+  static const icClientMeeting = '${_icPath}ic_client_meeting.svg';
+  static const icAnnouncement = '${_icPath}ic_announcement.svg';
 
   static const icStartTimeWork = '${_icPath}ic_calendar_time.svg';
   static const icBreak = '${_icPath}ic_spoon.svg';

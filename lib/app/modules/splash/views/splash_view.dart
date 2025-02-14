@@ -28,7 +28,6 @@ class SplashView extends GetView<SplashController> {
                     ConstantsAssets.imgLogo,
                     height: 112,
                   ),
-                  const SizedBox(height: 8),
                   Text(
                     'Kerjaa',
                     style: textTheme.displaySmall?.copyWith(

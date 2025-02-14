@@ -59,9 +59,10 @@ class SharedTheme {
   static ThemeData lightThemeMaterial = ThemeData(
     useMaterial3: true,
     colorScheme: _lightColorScheme,
-    textTheme: GoogleFonts.plusJakartaSansTextTheme().copyWith(
-        // bodyLarge: TextStyle()
-        ),
+    textTheme: GoogleFonts.plusJakartaSansTextTheme(),
+    // appBarTheme: const AppBarTheme(
+    //   backgroundColor: SharedTheme.filledBtnColor,
+    // ),
     // filledButtonTheme: FilledButtonThemeData(
     //   style: FilledButton.styleFrom(
     //     backgroundColor: filledBtnColor,

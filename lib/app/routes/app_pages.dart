@@ -12,16 +12,14 @@ import '../modules/face_setup/bindings/face_setup_binding.dart';
 import '../modules/face_setup/views/face_setup_view.dart';
 import '../modules/forgot_password/bindings/forgot_password_binding.dart';
 import '../modules/forgot_password/views/forgot_password_view.dart';
-import '../modules/home/bindings/home_binding.dart';
-import '../modules/home/views/home_view.dart';
 import '../modules/location_maps/bindings/location_maps_binding.dart';
 import '../modules/location_maps/views/location_maps_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
+import '../modules/main/bindings/main_binding.dart';
+import '../modules/main/views/main_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
-import '../modules/profile/bindings/profile_binding.dart';
-import '../modules/profile/views/profile_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 
@@ -65,10 +63,15 @@ class AppPages {
       fullscreenDialog: true,
     ),
     GetPage(
-      name: _Paths.HOME,
-      page: () => const HomeView(),
-      binding: HomeBinding(),
+      name: _Paths.MAIN,
+      page: () => const MainView(),
+      binding: MainBinding(),
     ),
+    // GetPage(
+    //   name: _Paths.HOME,
+    //   page: () => const HomeView(),
+    //   binding: HomeBinding(),
+    // ),
     GetPage(
       name: _Paths.LOCATION_MAPS,
       page: () => const LocationMapsView(),
@@ -85,11 +88,11 @@ class AppPages {
       binding: ActivityHistoryBinding(),
       fullscreenDialog: true,
     ),
-    GetPage(
-      name: _Paths.PROFILE,
-      page: () => const ProfileView(),
-      binding: ProfileBinding(),
-    ),
+    // GetPage(
+    //   name: _Paths.PROFILE,
+    //   page: () => const ProfileView(),
+    //   binding: ProfileBinding(),
+    // ),
     GetPage(
       name: _Paths.EDIT_PROFILE,
       page: () => const EditProfileView(),

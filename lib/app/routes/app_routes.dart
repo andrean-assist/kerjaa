@@ -10,7 +10,8 @@ abstract class Routes {
   static const FORGOT_PASSWORD = _Paths.FORGOT_PASSWORD;
   static const CHECK_EMAIL = _Paths.CHECK_EMAIL;
   static const REGISTER_FACE = _Paths.REGISTER_FACE;
-  static const HOME = _Paths.HOME;
+  // static const HOME = _Paths.HOME;
+  static const MAIN = _Paths.MAIN;
   static const LOCATION_MAPS = _Paths.LOCATION_MAPS;
   static const FACE_DETECTION = _Paths.FACE_DETECTION;
   static const ACTIVITY_HISTORY = _Paths.ACTIVITY_HISTORY;
@@ -28,7 +29,8 @@ abstract class _Paths {
   static const FORGOT_PASSWORD = '/forgot-password';
   static const CHECK_EMAIL = '/check-email';
   static const REGISTER_FACE = '/register-face';
-  static const HOME = '/home';
+  static const MAIN = '/main';
+  // static const HOME = '/home';
   static const LOCATION_MAPS = '/location-maps';
   static const FACE_DETECTION = '/face-detection';
   static const ACTIVITY_HISTORY = '/activity-history';

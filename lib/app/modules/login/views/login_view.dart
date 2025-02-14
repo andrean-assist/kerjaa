@@ -33,6 +33,9 @@ class LoginView extends GetView<LoginController> {
                 ConstantsAssets.imgLogo,
                 width: 48,
               ),
+              // SvgPicture.asset(
+              //   ConstantsAssets.icLogoLite,
+              // ),
               const SizedBox(height: 14),
               Text(
                 'Masuk ke Akun',
@@ -52,13 +55,13 @@ class LoginView extends GetView<LoginController> {
               ),
               const SizedBox(height: 24),
               _builderForm(),
-              // TextButton(
-              //   onPressed: controller.moveToForgotPassword,
-              //   child: const Text(
-              //     'Lupa Password ?',
-              //     style: TextStyle(fontWeight: SharedTheme.semiBold),
-              //   ),
-              // ),
+              TextButton(
+                onPressed: controller.moveToForgotPassword,
+                child: const Text(
+                  'Lupa Password ?',
+                  style: TextStyle(fontWeight: SharedTheme.semiBold),
+                ),
+              ),
               const SizedBox(height: 18),
               Obx(
                 () {

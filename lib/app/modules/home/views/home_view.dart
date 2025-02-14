@@ -3,6 +3,7 @@ import 'package:assist_hadir/app/data/model/events/events_model.dart';
 import 'package:assist_hadir/app/helpers/format_date_time.dart';
 import 'package:assist_hadir/app/helpers/time_helper.dart';
 import 'package:assist_hadir/app/modules/home/widgets/shift_modal.dart';
+import 'package:assist_hadir/app/modules/widgets/buttons/custom_button.dart';
 import 'package:assist_hadir/app/modules/widgets/modal/modals.dart';
 import 'package:assist_hadir/shared/shared_enum.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -25,36 +26,22 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = context.textTheme;
-
     return Scaffold(
-      appBar: _builderAppbar(),
-      body: RefreshIndicator.adaptive(
-        onRefresh: () async {
-          controller.fetchDashboard();
-        },
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _builderGreetingMessage(textTheme),
-              const SizedBox(height: 28),
-              _builderHeaderCard(context),
-              const SizedBox(height: 16),
-              _builderAttributesCard(context),
-              const SizedBox(height: 16),
-              _builderLastHistory(context),
-            ],
-          ),
-        ),
+      body: CustomScrollView(
+        controller: controller.scrollC,
+        slivers: [
+          _builderAppBar(),
+          _builderBody(context),
+        ],
       ),
     );
   }
 
-  AppBar _builderAppbar() {
-    return AppBar(
-      title: null,
+  Widget _builderAppBar() {
+    return SliverAppBar(
+      pinned: true,
+      toolbarHeight: 68,
+      leadingWidth: 100,
       leading: Padding(
         padding: const EdgeInsets.fromLTRB(16, 12, 0, 12),
         child: Image.asset(
@@ -62,10 +49,6 @@ class HomeView extends GetView<HomeController> {
           alignment: Alignment.topLeft,
         ),
       ),
-      backgroundColor: SharedTheme.filledBtnColor,
-      leadingWidth: 100,
-      toolbarHeight: 68,
-      forceMaterialTransparency: true,
       actions: [
         GestureDetector(
           onTap: controller.moveToProfile,
@@ -94,25 +77,54 @@ class HomeView extends GetView<HomeController> {
         ),
         const SizedBox(width: 16),
       ],
+      flexibleSpace: FlexibleSpaceBar(
+        background: ObxValue(
+          (state) => Container(
+            color: state.value ? Colors.white : SharedTheme.filledBtnColor,
+          ),
+          controller.isScroll,
+        ),
+      ),
+    );
+  }
+
+  Widget _builderBody(BuildContext context) {
+    final textTheme = context.textTheme;
+    return SliverToBoxAdapter(
+      child: Column(
+        spacing: 16,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _builderGreetingMessage(textTheme),
+          _builderListHeaderCard(),
+          _builderMenu(context),
+          _builderAttributesCard(context),
+          _builderLastHistory(context),
+          _builderAnnouncement(context),
+        ],
+      ),
     );
   }
 
   Widget _builderGreetingMessage(TextTheme textTheme) {
-    return StreamBuilder(
-      stream: TimeHelper.streamDateTime(),
-      builder: (context, snapshot) {
-        final dateTime = snapshot.data;
-        final message = controller.greetingMessage(dateTime);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: StreamBuilder(
+        stream: TimeHelper.streamDateTime(),
+        builder: (context, snapshot) {
+          final dateTime = snapshot.data;
+          final message = controller.greetingMessage(dateTime);
 
-        return Skeletonizer(
-          enabled: dateTime == null,
-          child: _builderTextDisplay(
-            textTheme: textTheme,
-            title: message.$1,
-            subtitle: message.$2,
-          ),
-        );
-      },
+          return Skeletonizer(
+            enabled: dateTime == null,
+            child: _builderTextDisplay(
+              textTheme: textTheme,
+              title: message.$1,
+              subtitle: message.$2,
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -140,116 +152,171 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  Widget _builderHeaderCard(BuildContext context) {
+  Widget _builderListHeaderCard() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final maxWidth = constraints.maxWidth;
+        final maxWidthShift = maxWidth / 1.3;
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Obx(
+            () {
+              final organization = controller.dataDashboard?.organization;
+              final isShift = organization?.isShift;
+              final shift = organization?.shift;
+              final haveShift = isShift != null && shift != null;
+
+              return Visibility(
+                visible: haveShift,
+                replacement: _builderDisabledShift(context, maxWidth),
+                child: Row(
+                  children: [
+                    _builderHeaderCard(
+                      context: context,
+                      width: maxWidthShift,
+                      outPadding: const EdgeInsets.symmetric(horizontal: 16),
+                      isShift: isShift,
+                    ),
+                    _builderHeaderCard(
+                      context: context,
+                      width: maxWidthShift,
+                      isShift: isShift,
+                    ),
+                    _builderHeaderCard(
+                      context: context,
+                      width: maxWidthShift,
+                      outPadding: const EdgeInsets.symmetric(horizontal: 16),
+                      isShift: isShift,
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _builderHeaderCard({
+    required BuildContext context,
+    required double width,
+    EdgeInsets? outPadding,
+    required bool? isShift,
+  }) {
     final theme = context.theme;
     final textTheme = context.textTheme;
 
     return Cards.filled(
       context: context,
       inPadding: const EdgeInsets.fromLTRB(16, 24, 16, 28),
+      outPadding: outPadding,
       color: theme.colorScheme.surfaceContainerLowest,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: SizedBox(
-        width: double.infinity,
-        child: Obx(() {
-          final organization = controller.dataDashboard?.organization;
-          final isShift = organization?.isShift;
-          final shift = organization?.shift;
-          final haveShift = isShift != null && shift != null;
+        width: width,
+        child: Skeletonizer(
+          enabled: controller.isLoading.value,
+          child: Column(
+            children: [
+              StreamBuilder(
+                stream: TimeHelper.streamDateTime(),
+                builder: (context, snapshot) {
+                  final dateTime = snapshot.data;
 
-          return Skeletonizer(
-            enabled: controller.isLoading.value,
-            child: Visibility(
-              visible: haveShift,
-              replacement: _builderDisabledShift(context),
-              child: Column(
+                  var time = '--:--:--';
+                  var date = '----, -- --- ----';
+
+                  if (dateTime != null) {
+                    time = FormatDateTime.dateToString(
+                      newPattern: 'HH:mm:ss',
+                      value: dateTime.toString(),
+                    );
+                    date = FormatDateTime.dateToString(
+                      newPattern: 'EEEE, dd MMM yyyy',
+                      value: dateTime.toString(),
+                    );
+                  }
+
+                  return Skeletonizer(
+                    enabled: dateTime == null,
+                    child: Column(
+                      children: [
+                        Text(
+                          time,
+                          style: textTheme.titleLarge?.copyWith(
+                            fontWeight: SharedTheme.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          date,
+                          style: textTheme.bodyMedium
+                              ?.copyWith(color: theme.hintColor),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  StreamBuilder(
-                    stream: TimeHelper.streamDateTime(),
-                    builder: (context, snapshot) {
-                      final dateTime = snapshot.data;
-
-                      var time = '--:--:--';
-                      var date = '----, -- --- ----';
-
-                      if (dateTime != null) {
-                        time = FormatDateTime.dateToString(
-                          newPattern: 'HH:mm:ss',
-                          value: dateTime.toString(),
-                        );
-                        date = FormatDateTime.dateToString(
-                          newPattern: 'EEEE, dd MMM yyyy',
-                          value: dateTime.toString(),
-                        );
-                      }
-
-                      return Skeletonizer(
-                        enabled: dateTime == null,
-                        child: Column(
-                          children: [
-                            Text(
-                              time,
-                              style: textTheme.titleLarge?.copyWith(
-                                fontWeight: SharedTheme.bold,
-                                fontSize: 20,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              date,
-                              style: textTheme.bodyMedium
-                                  ?.copyWith(color: theme.hintColor),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _builderCountForwardTimer(context),
-                      Text(
-                        'Jam',
-                        style: textTheme.titleSmall?.copyWith(
-                          fontWeight: SharedTheme.semiBold,
-                          color: theme.hintColor,
-                        ),
-                      )
-                    ],
-                  ),
-                  _builderBtnAbsence(context, isShift),
+                  _builderCountForwardTimer(context),
+                  Text(
+                    'Jam',
+                    style: textTheme.titleSmall?.copyWith(
+                      fontWeight: SharedTheme.semiBold,
+                      color: theme.hintColor,
+                    ),
+                  )
                 ],
               ),
-            ),
-          );
-        }),
+              const SizedBox(height: 8),
+              Text(
+                'Shift pagi 8:30 AM to 17:00PM',
+                style: textTheme.labelMedium,
+                textAlign: TextAlign.center,
+              ),
+              _builderBtnAbsence(context, isShift),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Widget _builderDisabledShift(BuildContext context) {
+  Widget _builderDisabledShift(BuildContext context, double width) {
     final textTheme = context.textTheme;
     final size = context.mediaQuerySize;
-    return Column(
-      children: [
-        Image.asset(
-          ConstantsAssets.imgNotAllowedAttendance,
-          height: size.height * 0.25,
-        ),
-        const SizedBox(height: 12),
-        Text(
-          'Shift kerja belum diatur',
-          style: textTheme.titleMedium?.copyWith(
-            fontWeight: SharedTheme.semiBold,
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      width: width,
+      child: Column(
+        children: [
+          Image.asset(
+            ConstantsAssets.imgNotAllowedAttendance,
+            height: size.height * 0.25,
           ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'Shift kerja Anda belum dibuat oleh atasan, nanti kalau sudah ada bakalan tampil di sini ya!',
-          style: textTheme.bodyMedium,
-        ),
-      ],
+          const SizedBox(height: 12),
+          Text(
+            'Shift kerja belum diatur',
+            style: textTheme.titleMedium?.copyWith(
+              fontWeight: SharedTheme.semiBold,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Shift kerja Anda belum dibuat oleh atasan, nanti kalau sudah ada bakalan tampil di sini ya!',
+            style: textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 
@@ -297,19 +364,22 @@ class HomeView extends GetView<HomeController> {
         var isVisibleBtnAbsence = true;
         var isVisibleBtnSlider = false;
 
-        Widget? icon;
-        ButtonStyle? style;
+        // Widget? icon;
+        // ButtonStyle? style;
+        ButtonType buttonType = ButtonType.filled;
         String textBtn = 'Check in';
 
         // jika user sudah melakukan absensi maka tombol checkout tampil
         // dan tombol slide memulai istirahat juga tampil dengan posisi ke kiri atau 0
         if (startTime != null) {
           statusAbsence = StatusAbsenceSetup.checkOut;
-          icon = SvgPicture.asset(ConstantsAssets.icCheckout);
-          style = FilledButton.styleFrom(
-            backgroundColor: SharedTheme.filledBtnRedColor,
-            foregroundColor: Colors.white,
-          );
+          buttonType = ButtonType.filledTonal;
+
+          // icon = SvgPicture.asset(ConstantsAssets.icCheckout);
+          // style = FilledButton.styleFrom(
+          //   backgroundColor: SharedTheme.primaryBtnLightColor,
+          //   foregroundColor: SharedTheme.textBtnColor,
+          // );
           textBtn = 'Check out';
           isVisibleBtnSlider = true;
 
@@ -321,23 +391,27 @@ class HomeView extends GetView<HomeController> {
 
           if (endTime != null) {
             statusAbsence = StatusAbsenceSetup.checkIn;
-            icon = null;
-            style = null;
+            buttonType = ButtonType.filled;
+
+            // icon = null;
+            // style = null;
             textBtn = 'Check in';
             isVisibleBtnAbsence = true;
           }
         }
 
         return Column(
+          spacing: 8,
           children: [
             Visibility(
               visible: isVisibleBtnAbsence,
               child: Container(
                 margin: const EdgeInsets.only(top: 24),
-                child: Buttons.filled(
+                child: CustomButton(
+                  type: buttonType!,
                   width: double.infinity,
-                  icon: icon,
-                  style: style,
+                  // icon: icon,
+                  // style: style,
                   onPressed: () {
                     if (statusAbsence == StatusAbsenceSetup.checkIn) {
                       if (isShift ?? false) {
@@ -394,13 +468,13 @@ class HomeView extends GetView<HomeController> {
                         left: controller.isRest.value ? 0 : 32,
                         right: controller.isRest.value ? 56 : 0,
                       ),
-                      child: Text(
+                      child: AutoSizeText(
                         'Slide untuk ${controller.isRest.value ? 'akhiri' : 'memulai'} istirahat',
                         style: textTheme.titleMedium?.copyWith(
                           color: SharedTheme.textBtnColor,
                           fontWeight: SharedTheme.semiBold,
-                          fontSize: 16,
                         ),
+                        maxFontSize: 15,
                       ),
                     ),
                   ),
@@ -428,6 +502,56 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
+  Widget _builderMenu(BuildContext context) {
+    final textTheme = context.textTheme;
+    final theme = context.theme;
+
+    return Cards.filled(
+      context: context,
+      inPadding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+      outPadding: const EdgeInsets.symmetric(horizontal: 16),
+      color: theme.colorScheme.surfaceContainerLowest,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+          mainAxisSpacing: 12,
+        ),
+        padding: EdgeInsets.zero,
+        itemBuilder: (context, index) {
+          final menu = controller.listMenu[index];
+          return Column(
+            spacing: 4,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                onPressed: menu.onPressed,
+                icon: SvgPicture.asset(
+                  menu.icon,
+                  width: 28,
+                  height: 28,
+                ),
+                style: ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(menu.color),
+                ),
+                padding: const EdgeInsets.all(10),
+              ),
+              Text(
+                menu.label,
+                style: textTheme.labelMedium?.copyWith(
+                  fontWeight: SharedTheme.semiBold,
+                ),
+              ),
+            ],
+          );
+        },
+        itemCount: controller.listMenu.length,
+      ),
+    );
+  }
+
   Widget _builderAttributesCard(BuildContext context) {
     final theme = context.theme;
     final textTheme = context.textTheme;
@@ -435,6 +559,7 @@ class HomeView extends GetView<HomeController> {
     return Cards.filled(
       context: context,
       inPadding: const EdgeInsets.fromLTRB(16, 24, 16, 28),
+      outPadding: const EdgeInsets.symmetric(horizontal: 16),
       color: theme.colorScheme.surfaceContainerLowest,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -499,57 +624,106 @@ class HomeView extends GetView<HomeController> {
     final theme = context.theme;
     final textTheme = context.textTheme;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _builderTextDisplay(
-          textTheme: textTheme,
-          title: 'Aktivitas terakhir',
-          subtitle: 'Riwayat aktivitas terakhir Anda',
-        ),
-        const SizedBox(height: 16),
-        Obx(
-          () => Skeletonizer(
-            enabled: controller.isLoading.value,
-            child: Cards.filled(
-              context: context,
-              color: theme.colorScheme.surfaceContainerLowest,
-              child: Column(
-                children: [
-                  Skeleton.shade(
-                    child: _builderItemHistory(controller.events),
-                  ),
-                  const SizedBox(height: 16),
-                  Buttons.filledTonal(
-                    width: double.infinity,
-                    onPressed: controller.events.isNotEmpty
-                        ? controller.moveToActivityHistory
-                        : null,
-                    icon: const Icon(Icons.arrow_forward_rounded),
-                    iconAlignment: IconAlignment.end,
-                    child: const Text('Lihat detail aktivitas'),
-                  ),
-                ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 16,
+        children: [
+          _builderTextDisplay(
+            textTheme: textTheme,
+            title: 'Aktivitas terakhir',
+            subtitle: 'Riwayat aktivitas terakhir Anda',
+          ),
+          // const SizedBox(height: 16),
+          Obx(
+            () => Skeletonizer(
+              enabled: controller.isLoading.value,
+              child: Cards.filled(
+                context: context,
+                color: theme.colorScheme.surfaceContainerLowest,
+                child: Column(
+                  children: [
+                    Skeleton.shade(
+                      child: _builderItemHistory(controller.events),
+                    ),
+                    const SizedBox(height: 16),
+                    Buttons.filledTonal(
+                      width: double.infinity,
+                      onPressed: controller.events.isNotEmpty
+                          ? controller.moveToActivityHistory
+                          : null,
+                      icon: const Icon(Icons.arrow_forward_rounded),
+                      iconAlignment: IconAlignment.end,
+                      child: const Text('Lihat detail aktivitas'),
+                    ),
+                  ],
+                ),
               ),
             ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _builderAnnouncement(BuildContext context) {
+    final theme = context.theme;
+    final textTheme = context.textTheme;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 16,
+        children: [
+          _builderTextDisplay(
+            textTheme: textTheme,
+            title: 'Pengumuman',
+            subtitle: 'Riwayat pengumuman dari perusahaan',
           ),
-        )
-      ],
+          Obx(
+            () => Skeletonizer(
+              enabled: controller.isLoading.value,
+              child: Cards.filled(
+                context: context,
+                color: theme.colorScheme.surfaceContainerLowest,
+                child: Column(
+                  children: [
+                    Skeleton.shade(
+                      child: _builderItemAnnouncement(),
+                    ),
+                    const SizedBox(height: 16),
+                    Buttons.filledTonal(
+                      width: double.infinity,
+                      onPressed: controller.events.isNotEmpty
+                          ? controller.moveToActivityHistory
+                          : null,
+                      icon: const Icon(Icons.arrow_forward_rounded),
+                      iconAlignment: IconAlignment.end,
+                      child: const Text('Lihat detail pengumuman'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 
   Widget _builderItemHistory(RxList<EventsModel> events) {
     if (events.isNotEmpty) {
       return ListView.builder(
-        physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        padding: EdgeInsets.zero,
         itemBuilder: (context, index) {
           final event = events.value[index];
 
           String? assetIcon;
           var type = '-';
-          // var date = '-- ---, ----';
-          // var time = '--:--';
 
           switch (event.eventType) {
             case 'checkIn':
@@ -607,6 +781,23 @@ class HomeView extends GetView<HomeController> {
         'Belum ada riwayat aktivitas terakhir anda',
         textAlign: TextAlign.center,
       ),
+    );
+  }
+
+  Widget _builderItemAnnouncement() {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.zero,
+      itemBuilder: (context, index) {
+        return ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: SvgPicture.asset(ConstantsAssets.icAnnouncement),
+          title: const Text('Perubahaan Jadwal Kerja Devisi Product'),
+          subtitle: const Text('24 Sep, 2024'),
+        );
+      },
+      itemCount: 3,
     );
   }
 

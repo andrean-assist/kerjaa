@@ -32,8 +32,8 @@ class ProfileController extends GetxController {
     fullName.value = _initC.localStorage.read(ConstantsKeys.name);
     email.value = _initC.localStorage.read(ConstantsKeys.email);
     position.value = _initC.localStorage.read(ConstantsKeys.position);
-    profilePicture.value =
-        _initC.localStorage.read(ConstantsKeys.profilPicture);
+    // profilePicture.value =
+    //     _initC.localStorage.read(ConstantsKeys.profilPicture);
   }
 
   void moveToActivityHistory() => Get.toNamed(Routes.ACTIVITY_HISTORY);
