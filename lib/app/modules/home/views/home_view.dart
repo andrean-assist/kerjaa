@@ -1,6 +1,7 @@
 import 'package:action_slider/action_slider.dart';
 import 'package:assist_hadir/app/data/model/events/events_model.dart';
 import 'package:assist_hadir/app/helpers/format_date_time.dart';
+import 'package:assist_hadir/app/helpers/logger_helper.dart';
 import 'package:assist_hadir/app/helpers/time_helper.dart';
 import 'package:assist_hadir/app/modules/home/widgets/shift_modal.dart';
 import 'package:assist_hadir/app/modules/widgets/modal/modals.dart';
@@ -155,6 +156,7 @@ class HomeView extends GetView<HomeController> {
           final isShift = organization?.isShift;
           final shift = organization?.shift;
           final haveShift = isShift != null && shift != null;
+          LoggerHelper.printPrettyJson(organization?.toJson() ?? '');
 
           return Skeletonizer(
             enabled: controller.isLoading.value,

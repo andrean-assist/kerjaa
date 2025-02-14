@@ -88,6 +88,7 @@ class LoginController extends GetxController {
       final res = await _authS.login(reqLogin.toJson());
 
       print('res isOk = ${res.isOk}');
+      print('res body = ${res.body}');
 
       if (res.isOk) {
         final body = res.body;
@@ -156,7 +157,7 @@ class LoginController extends GetxController {
   void _showDialogWrongEmailOrPassword() {
     Modals.bottomSheet(
       context: Get.context!,
-      content: const FailedLoginModal(), 
+      content: const FailedLoginModal(),
       actions: Buttons.filled(
         width: double.infinity,
         onPressed: Get.back,

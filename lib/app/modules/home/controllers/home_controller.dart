@@ -51,7 +51,6 @@ class HomeController extends GetxController {
   final restTime = RxnString();
   final workTime = RxnString();
   final events = RxList<EventsModel>();
-  final isShiftEnabled = false.obs;
 
   // untuk cek apakah slide mulai istirahat atau tidak
   final isRest = false.obs;
@@ -277,23 +276,23 @@ class HomeController extends GetxController {
 
         print('res isOk = ${res.isOk}');
         print('res statusCode = ${res.statusCode}');
-        print('res statusText = ${res.statusText}');
-        print('res ${res.headers}');
+        // print('res statusText = ${res.statusText}');
+        // print('res ${res.headers}');
 
         if (res.isOk) {
           final body = res.body;
+
+          // LoggerHelper.printPrettyJson(body);
 
           if (body != null) {
             final resBody = ResDashboardModel.fromJson(body);
             dataDashboard = resBody.data;
 
             final attendance = dataDashboard?.attendance;
-            final organization = dataDashboard?.organization;
             final user = dataDashboard?.user;
 
             final eventDate = attendance?.date;
             final dataEvent = attendance?.events;
-            isShiftEnabled.value = organization?.shift != null;
 
             if (eventDate != null) {
               final attendanceId = attendance?.id;
