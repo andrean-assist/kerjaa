@@ -370,6 +370,8 @@ class HomeController extends GetxController {
   }
 
   void isAlreadyCheckin() async {
+    print('checkin dipanggil');
+
     if (_organizationId != null) {
       isLoading.value = true;
 
@@ -384,6 +386,8 @@ class HomeController extends GetxController {
 
       try {
         final res = await _homeS.isAlreadyCheckedIn(params);
+
+        print('res body = ${res.body}');
 
         if (res.isOk) {
           moveToMaps(StatusAbsenceSetup.checkIn);
