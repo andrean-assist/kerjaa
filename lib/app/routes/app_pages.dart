@@ -1,3 +1,5 @@
+import 'package:assist_hadir/app/modules/main/bindings/main_binding.dart';
+import 'package:assist_hadir/app/modules/main/views/main_view.dart';
 import 'package:get/get.dart';
 
 import '../modules/activity_history/bindings/activity_history_binding.dart';

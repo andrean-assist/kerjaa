@@ -508,7 +508,7 @@ class HomeView extends GetView<HomeController> {
 
     return Cards.filled(
       context: context,
-      inPadding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+      inPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       outPadding: const EdgeInsets.symmetric(horizontal: 16),
       color: theme.colorScheme.surfaceContainerLowest,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),

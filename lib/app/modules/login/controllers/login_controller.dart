@@ -173,6 +173,7 @@ class LoginController extends GetxController {
       );
 
   void _moveToMain() => Get.offAllNamed(Routes.MAIN);
+  void _moveToHome() => Get.offAllNamed(Routes.MAIN);
 
   void moveToForgotPassword() => Get.toNamed(Routes.FORGOT_PASSWORD);
 }

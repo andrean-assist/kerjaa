@@ -12,7 +12,7 @@ abstract class ConstantsConnect {
   static const endPointBaseUrlImage =
       'https://dev-upload-file-medicaboo.s3.ap-southeast-1.amazonaws.com/';
   // static const endPointBaseUrlImage =
-  // 'https://kerjaa-medicaboo.s3.ap-southeast-3.amazonaws.com/';
+  //     'https://kerjaa-medicaboo.s3.ap-southeast-3.amazonaws.com/';
 
   // BUCKET
   static const bucketUpload = 'hospitalImageTest';
