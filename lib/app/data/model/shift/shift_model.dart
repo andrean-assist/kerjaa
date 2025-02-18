@@ -11,6 +11,7 @@ class ShiftModel with _$ShiftModel {
     DetailShiftModel? pagi,
     DetailShiftModel? siang,
     DetailShiftModel? malam,
+    DetailShiftModel? general,
   }) = _ShiftModel;
 
   factory ShiftModel.fromJson(Map<String, Object?> json) =>

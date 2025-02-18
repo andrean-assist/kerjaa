@@ -105,6 +105,12 @@ class HomeController extends GetxController {
 
   final isScroll = false.obs;
 
+  final dummyListAnnouncement = [
+    {'title': 'Perubahaan Jadwal Kerja Devisi Product'},
+    {'title': 'Pengisiaan KPI Devisi Product'},
+    {'title': 'Member Baru Product'}
+  ];
+
   @override
   void onInit() {
     super.onInit();
