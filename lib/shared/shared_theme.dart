@@ -37,6 +37,7 @@ class SharedTheme {
   static const filledPendingColor = Color(0xFFEAB308);
   static const primaryBtnLightColor = Color(0xFFEBF5FB);
   static const disabledColor = Color(0xFF475569);
+  static const dividerColor = Color(0xFFE2E8F0);
 
   static const lightIconColor = Color(0xFF94A3B8);
   static const secondaryTextColor = Color(0xFF334155);

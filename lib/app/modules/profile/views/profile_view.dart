@@ -16,6 +16,7 @@ class ProfileView extends GetView<ProfileController> {
   @override
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
+    final size = context.mediaQuerySize;
 
     return Scaffold(
       appBar: AppBar(
@@ -33,15 +34,22 @@ class ProfileView extends GetView<ProfileController> {
               color: const Color(0xFF2E90C5),
             ),
           ),
-          Align(
-            alignment: Alignment.topCenter,
+          Positioned(
+            top: -100,
             child: SvgPicture.asset(
               ConstantsAssets.icGSProfile,
               fit: BoxFit.cover,
             ),
           ),
+          // Align(
+          //   alignment: Alignment.topCenter,
+          //   child: SvgPicture.asset(
+          //     ConstantsAssets.icGSProfile,
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           Positioned.fill(
-            top: 130,
+            top: size.height / 12,
             child: Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
@@ -50,72 +58,72 @@ class ProfileView extends GetView<ProfileController> {
                   top: Radius.circular(20),
                 ),
               ),
-              // child: Obx(
-              //   () => Column(
-              //     children: [
-              //       ListTile(
-              //         contentPadding: EdgeInsets.zero,
-              //         // leading: CachedNetworkImage(
-              //         //   imageUrl:
-              //         //       '${ConstantsConnect.endPointBaseUrlImage}${controller.profilePicture.value}',
-              //         //   imageBuilder: (context, imageProvider) => CircleAvatar(
-              //         //     backgroundImage: imageProvider,
-              //         //     radius: 28,
-              //         //   ),
-              //         //   progressIndicatorBuilder: (context, url, progress) =>
-              //         //       CircleAvatar(
-              //         //     child: CircularProgressIndicator.adaptive(
-              //         //       value: progress.progress,
-              //         //     ),
-              //         //   ),
-              //         //   errorWidget: (context, url, error) =>
-              //         //       const CircleAvatar(
-              //         //     backgroundImage:
-              //         //         AssetImage(ConstantsAssets.imgNoPhoto),
-              //         //   ),
-              //         // ),
-              //         title: Text(controller.fullName.value ?? '-'),
-              //         subtitle: Column(
-              //           crossAxisAlignment: CrossAxisAlignment.start,
-              //           children: [
-              //             Text(controller.position.value ?? '-'),
-              //             const SizedBox(height: 4),
-              //             Text(controller.email.value ?? '-'),
-              //           ],
-              //         ),
-              //         trailing: IconButton(
-              //           onPressed: controller.moveToEditProfile,
-              //           icon: SvgPicture.asset(ConstantsAssets.icEdit),
-              //         ),
-              //       ),
-              //       const SizedBox(height: 24),
-              //       _builderItem(
-              //         textTheme: textTheme,
-              //         label: 'Akun',
-              //         iconPath: ConstantsAssets.icActivityHistory,
-              //         title: 'Riwayat Aktifitas',
-              //         onPressed: controller.moveToActivityHistory,
-              //       ),
-              //       const SizedBox(height: 4),
-              //       _builderItem(
-              //         textTheme: textTheme,
-              //         label: 'Info lainnya',
-              //         iconPath: ConstantsAssets.icRating,
-              //         title: 'Beri Kami Nilai',
-              //         subtitle:
-              //             'Beri kami nilai agar aplikasi terus berkembang.',
-              //         onPressed: () {},
-              //       ),
-              //       const SizedBox(height: 4),
-              //       _builderItem(
-              //         textTheme: textTheme,
-              //         iconPath: ConstantsAssets.icLogout,
-              //         title: 'Keluar',
-              //         onPressed: controller.logout,
-              //       ),
-              //     ],
-              //   ),
-              // ),
+              child: Obx(
+                () => Column(
+                  children: [
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: CachedNetworkImage(
+                        imageUrl:
+                            '${ConstantsConnect.endPointBaseUrlImage}${controller.profilePicture.value}',
+                        imageBuilder: (context, imageProvider) => CircleAvatar(
+                          backgroundImage: imageProvider,
+                          radius: 28,
+                        ),
+                        progressIndicatorBuilder: (context, url, progress) =>
+                            CircleAvatar(
+                          child: CircularProgressIndicator.adaptive(
+                            value: progress.progress,
+                          ),
+                        ),
+                        errorWidget: (context, url, error) =>
+                            const CircleAvatar(
+                          backgroundImage:
+                              AssetImage(ConstantsAssets.imgNoPhoto),
+                        ),
+                      ),
+                      title: Text(controller.fullName.value ?? '-'),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(controller.position.value ?? '-'),
+                          const SizedBox(height: 4),
+                          Text(controller.email.value ?? '-'),
+                        ],
+                      ),
+                      trailing: IconButton(
+                        onPressed: controller.moveToEditProfile,
+                        icon: SvgPicture.asset(ConstantsAssets.icEdit),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    _builderItem(
+                      textTheme: textTheme,
+                      label: 'Akun',
+                      iconPath: ConstantsAssets.icActivityHistory,
+                      title: 'Riwayat Aktifitas',
+                      onPressed: controller.moveToActivityHistory,
+                    ),
+                    const SizedBox(height: 4),
+                    _builderItem(
+                      textTheme: textTheme,
+                      label: 'Info lainnya',
+                      iconPath: ConstantsAssets.icRating,
+                      title: 'Beri Kami Nilai',
+                      subtitle:
+                          'Beri kami nilai agar aplikasi terus berkembang.',
+                      onPressed: () {},
+                    ),
+                    const SizedBox(height: 4),
+                    _builderItem(
+                      textTheme: textTheme,
+                      iconPath: ConstantsAssets.icLogout,
+                      title: 'Keluar',
+                      onPressed: controller.logout,
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ],

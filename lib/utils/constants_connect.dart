@@ -1,20 +1,44 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 abstract class ConstantsConnect {
-  // static const endPointBaseUrl = 'http://192.168.1.129:3100/api/';
-  // static const endPointBaseUrl =
-  //     'https://4a69-182-253-249-74.ngrok-free.app/api/';
+  static final endPointBaseUrl = switch (dotenv.get('APP_ENVIRONMENT')) {
+    'production' => 'https://api-kerjaa.assist.id/api/',
+    'development' => 'https://api-dev-hadir.assist.id/api/',
+    'local' => 'http://192.168.1.129:3100/api/',
+    _ => 'https://api-dev-hadir.assist.id/api/'
+  };
 
-  static const endPointBaseUrl = 'https://api-dev-hadir.assist.id/api/';
-  // static const endPointBaseUrl = 'https://api-kerjaa.assist.id/api/';
+  static final endPointBaseUrlUpload = switch (dotenv.get('APP_ENVIRONMENT')) {
+    'production' => 'https://api-image.assist.id/kerjaa/',
+    'development' => 'https://api-new-image.assist.id/',
+    'local' => 'http://192.168.1.129:3100/api/',
+    _ => 'https://api-new-image.assist.id/'
+  };
 
-  static const endPointBaseUrlUpload = 'https://api-new-image.assist.id/';
+  static final endPointBaseUrlImage = switch (dotenv.get('APP_ENVIRONMENT')) {
+    'production' => 'https://kerjaa-medicaboo.s3.ap-southeast-3.amazonaws.com/',
+    'development' =>
+      'https://dev-upload-file-medicaboo.s3.ap-southeast-1.amazonaws.com/',
+    'local' => 'http://192.168.1.129:3100/api/',
+    _ => 'https://kerjaa-medicaboo.s3.ap-southeast-3.amazonaws.com/'
+  };
+
+  static final bucketUpload = switch (dotenv.get('APP_ENVIRONMENT')) {
+    'production' => 'image',
+    'development' => 'hospitalImageTest',
+    'local' => 'http://192.168.1.129:3100/api/',
+    _ => 'hospitalImageTest'
+  };
+
+  // static const endPointBaseUrlUpload = 'https://api-new-image.assist.id/';
   // static const endPointBaseUrlUpload = 'https://api-image.assist.id/kerjaa/';
 
-  static const endPointBaseUrlImage =
-      'https://dev-upload-file-medicaboo.s3.ap-southeast-1.amazonaws.com/';
+  // static const endPointBaseUrlImage =
+  //     'https://dev-upload-file-medicaboo.s3.ap-southeast-1.amazonaws.com/';
   // static const endPointBaseUrlImage =
   //     'https://kerjaa-medicaboo.s3.ap-southeast-3.amazonaws.com/';
 
   // BUCKET
-  static const bucketUpload = 'hospitalImageTest';
+  // static const bucketUpload = 'hospitalImageTest';
   // static const bucketUpload = 'image';
 }

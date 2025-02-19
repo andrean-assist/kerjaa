@@ -83,6 +83,8 @@ PODS:
     - nanopb (~> 3.30910.0)
     - PromisesSwift (~> 2.1)
   - Flutter (1.0.0)
+  - flutter_env_native (0.0.1):
+    - Flutter
   - flutter_exif_rotation (0.3.0):
     - Flutter
   - geolocator_apple (1.2.0):
@@ -200,6 +202,7 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_crashlytics (from `.symlinks/plugins/firebase_crashlytics/ios`)
   - Flutter (from `Flutter`)
+  - flutter_env_native (from `.symlinks/plugins/flutter_env_native/ios`)
   - flutter_exif_rotation (from `.symlinks/plugins/flutter_exif_rotation/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - google_mlkit_commons (from `.symlinks/plugins/google_mlkit_commons/ios`)
@@ -253,6 +256,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_crashlytics/ios"
   Flutter:
     :path: Flutter
+  flutter_env_native:
+    :path: ".symlinks/plugins/flutter_env_native/ios"
   flutter_exif_rotation:
     :path: ".symlinks/plugins/flutter_exif_rotation/ios"
   geolocator_apple:
@@ -287,6 +292,7 @@ SPEC CHECKSUMS:
   FirebaseRemoteConfigInterop: ca12abf9da0003efd3a476b2dff4f7a04fd31b4f
   FirebaseSessions: 3f56f177d9e53a85021d16b31f9a111849d1dd8b
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  flutter_env_native: 1ffd562384b97c82279738dcce4edeeb01857dee
   flutter_exif_rotation: 5406455759acacf1f7b1b83e85dbb545340d6e9c
   geolocator_apple: 1560c3c875af2a412242c7a923e15d0d401966ff
   google_mlkit_commons: 92c769cc2e0a2bfdeb3c38091a36e8a9cc8c63d4

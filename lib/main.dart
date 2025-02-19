@@ -8,7 +8,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-// import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 
@@ -19,21 +19,17 @@ import 'firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // await _initEnv();
-  // await dotenv.load();
-  // print('dotEnv sudah di init');
-
+  await _initEnv();
   await _initFirebase();
-  _initCrashlytics();
-
+  // _initCrashlytics();
   _initOrientation();
 
   runApp(const MyApp());
 }
 
-// Future<void> _initEnv() async {
-//   await dotenv.load(fileName: ".env");
-// }
+Future<void> _initEnv() async {
+  await dotenv.load();
+}
 
 Future<void> _initFirebase() async {
   await Firebase.initializeApp(

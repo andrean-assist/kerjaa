@@ -44,8 +44,9 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_animate: ^4.5.0
+  flutter_dotenv: ^5.2.1
+  flutter_env_native: ^0.1.0
   flutter_exif_rotation: ^0.5.2
-  # flutter_dotenv: ^5.2.1
   flutter_localizations:
     sdk: flutter
   flutter_map: ^7.0.2
@@ -89,8 +90,7 @@ flutter:
   assets:
     - assets/ic/
     - assets/img/
-    # - .env
-
+    - .env
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
   # For details regarding adding assets from package dependencies, see

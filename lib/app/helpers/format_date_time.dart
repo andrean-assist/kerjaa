@@ -7,8 +7,9 @@ class FormatDateTime {
     String? oldPattern,
     required String newPattern,
     required String? value,
+    String? defaultOutput,
   }) {
-    if (value == null) return '-';
+    if (value == null) return defaultOutput ?? '-';
 
     DateTime inputDate;
 

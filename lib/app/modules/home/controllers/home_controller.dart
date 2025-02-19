@@ -9,6 +9,7 @@ import 'package:assist_hadir/app/data/model/user/user_model.dart';
 import 'package:assist_hadir/app/modules/home/widgets/not_allowed_attendance_modal.dart';
 import 'package:assist_hadir/app/modules/init/controllers/init_controller.dart';
 import 'package:assist_hadir/app/helpers/logger_helper.dart';
+import 'package:assist_hadir/app/modules/main/controllers/main_controller.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:assist_hadir/services/attendance/attendance_services.dart';
 import 'package:assist_hadir/shared/shared_enum.dart';
@@ -31,6 +32,7 @@ import '../../widgets/modal/modals.dart';
 
 class HomeController extends GetxController {
   late final InitController _initC;
+  late final MainController _mainC;
   late final HomeServices _homeS;
   late final AttendanceServices _attendanceS;
 
@@ -42,31 +44,31 @@ class HomeController extends GetxController {
 
   final listMenu = [
     MenuHomeModel(
-      icon: ConstantsAssets.icTimeOff,
+      iconPath: ConstantsAssets.icTimeOff,
       color: const Color(0xFFF1CC5A),
       label: 'Time Off',
       onPressed: () {},
     ),
     MenuHomeModel(
-      icon: ConstantsAssets.icLogAbsence,
+      iconPath: ConstantsAssets.icLogAbsence,
       color: const Color(0xFF0E766E),
       label: 'Absensi Log',
       onPressed: () {},
     ),
     MenuHomeModel(
-      icon: ConstantsAssets.icOvertime,
+      iconPath: ConstantsAssets.icOvertime,
       color: const Color(0xFF5BB1E0),
       label: 'Lembur',
       onPressed: () {},
     ),
     MenuHomeModel(
-      icon: ConstantsAssets.icMySlip,
+      iconPath: ConstantsAssets.icMySlip,
       color: const Color(0xFF6466F1),
       label: 'My Slip',
       onPressed: () {},
     ),
     MenuHomeModel(
-      icon: ConstantsAssets.icClientMeeting,
+      iconPath: ConstantsAssets.icClientMeeting,
       color: const Color(0xFF5BB1E0),
       label: 'Temu Client',
       onPressed: () {},
@@ -118,8 +120,17 @@ class HomeController extends GetxController {
   }
 
   Future<void> _init() async {
+    print(
+        'isRegistered InitController = ${Get.isRegistered<InitController>()}');
+    print(
+        'isRegistered MainController = ${Get.isRegistered<MainController>()}');
+
     if (Get.isRegistered<InitController>()) {
       _initC = Get.find<InitController>();
+    }
+
+    if (Get.isRegistered<MainController>()) {
+      _mainC = Get.find<MainController>();
     }
 
     _homeS = HomeServices(_initC);
@@ -221,13 +232,8 @@ class HomeController extends GetxController {
       () async {
         final anchorPosition = actionSliderC.value.anchorPosition;
 
-        print('test anchorPosition = $anchorPosition');
-        print('test isRest.value = ${isRest.value}');
-
         // mulai istirahat
         if (anchorPosition == 1 && !isRest.value) {
-          print('slide mulai istirahat');
-
           Modals.bottomSheet(
             context: Get.context!,
             onClosePressed: () {
@@ -262,7 +268,6 @@ class HomeController extends GetxController {
             ),
           );
         } else if (anchorPosition == 0 && isRest.value) {
-          print('slide akhiri istirahat');
           rest(true);
         }
       },
@@ -324,11 +329,6 @@ class HomeController extends GetxController {
 
       try {
         final res = await _homeS.dashboard(organizationId: _organizationId!);
-
-        print('res isOk = ${res.isOk}');
-        print('res statusCode = ${res.statusCode}');
-        print('res statusText = ${res.statusText}');
-        print('res ${res.headers}');
 
         if (res.isOk) {
           final body = res.body;
@@ -566,7 +566,6 @@ class HomeController extends GetxController {
   void _checkAndReadAttendanceId() {
     _attendanceId =
         _initC.localStorage.read<String>(ConstantsKeys.attendanceId);
-    print('attendanceId = $_attendanceId');
   }
 
   void _checkAndReadDateTimeInLocalStorage({
@@ -656,8 +655,6 @@ class HomeController extends GetxController {
 
         final res = await _attendanceS.updateAttendance(reqAttendance.toJson());
 
-        print('res status text = ${res.statusText}');
-
         if (res.isOk) {
           final body = res.body;
           if (body != null) fetchDashboard();
@@ -710,7 +707,7 @@ class HomeController extends GetxController {
 
   void moveToActivityHistory() => Get.toNamed(Routes.ACTIVITY_HISTORY);
 
-  void moveToProfile() => Get.toNamed(Routes.PROFILE);
+  void moveToProfile() => _mainC.changeCurrentPage(3);
 
   @override
   void onClose() {

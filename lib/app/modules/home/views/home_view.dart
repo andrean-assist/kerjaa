@@ -26,16 +26,15 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(HomeController());
+
     return Scaffold(
-      body: CustomScrollView(
+      body: NestedScrollView(
         controller: controller.scrollC,
-        slivers: [
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
           _builderAppBar(),
-          _builderBody(context),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 162),
-          )
         ],
+        body: _builderBody(context),
       ),
     );
   }
@@ -93,25 +92,43 @@ class HomeView extends GetView<HomeController> {
 
   Widget _builderBody(BuildContext context) {
     final textTheme = context.textTheme;
-    return SliverToBoxAdapter(
-      child: Column(
-        spacing: 16,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _builderGreetingMessage(textTheme),
-          _builderListHeaderCard(context),
-          _builderMenu(context),
-          _builderAttributesCard(context),
-          _builderLastHistory(context),
-          _builderAnnouncement(context),
-        ],
+    return RefreshIndicator.adaptive(
+      onRefresh: controller.fetchDashboard,
+      child: SingleChildScrollView(
+        child: Stack(
+          children: [
+            Container(
+              height: 250,
+              decoration: const BoxDecoration(
+                color: SharedTheme.filledBtnColor,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(62),
+                  bottomRight: Radius.circular(62),
+                ),
+              ),
+            ),
+            Column(
+              spacing: 16,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _builderGreetingMessage(textTheme),
+                _builderListHeaderCard(context),
+                _builderMenu(context),
+                _builderAttributesCard(context),
+                _builderLastHistory(context),
+                _builderAnnouncement(context),
+                const SizedBox(height: 162),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _builderGreetingMessage(TextTheme textTheme) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: StreamBuilder(
         stream: TimeHelper.streamDateTime(),
         builder: (context, snapshot) {
@@ -124,6 +141,7 @@ class HomeView extends GetView<HomeController> {
               textTheme: textTheme,
               title: message.$1,
               subtitle: message.$2,
+              textColor: SharedTheme.whiteColor,
             ),
           );
         },
@@ -135,6 +153,7 @@ class HomeView extends GetView<HomeController> {
     required TextTheme textTheme,
     required String title,
     required String subtitle,
+    Color? textColor,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,131 +163,168 @@ class HomeView extends GetView<HomeController> {
           style: textTheme.titleLarge?.copyWith(
             fontWeight: SharedTheme.bold,
             fontSize: 20,
+            color: textColor,
           ),
         ),
         const SizedBox(height: 4),
         AutoSizeText(
           subtitle,
-          style: textTheme.bodySmall,
+          style: textTheme.bodySmall?.copyWith(
+            color: textColor,
+          ),
         ),
       ],
     );
   }
 
   Widget _builderListHeaderCard(BuildContext context) {
-    final organization = controller.dataDashboard?.organization;
-    final isShift = organization?.isShift;
-    final shift = organization?.shift;
-    final haveShift = shift != null && isShift != null && isShift;
-    final isGeneral = shift != null && shift.general != null;
-
-    // cek apakah non-shift
-    if (isGeneral) {
-      return _builderHeaderCard(
-        context: context,
-        isShift: isShift,
-        shiftText:
-            'Shift ${shift.general?.absen?.start ?? '--:--'} WIB to ${shift.general?.absen?.end} WIB',
-      );
-    }
-
-    // cek apakah shift aktif
-    if (haveShift) {
-      final pagi = shift.pagi;
-      final siang = shift.siang;
-      final malam = shift.malam;
-      final isShiftPagiDisabled = pagi != null && (pagi.disabledShift ?? true);
-      final isShiftSiangDisabled =
-          siang != null && (siang.disabledShift ?? true);
-      final isShiftMalamDisabled =
-          malam != null && (malam.disabledShift ?? true);
-
-      final enabledShifts = [
-        !isShiftPagiDisabled,
-        !isShiftSiangDisabled,
-        !isShiftMalamDisabled
-      ].where((enabled) => enabled).length;
-
-      if (enabledShifts == 1) {
-        if (!isShiftPagiDisabled) {
-          return _builderHeaderCard(
-            context: context,
-            isShift: isShift,
-            shiftText:
-                'Shift pagi ${shift.pagi?.absen?.start ?? '--:--'} WIB to ${shift.pagi?.absen?.end} WIB',
-          );
-        } else if (!isShiftSiangDisabled) {
-          return _builderHeaderCard(
-            context: context,
-            isShift: isShift,
-            shiftText:
-                'Shift siang ${shift.siang?.absen?.start ?? '--:--'} WIB to ${shift.siang?.absen?.end} WIB',
-          );
-        } else if (!isShiftMalamDisabled) {
-          return _builderHeaderCard(
-            context: context,
-            isShift: isShift,
-            shiftText:
-                'Shift malam ${shift.malam?.absen?.start ?? '--:--'} WIB to ${shift.malam?.absen?.end} WIB',
-          );
-        }
-      } else {
-        return LayoutBuilder(
+    return Obx(
+      () => Skeletonizer(
+        enabled: controller.isLoading.value,
+        child: LayoutBuilder(
           builder: (context, constraints) {
             final maxWidth = constraints.maxWidth;
             final maxWidthShift = maxWidth / 1.3;
 
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Obx(
-                () {
-                  return Row(
-                    children: [
-                      Visibility(
-                        visible: !isShiftPagiDisabled,
-                        child: _builderHeaderCard(
-                          context: context,
-                          width: maxWidthShift,
-                          outPadding:
-                              const EdgeInsets.symmetric(horizontal: 16),
-                          isShift: isShift,
-                          shiftText:
-                              'Shift pagi ${shift.pagi?.absen?.start ?? '--:--'} WIB to ${shift.pagi?.absen?.end} WIB',
-                        ),
-                      ),
-                      Visibility(
-                        visible: !isShiftSiangDisabled,
-                        child: _builderHeaderCard(
-                          context: context,
-                          width: maxWidthShift,
-                          isShift: isShift,
-                          shiftText:
-                              'Shift siang ${shift.siang?.absen?.start ?? '--:--'} WIB to ${shift.siang?.absen?.end} WIB',
-                        ),
-                      ),
-                      Visibility(
-                        visible: !isShiftMalamDisabled,
-                        child: _builderHeaderCard(
-                          context: context,
-                          width: maxWidthShift,
-                          outPadding:
-                              const EdgeInsets.symmetric(horizontal: 16),
-                          isShift: isShift,
-                          shiftText:
-                              'Shift malam ${shift.malam?.absen?.start ?? '--:--'} WIB to ${shift.malam?.absen?.end} WIB',
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            );
-          },
-        );
-      }
-    }
+            final organization = controller.dataDashboard?.organization;
+            final isShift = organization?.isShift;
+            final shift = organization?.shift;
+            final haveShift = shift != null && isShift != null && isShift;
+            final isGeneral = shift != null && shift.general != null;
 
-    return _builderDisabledShift(context: context);
+            const outPadding = EdgeInsets.symmetric(horizontal: 16);
+
+            // cek apakah non-shift
+            if (isGeneral) {
+              final generalAbsen = shift.general?.absen;
+              return _builderHeaderCard(
+                context: context,
+                isShift: isShift,
+                outPadding: outPadding,
+                shiftType: 'general',
+                shiftText: _textShiftMessage(
+                  start: generalAbsen?.start,
+                  end: generalAbsen?.end,
+                ),
+              );
+            }
+
+            // cek apakah shift aktif
+            if (haveShift) {
+              final pagi = shift.pagi;
+              final siang = shift.siang;
+              final malam = shift.malam;
+              final isShiftPagiDisabled =
+                  pagi != null && (pagi.disabledShift ?? true);
+              final isShiftSiangDisabled =
+                  siang != null && (siang.disabledShift ?? true);
+              final isShiftMalamDisabled =
+                  malam != null && (malam.disabledShift ?? true);
+
+              final pagiAbsen = shift.pagi?.absen;
+              final siangAbsen = shift.siang?.absen;
+              final malamAbsen = shift.malam?.absen;
+
+              final enabledShifts = [
+                !isShiftPagiDisabled,
+                !isShiftSiangDisabled,
+                !isShiftMalamDisabled
+              ].where((enabled) => enabled).length;
+
+              if (enabledShifts == 1) {
+                if (!isShiftPagiDisabled) {
+                  return _builderHeaderCard(
+                    context: context,
+                    isShift: isShift,
+                    outPadding: outPadding,
+                    shiftType: 'pagi',
+                    shiftText: _textShiftMessage(
+                        start: pagiAbsen?.start, end: pagiAbsen?.end),
+                  );
+                } else if (!isShiftSiangDisabled) {
+                  return _builderHeaderCard(
+                    context: context,
+                    isShift: isShift,
+                    outPadding: outPadding,
+                    shiftType: 'siang',
+                    shiftText: _textShiftMessage(
+                        start: siangAbsen?.start, end: siangAbsen?.end),
+                  );
+                } else if (!isShiftMalamDisabled) {
+                  return _builderHeaderCard(
+                    context: context,
+                    isShift: isShift,
+                    outPadding: outPadding,
+                    shiftType: 'malam',
+                    shiftText: _textShiftMessage(
+                      start: malamAbsen?.start,
+                      end: malamAbsen?.end,
+                    ),
+                  );
+                }
+              } else {
+                return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Obx(
+                    () {
+                      return Row(
+                        children: [
+                          Visibility(
+                            visible: !isShiftPagiDisabled,
+                            child: _builderHeaderCard(
+                              context: context,
+                              width: maxWidthShift,
+                              outPadding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              isShift: isShift,
+                              shiftType: 'pagi',
+                              shiftText: _textShiftMessage(
+                                start: pagiAbsen?.start,
+                                end: pagiAbsen?.end,
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: !isShiftSiangDisabled,
+                            child: _builderHeaderCard(
+                              context: context,
+                              width: maxWidthShift,
+                              isShift: isShift,
+                              shiftType: 'siang',
+                              shiftText: _textShiftMessage(
+                                start: siangAbsen?.start,
+                                end: siangAbsen?.end,
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: !isShiftMalamDisabled,
+                            child: _builderHeaderCard(
+                              context: context,
+                              width: maxWidthShift,
+                              outPadding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              isShift: isShift,
+                              shiftType: 'malam',
+                              shiftText: _textShiftMessage(
+                                start: malamAbsen?.start,
+                                end: malamAbsen?.end,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                );
+              }
+            }
+
+            return _builderDisabledShift(context: context);
+          },
+        ),
+      ),
+    );
   }
 
   Widget _builderHeaderCard({
@@ -276,6 +332,7 @@ class HomeView extends GetView<HomeController> {
     double? width,
     EdgeInsets? outPadding,
     required bool? isShift,
+    required String shiftType,
     required String shiftText,
   }) {
     final theme = context.theme;
@@ -354,7 +411,7 @@ class HomeView extends GetView<HomeController> {
                 style: textTheme.labelMedium,
                 textAlign: TextAlign.center,
               ),
-              _builderBtnAbsence(context, isShift),
+              _builderBtnAbsence(context, shiftType, isShift),
             ],
           ),
         ),
@@ -423,7 +480,8 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  Widget _builderBtnAbsence(BuildContext context, [bool? isShift = false]) {
+  Widget _builderBtnAbsence(BuildContext context, String shiftType,
+      [bool? isShift = false]) {
     final textTheme = context.textTheme;
 
     return Obx(
@@ -475,7 +533,9 @@ class HomeView extends GetView<HomeController> {
                   onPressed: () {
                     if (statusAbsence == StatusAbsenceSetup.checkIn) {
                       if (isShift ?? false) {
-                        _showModalShift(context);
+                        // _showModalShift(context);
+                        controller.setShift(shiftType);
+                        controller.isAlreadyCheckin();
                       } else {
                         controller.moveToMaps(statusAbsence);
                       }
@@ -589,7 +649,7 @@ class HomeView extends GetView<HomeController> {
               IconButton(
                 onPressed: menu.onPressed,
                 icon: SvgPicture.asset(
-                  menu.icon,
+                  menu.iconPath,
                   width: 28,
                   height: 28,
                 ),
@@ -621,6 +681,9 @@ class HomeView extends GetView<HomeController> {
       inPadding: const EdgeInsets.fromLTRB(16, 24, 16, 28),
       outPadding: const EdgeInsets.symmetric(horizontal: 16),
       color: theme.colorScheme.surfaceContainerLowest,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -701,26 +764,36 @@ class HomeView extends GetView<HomeController> {
               child: Cards.filled(
                 context: context,
                 color: theme.colorScheme.surfaceContainerLowest,
+                inPadding: EdgeInsets.zero,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
                 child: Column(
                   children: [
                     Skeleton.shade(
                       child: _builderItemHistory(controller.events),
                     ),
                     const SizedBox(height: 16),
-                    Buttons.filledTonal(
-                      width: double.infinity,
-                      onPressed: controller.events.isNotEmpty
-                          ? controller.moveToActivityHistory
-                          : null,
-                      icon: const Icon(Icons.arrow_forward_rounded),
-                      iconAlignment: IconAlignment.end,
-                      child: const Text('Lihat detail aktivitas'),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                      child: Buttons.filledTonal(
+                        width: double.infinity,
+                        onPressed: controller.events.isNotEmpty
+                            ? controller.moveToActivityHistory
+                            : null,
+                        icon: const Icon(
+                          Icons.arrow_forward_rounded,
+                          color: SharedTheme.textBtnColor,
+                        ),
+                        iconAlignment: IconAlignment.end,
+                        child: const Text('Lihat detail aktivitas'),
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -752,19 +825,25 @@ class HomeView extends GetView<HomeController> {
                 ),
                 inPadding: EdgeInsets.zero,
                 child: Column(
+                  spacing: 16,
                   children: [
                     Skeleton.shade(
-                      child: _builderItemAnnouncement(theme),
+                      child: _builderItemAnnouncement(),
                     ),
-                    const SizedBox(height: 16),
-                    Buttons.filledTonal(
-                      width: double.infinity,
-                      onPressed: controller.events.isNotEmpty
-                          ? controller.moveToActivityHistory
-                          : null,
-                      icon: const Icon(Icons.arrow_forward_rounded),
-                      iconAlignment: IconAlignment.end,
-                      child: const Text('Lihat detail pengumuman'),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                      child: Buttons.filledTonal(
+                        width: double.infinity,
+                        onPressed: controller.events.isNotEmpty
+                            ? controller.moveToActivityHistory
+                            : null,
+                        icon: const Icon(
+                          Icons.arrow_forward_rounded,
+                          color: SharedTheme.textBtnColor,
+                        ),
+                        iconAlignment: IconAlignment.end,
+                        child: const Text('Lihat detail pengumuman'),
+                      ),
                     ),
                   ],
                 ),
@@ -809,7 +888,7 @@ class HomeView extends GetView<HomeController> {
           }
 
           return ListTile(
-            contentPadding: EdgeInsets.zero,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
             leading: (assetIcon != null) ? SvgPicture.asset(assetIcon) : null,
             title: Text(type),
             subtitle: Text(
@@ -832,6 +911,9 @@ class HomeView extends GetView<HomeController> {
                 _builderState(context, event),
               ],
             ),
+            shape: const Border(
+              bottom: BorderSide(color: SharedTheme.dividerColor),
+            ),
           );
         },
         itemCount: events.length,
@@ -847,7 +929,7 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  Widget _builderItemAnnouncement(ThemeData theme) {
+  Widget _builderItemAnnouncement() {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -859,7 +941,9 @@ class HomeView extends GetView<HomeController> {
           leading: SvgPicture.asset(ConstantsAssets.icAnnouncement),
           title: Text(dummyItem['title'].toString()),
           subtitle: const Text('24 Sep, 2024'),
-          shape: Border(bottom: BorderSide(color: theme.dividerColor)),
+          shape: const Border(
+            bottom: BorderSide(color: SharedTheme.dividerColor),
+          ),
         );
       },
       itemCount: controller.dummyListAnnouncement.length,
@@ -943,5 +1027,9 @@ class HomeView extends GetView<HomeController> {
         ],
       ),
     );
+  }
+
+  String _textShiftMessage({required String? start, required String? end}) {
+    return 'Shift ${start ?? '--:--'} WIB to ${end ?? '--:--'} WIB';
   }
 }

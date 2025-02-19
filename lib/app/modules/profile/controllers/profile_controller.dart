@@ -25,15 +25,15 @@ class ProfileController extends GetxController {
       _initC = Get.find<InitController>();
     }
 
-    _prepareStorage();
+    prepareStorage();
   }
 
-  void _prepareStorage() {
+  void prepareStorage() {
     fullName.value = _initC.localStorage.read(ConstantsKeys.name);
     email.value = _initC.localStorage.read(ConstantsKeys.email);
     position.value = _initC.localStorage.read(ConstantsKeys.position);
-    // profilePicture.value =
-    //     _initC.localStorage.read(ConstantsKeys.profilPicture);
+    profilePicture.value =
+        _initC.localStorage.read(ConstantsKeys.profilPicture);
   }
 
   void moveToActivityHistory() => Get.toNamed(Routes.ACTIVITY_HISTORY);
@@ -51,7 +51,7 @@ class ProfileController extends GetxController {
 
     if (state != null) {
       if (state) {
-        _prepareStorage();
+        prepareStorage();
       }
     }
   }

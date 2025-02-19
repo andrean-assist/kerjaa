@@ -323,6 +323,7 @@ class InitController extends GetxController {
     void Function()? onLoad,
   }) {
     logger.d('debug: status code error = ${status.code}');
+    logger.d('debug: isConnectedInternet = ${isConnectedInternet.value}');
 
     if (!_isShowModalError) {
       // jika internet mati
