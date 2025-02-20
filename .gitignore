@@ -44,4 +44,8 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# path .env
 *.env
+
+# path launch.json
+.vscode/launch.json

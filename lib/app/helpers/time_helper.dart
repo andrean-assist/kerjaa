@@ -34,4 +34,8 @@ abstract class TimeHelper {
     final endTime = DateTime(now.year, now.month, now.day, endHour, endMinute);
     return now.isAfter(startTime) && now.isBefore(endTime);
   }
+
+  static DateTime? stringToDateTime(String value) {
+    return DateTime.tryParse(value);
+  }
 }

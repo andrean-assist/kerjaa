@@ -1,16 +1,32 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 abstract class ConstantsConnect {
-  static const endPointBaseUrl = 'https://api-dev-hadir.assist.id/api/';
-  // static const endPointBaseUrl = 'https://api-kerjaa.assist.id/api/';
+  static final endPointBaseUrl = switch (dotenv.get('APP_ENVIRONMENT')) {
+    'production' => 'https://api-kerjaa.assist.id/api/',
+    'development' => 'https://api-dev-hadir.assist.id/api/',
+    'local' => 'http://192.168.1.129:3100/api/',
+    _ => 'https://api-dev-hadir.assist.id/api/'
+  };
 
-  static const endPointBaseUrlUpload = 'https://api-new-image.assist.id/';
-  // static const endPointBaseUrlUpload = 'https://api-image.assist.id/kerjaa/';
+  static final endPointBaseUrlUpload = switch (dotenv.get('APP_ENVIRONMENT')) {
+    'production' => 'https://api-image.assist.id/kerjaa/',
+    'development' => 'https://api-new-image.assist.id/',
+    'local' => 'http://192.168.1.129:3100/api/',
+    _ => 'https://api-new-image.assist.id/'
+  };
 
-  static const endPointBaseUrlImage =
-      'https://dev-upload-file-medicaboo.s3.ap-southeast-1.amazonaws.com/';
-  // static const endPointBaseUrlImage =
-  //     'https://kerjaa-medicaboo.s3.ap-southeast-3.amazonaws.com/';
+  static final endPointBaseUrlImage = switch (dotenv.get('APP_ENVIRONMENT')) {
+    'production' => 'https://kerjaa-medicaboo.s3.ap-southeast-3.amazonaws.com/',
+    'development' =>
+      'https://dev-upload-file-medicaboo.s3.ap-southeast-1.amazonaws.com/',
+    'local' => 'http://192.168.1.129:3100/api/',
+    _ => 'https://kerjaa-medicaboo.s3.ap-southeast-3.amazonaws.com/'
+  };
 
-  // BUCKET
-  static const bucketUpload = 'hospitalImageTest';
-  // static const bucketUpload = 'image';
+  static final bucketUpload = switch (dotenv.get('APP_ENVIRONMENT')) {
+    'production' => 'image',
+    'development' => 'hospitalImageTest',
+    'local' => 'http://192.168.1.129:3100/api/',
+    _ => 'hospitalImageTest'
+  };
 }

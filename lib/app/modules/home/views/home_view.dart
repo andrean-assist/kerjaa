@@ -671,14 +671,16 @@ class HomeView extends GetView<HomeController> {
       actions: Column(
         children: [
           Obx(
-            () => Buttons.filled(
-              width: double.infinity,
-              state: controller.isLoading.value,
-              onPressed: (controller.shift.value != null)
-                  ? controller.isAlreadyCheckin
-                  : null,
-              child: const Text('Mulai bekerja'),
-            ),
+            () {
+              return Buttons.filled(
+                width: double.infinity,
+                state: controller.isLoading.value,
+                onPressed: (controller.shift.value != null)
+                    ? controller.isAlreadyCheckin
+                    : null,
+                child: const Text('Mulai bekerja'),
+              );
+            },
           ),
           const SizedBox(height: 12),
           Buttons.text(
