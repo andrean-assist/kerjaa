@@ -59,7 +59,7 @@ class HomeController extends GetxController {
       iconPath: ConstantsAssets.icOvertime,
       color: const Color(0xFF5BB1E0),
       label: 'Lembur',
-      onPressed: () {},
+      onPressed: () => Get.toNamed(Routes.OVERTIME),
     ),
     MenuHomeModel(
       iconPath: ConstantsAssets.icMySlip,

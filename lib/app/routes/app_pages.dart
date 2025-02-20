@@ -1,9 +1,9 @@
-import 'package:assist_hadir/app/modules/main/bindings/main_binding.dart';
-import 'package:assist_hadir/app/modules/main/views/main_view.dart';
 import 'package:get/get.dart';
 
 import '../modules/activity_history/bindings/activity_history_binding.dart';
 import '../modules/activity_history/views/activity_history_view.dart';
+import '../modules/add_overtime/bindings/add_overtime_binding.dart';
+import '../modules/add_overtime/views/add_overtime_view.dart';
 import '../modules/check_email/bindings/check_email_binding.dart';
 import '../modules/check_email/views/check_email_view.dart';
 import '../modules/create_new_password/bindings/create_new_password_binding.dart';
@@ -18,8 +18,12 @@ import '../modules/location_maps/bindings/location_maps_binding.dart';
 import '../modules/location_maps/views/location_maps_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
+import '../modules/main/bindings/main_binding.dart';
+import '../modules/main/views/main_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
+import '../modules/overtime/bindings/overtime_binding.dart';
+import '../modules/overtime/views/overtime_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 
@@ -102,6 +106,16 @@ class AppPages {
       name: _Paths.CREATE_NEW_PASSWORD,
       page: () => const CreateNewPasswordView(),
       binding: CreateNewPasswordBinding(),
+    ),
+    GetPage(
+      name: _Paths.OVERTIME,
+      page: () => const OvertimeView(),
+      binding: OvertimeBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADD_OVERTIME,
+      page: () => const AddOvertimeView(),
+      binding: AddOvertimeBinding(),
     ),
   ];
 }

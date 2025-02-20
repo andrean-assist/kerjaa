@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:get/get.dart';
 
+import '../../../../shared/shared_theme.dart';
 import '../controllers/main_controller.dart';
 
 class MainView extends GetView<MainController> {
@@ -42,6 +43,22 @@ class MainView extends GetView<MainController> {
               .toList(),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        elevation: 0,
+        backgroundColor: const Color.fromRGBO(235, 245, 251, 1),
+        onPressed: () {},
+        shape: const CircleBorder(
+          side: BorderSide(
+            color: Color.fromRGBO(50, 158, 216, 0.2),
+            width: 4,
+          ),
+        ),
+        child: const Icon(
+          Icons.add_rounded,
+          color: SharedTheme.filledBtnColor,
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

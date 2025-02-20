@@ -8,6 +8,7 @@ class Cards {
     EdgeInsets? inPadding,
     required Widget child,
     Clip? clip,
+    ShapeBorder? shape,
   }) {
     return CustomCard(
       outPadding: outPadding,

@@ -23,7 +23,10 @@ class ActivityHistoryView extends GetView<ActivityHistoryController> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _builderFilterChips(context),
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: _builderFilterChips(context),
+            ),
             const SizedBox(height: 16),
             _builderHistory(context),
           ],
@@ -48,7 +51,6 @@ class ActivityHistoryView extends GetView<ActivityHistoryController> {
     required String text,
   }) {
     final index = controller.filters.indexOf(text);
-
     return Container(
       margin: EdgeInsets.only(
         left: (index == 0) ? 12 : 0,
@@ -192,8 +194,6 @@ class ActivityHistoryView extends GetView<ActivityHistoryController> {
 
         String? assetIcon;
         var type = '-';
-        // var date = '-- ---, ----';
-        // var time = '--:--';
 
         switch (event.eventType) {
           case 'checkIn':
@@ -221,10 +221,10 @@ class ActivityHistoryView extends GetView<ActivityHistoryController> {
           title: Text(type),
           subtitle: Text(
             FormatDateTime.dateToString(
-                  newPattern: datePattern,
-                  value: event.eventTime,
-                ) ??
-                '-- ---, ----',
+              newPattern: datePattern,
+              value: event.eventTime,
+              defaultOutput: '-- ---, ----',
+            ),
           ),
           trailing: Column(
             crossAxisAlignment: CrossAxisAlignment.end,

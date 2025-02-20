@@ -51,6 +51,9 @@ class SharedTheme {
   static const darkWarningColor = Color.fromARGB(255, 255, 136, 10);
   static const lightWarningColor = Color(0xFFE57B09);
 
+  static const primaryTextColor = Color(0xFF0F172A);
+  static const quertenaryTextColor = Color(0xFF64748B);
+
   static final successColor =
       Get.isDarkMode ? darkSuccessColor : lightSuccessColor;
   static final warningColor =

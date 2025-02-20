@@ -175,17 +175,6 @@ class ActivityHistoryController extends GetxController
             status: res.status,
             onLoad: () => fetchHistory(index),
           );
-
-          // if (res.statusCode == HttpStatus.unauthorized) {
-          //   _initC.redirectLogout(Get.context!);
-          // } else {
-          //   _initC.showDialogFailed(
-          //     onPressed: () {
-          //       fetchHistory(index);
-          //       Get.back();
-          //     },
-          //   );
-          // }
         }
       } on GetHttpException catch (e) {
         _initC.logger.e('Error: fetchHistory $e');

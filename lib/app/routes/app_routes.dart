@@ -17,6 +17,8 @@ abstract class Routes {
   static const PROFILE = _Paths.PROFILE;
   static const EDIT_PROFILE = _Paths.EDIT_PROFILE;
   static const CREATE_NEW_PASSWORD = _Paths.CREATE_NEW_PASSWORD;
+  static const OVERTIME = _Paths.OVERTIME;
+  static const ADD_OVERTIME = _Paths.ADD_OVERTIME;
 }
 
 abstract class _Paths {
@@ -35,4 +37,6 @@ abstract class _Paths {
   static const PROFILE = '/profile';
   static const EDIT_PROFILE = '/edit-profile';
   static const CREATE_NEW_PASSWORD = '/create-new-password';
+  static const OVERTIME = '/overtime';
+  static const ADD_OVERTIME = '/add-overtime';
 }

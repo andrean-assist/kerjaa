@@ -58,6 +58,7 @@ abstract class ConstantsAssets {
   static const imgOnboard2 = '${_imgPath}img_onboarding2.png';
   static const imgOnboard3 = '${_imgPath}img_onboarding3.png';
   static const imgOnboard4 = '${_imgPath}img_onboarding4.png';
+  static const imgSubmissionOvertime = '${_imgPath}img_submission_overtime.png';
 
   // IMAGE MODAL
   static const imgCreateNewPasswordSuccess =
