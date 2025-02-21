@@ -23,6 +23,7 @@ mixin _$ShiftModel {
   DetailShiftModel? get pagi => throw _privateConstructorUsedError;
   DetailShiftModel? get siang => throw _privateConstructorUsedError;
   DetailShiftModel? get malam => throw _privateConstructorUsedError;
+  DetailShiftModel? get general => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -39,11 +40,13 @@ abstract class $ShiftModelCopyWith<$Res> {
   $Res call(
       {DetailShiftModel? pagi,
       DetailShiftModel? siang,
-      DetailShiftModel? malam});
+      DetailShiftModel? malam,
+      DetailShiftModel? general});
 
   $DetailShiftModelCopyWith<$Res>? get pagi;
   $DetailShiftModelCopyWith<$Res>? get siang;
   $DetailShiftModelCopyWith<$Res>? get malam;
+  $DetailShiftModelCopyWith<$Res>? get general;
 }
 
 /// @nodoc
@@ -62,6 +65,7 @@ class _$ShiftModelCopyWithImpl<$Res, $Val extends ShiftModel>
     Object? pagi = freezed,
     Object? siang = freezed,
     Object? malam = freezed,
+    Object? general = freezed,
   }) {
     return _then(_value.copyWith(
       pagi: freezed == pagi
@@ -75,6 +79,10 @@ class _$ShiftModelCopyWithImpl<$Res, $Val extends ShiftModel>
       malam: freezed == malam
           ? _value.malam
           : malam // ignore: cast_nullable_to_non_nullable
+              as DetailShiftModel?,
+      general: freezed == general
+          ? _value.general
+          : general // ignore: cast_nullable_to_non_nullable
               as DetailShiftModel?,
     ) as $Val);
   }
@@ -114,6 +122,18 @@ class _$ShiftModelCopyWithImpl<$Res, $Val extends ShiftModel>
       return _then(_value.copyWith(malam: value) as $Val);
     });
   }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $DetailShiftModelCopyWith<$Res>? get general {
+    if (_value.general == null) {
+      return null;
+    }
+
+    return $DetailShiftModelCopyWith<$Res>(_value.general!, (value) {
+      return _then(_value.copyWith(general: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -127,7 +147,8 @@ abstract class _$$ShiftModelImplCopyWith<$Res>
   $Res call(
       {DetailShiftModel? pagi,
       DetailShiftModel? siang,
-      DetailShiftModel? malam});
+      DetailShiftModel? malam,
+      DetailShiftModel? general});
 
   @override
   $DetailShiftModelCopyWith<$Res>? get pagi;
@@ -135,6 +156,8 @@ abstract class _$$ShiftModelImplCopyWith<$Res>
   $DetailShiftModelCopyWith<$Res>? get siang;
   @override
   $DetailShiftModelCopyWith<$Res>? get malam;
+  @override
+  $DetailShiftModelCopyWith<$Res>? get general;
 }
 
 /// @nodoc
@@ -151,6 +174,7 @@ class __$$ShiftModelImplCopyWithImpl<$Res>
     Object? pagi = freezed,
     Object? siang = freezed,
     Object? malam = freezed,
+    Object? general = freezed,
   }) {
     return _then(_$ShiftModelImpl(
       pagi: freezed == pagi
@@ -165,6 +189,10 @@ class __$$ShiftModelImplCopyWithImpl<$Res>
           ? _value.malam
           : malam // ignore: cast_nullable_to_non_nullable
               as DetailShiftModel?,
+      general: freezed == general
+          ? _value.general
+          : general // ignore: cast_nullable_to_non_nullable
+              as DetailShiftModel?,
     ));
   }
 }
@@ -172,7 +200,7 @@ class __$$ShiftModelImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$ShiftModelImpl implements _ShiftModel {
-  const _$ShiftModelImpl({this.pagi, this.siang, this.malam});
+  const _$ShiftModelImpl({this.pagi, this.siang, this.malam, this.general});
 
   factory _$ShiftModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$ShiftModelImplFromJson(json);
@@ -183,10 +211,12 @@ class _$ShiftModelImpl implements _ShiftModel {
   final DetailShiftModel? siang;
   @override
   final DetailShiftModel? malam;
+  @override
+  final DetailShiftModel? general;
 
   @override
   String toString() {
-    return 'ShiftModel(pagi: $pagi, siang: $siang, malam: $malam)';
+    return 'ShiftModel(pagi: $pagi, siang: $siang, malam: $malam, general: $general)';
   }
 
   @override
@@ -196,12 +226,13 @@ class _$ShiftModelImpl implements _ShiftModel {
             other is _$ShiftModelImpl &&
             (identical(other.pagi, pagi) || other.pagi == pagi) &&
             (identical(other.siang, siang) || other.siang == siang) &&
-            (identical(other.malam, malam) || other.malam == malam));
+            (identical(other.malam, malam) || other.malam == malam) &&
+            (identical(other.general, general) || other.general == general));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, pagi, siang, malam);
+  int get hashCode => Object.hash(runtimeType, pagi, siang, malam, general);
 
   @JsonKey(ignore: true)
   @override
@@ -221,7 +252,8 @@ abstract class _ShiftModel implements ShiftModel {
   const factory _ShiftModel(
       {final DetailShiftModel? pagi,
       final DetailShiftModel? siang,
-      final DetailShiftModel? malam}) = _$ShiftModelImpl;
+      final DetailShiftModel? malam,
+      final DetailShiftModel? general}) = _$ShiftModelImpl;
 
   factory _ShiftModel.fromJson(Map<String, dynamic> json) =
       _$ShiftModelImpl.fromJson;
@@ -232,6 +264,8 @@ abstract class _ShiftModel implements ShiftModel {
   DetailShiftModel? get siang;
   @override
   DetailShiftModel? get malam;
+  @override
+  DetailShiftModel? get general;
   @override
   @JsonKey(ignore: true)
   _$$ShiftModelImplCopyWith<_$ShiftModelImpl> get copyWith =>

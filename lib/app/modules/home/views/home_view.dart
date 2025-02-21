@@ -38,13 +38,14 @@ class HomeView extends GetView<HomeController> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 16,
             children: [
               _builderGreetingMessage(textTheme),
-              const SizedBox(height: 28),
+              // const SizedBox(height: 28),
               _builderHeaderCard(context),
-              const SizedBox(height: 16),
+              // const SizedBox(height: 16),
               _builderAttributesCard(context),
-              const SizedBox(height: 16),
+              // const SizedBox(height: 16),
               _builderLastHistory(context),
             ],
           ),
@@ -152,80 +153,102 @@ class HomeView extends GetView<HomeController> {
       child: SizedBox(
         width: double.infinity,
         child: Obx(() {
-          final organization = controller.dataDashboard?.organization;
-          final isShift = organization?.isShift;
-          final shift = organization?.shift;
-          final haveShift = isShift != null && shift != null;
-          LoggerHelper.printPrettyJson(organization?.toJson() ?? '');
-
           return Skeletonizer(
             enabled: controller.isLoading.value,
-            child: Visibility(
-              visible: haveShift,
-              replacement: _builderDisabledShift(context),
-              child: Column(
-                children: [
-                  StreamBuilder(
-                    stream: TimeHelper.streamDateTime(),
-                    builder: (context, snapshot) {
-                      final dateTime = snapshot.data;
+            child: Builder(
+              builder: (context) {
+                final organization = controller.dataDashboard?.organization;
+                final isShift = organization?.isShift;
+                final shift = organization?.shift;
+                final haveShift = shift != null && isShift != null && isShift;
+                final isGeneral = shift != null && shift.general != null;
 
-                      var time = '--:--:--';
-                      var date = '----, -- --- ----';
+                // cek apakah non-shift
+                if (isGeneral) {
+                  return _builderItemCard(context: context, isShift: false);
+                }
 
-                      if (dateTime != null) {
-                        time = FormatDateTime.dateToString(
-                          newPattern: 'HH:mm:ss',
-                          value: dateTime.toString(),
-                        );
-                        date = FormatDateTime.dateToString(
-                          newPattern: 'EEEE, dd MMM yyyy',
-                          value: dateTime.toString(),
-                        );
-                      }
+                if (haveShift) {
+                  return _builderItemCard(context: context, isShift: true);
+                }
 
-                      return Skeletonizer(
-                        enabled: dateTime == null,
-                        child: Column(
-                          children: [
-                            Text(
-                              time,
-                              style: textTheme.titleLarge?.copyWith(
-                                fontWeight: SharedTheme.bold,
-                                fontSize: 20,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              date,
-                              style: textTheme.bodyMedium
-                                  ?.copyWith(color: theme.hintColor),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _builderCountForwardTimer(context),
-                      Text(
-                        'Jam',
-                        style: textTheme.titleSmall?.copyWith(
-                          fontWeight: SharedTheme.semiBold,
-                          color: theme.hintColor,
-                        ),
-                      )
-                    ],
-                  ),
-                  _builderBtnAbsence(context, isShift),
-                ],
-              ),
+                return _builderDisabledShift(context);
+              },
             ),
           );
         }),
+      ),
+    );
+  }
+
+  Widget _builderItemCard({
+    required BuildContext context,
+    required bool isShift,
+  }) {
+    final theme = context.theme;
+    final textTheme = context.textTheme;
+
+    return Skeletonizer(
+      enabled: controller.isLoading.value,
+      child: Column(
+        children: [
+          StreamBuilder(
+            stream: TimeHelper.streamDateTime(),
+            builder: (context, snapshot) {
+              final dateTime = snapshot.data;
+
+              var time = '--:--:--';
+              var date = '----, -- --- ----';
+
+              if (dateTime != null) {
+                time = FormatDateTime.dateToString(
+                  newPattern: 'HH:mm:ss',
+                  value: dateTime.toString(),
+                );
+                date = FormatDateTime.dateToString(
+                  newPattern: 'EEEE, dd MMM yyyy',
+                  value: dateTime.toString(),
+                );
+              }
+
+              return Skeletonizer(
+                enabled: dateTime == null,
+                child: Column(
+                  children: [
+                    Text(
+                      time,
+                      style: textTheme.titleLarge?.copyWith(
+                        fontWeight: SharedTheme.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      date,
+                      style: textTheme.bodyMedium
+                          ?.copyWith(color: theme.hintColor),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _builderCountForwardTimer(context),
+              Text(
+                'Jam',
+                style: textTheme.titleSmall?.copyWith(
+                  fontWeight: SharedTheme.semiBold,
+                  color: theme.hintColor,
+                ),
+              )
+            ],
+          ),
+          _builderBtnAbsence(context, isShift),
+        ],
       ),
     );
   }

@@ -173,6 +173,7 @@ class ActivityHistoryController extends GetxController
         } else {
           _initC.handleError(
             status: res.status,
+            error: res.body['error'],
             onLoad: () => fetchHistory(index),
           );
 

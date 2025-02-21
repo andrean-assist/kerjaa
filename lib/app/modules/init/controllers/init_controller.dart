@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app_links/app_links.dart';
 import 'package:app_settings/app_settings.dart';
+import 'package:assist_hadir/app/data/model/error/res_error_model.dart';
 import 'package:assist_hadir/app/modules/widgets/modal/custom_modal.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
@@ -27,11 +28,6 @@ class InitController extends GetxController {
   final _navigatorKey = GlobalKey<NavigatorState>();
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
-
-  // late final StreamSubscription<ServiceStatus> subscriptionServiceLocation;
-  // final streamServiceLocation = ServiceStatus.disabled.obs;
-
-  // Timer? _serviceStatusTimer;
 
   GetStorage get localStorage => _localStorage;
 
@@ -126,33 +122,6 @@ class InitController extends GetxController {
       }
     });
   }
-
-  // void _listenDeterminePosition() {
-  // streamServiceLocation.bindStream(Geolocator.getServiceStatusStream());
-
-  // pengecekan manual
-  // _serviceStatusTimer =
-  //     Timer.periodic(const Duration(seconds: 1), (timer) async {
-  //   final isEnabled = await Geolocator.isLocationServiceEnabled();
-  //   final status = isEnabled ? ServiceStatus.enabled : ServiceStatus.disabled;
-
-  //   print('status = $status');
-
-  //   // Perbarui Rx hanya jika status berubah
-  //   if (streamServiceLocation.value != status) {
-  //     streamServiceLocation.value = status;
-  //     print('Manual check detected change: $status');
-  //   }
-
-  //   print('streamServiceLocation = ${streamServiceLocation.value}');
-  // });
-
-  //   subscriptionServiceLocation = Geolocator.getServiceStatusStream().listen(
-  //     (event) {
-  //       print('event service status = $event');
-  //     },
-  //   );
-  // }
 
   Future<void> setTimeStorage(String key) async => await _localStorage.write(
         key,
@@ -278,17 +247,23 @@ class InitController extends GetxController {
     );
   }
 
-  Future<void> showDialogFailed({required dynamic Function() onPressed}) async {
+  Future<void> showDialogFailed({
+    ResErrorModel? error,
+    required dynamic Function() onPressed,
+  }) async {
     _isShowModalError = true;
+    final isShowMsgErr = error?.isShowMessageError ?? false;
+    const defaultErrorMsg = 'Sebentar lagi selesai kok!. Tunggu kami ya 😊';
 
     Modals.bottomSheet(
       context: Get.context!,
       isDismissible: true,
       enableDrag: false,
-      content: const CustomModal(
+      content: CustomModal(
         imagePath: ConstantsAssets.imgPrepare,
         title: 'Opps.. kami sedang merapikan semua nya.',
-        description: 'Sebentar lagi selesai kok!. Tunggu kami ya 😊',
+        description:
+            isShowMsgErr ? error?.message ?? defaultErrorMsg : defaultErrorMsg,
       ),
       actions: Buttons.filled(
         width: double.infinity,
@@ -319,10 +294,12 @@ class InitController extends GetxController {
 
   void handleError({
     required HttpStatus status,
+    ResErrorModel? error,
     bool isFromLogin = false,
     void Function()? onLoad,
   }) {
     logger.d('debug: status code error = ${status.code}');
+    final isShowMessageError = error?.isShowMessageError ?? false;
 
     if (!_isShowModalError) {
       // jika internet mati
@@ -336,6 +313,7 @@ class InitController extends GetxController {
           if (onLoad != null) {
             // jika gagal load data
             showDialogFailed(
+              error: error,
               onPressed: () {
                 onLoad();
                 Get.back();

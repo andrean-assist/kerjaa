@@ -415,7 +415,11 @@ class FaceSetupController extends GetxController {
             _moveToHome();
           }
         } else {
-          _initC.handleError(status: res.status, onLoad: _actionRegisterFace);
+          _initC.handleError(
+            status: res.status,
+            error: res.body['error'],
+            onLoad: _actionRegisterFace,
+          );
         }
       } on GetHttpException catch (e) {
         _initC.logger.e('Error: actionRegisterFace $e');
@@ -496,7 +500,11 @@ class FaceSetupController extends GetxController {
         if (res!.isOk) {
           _moveToHome();
         } else {
-          _initC.handleError(status: res.status, onLoad: _actionAttendance);
+          _initC.handleError(
+            status: res.status,
+            error: res.body['error'],
+            onLoad: _actionAttendance,
+          );
         }
       } on GetHttpException catch (e) {
         _initC.logger.e('Error: _actionAttendance $e');

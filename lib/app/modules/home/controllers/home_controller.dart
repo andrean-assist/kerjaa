@@ -348,7 +348,11 @@ class HomeController extends GetxController {
             }
           }
         } else {
-          _initC.handleError(status: res.status, onLoad: fetchDashboard);
+          _initC.handleError(
+            status: res.status,
+            error: res.body['error'],
+            onLoad: fetchDashboard,
+          );
         }
       } on GetHttpException catch (e) {
         _initC.logger.e('Error: fetchDashboard $e');
@@ -356,13 +360,6 @@ class HomeController extends GetxController {
         isLoading.value = false;
       }
     } else {
-      // _initC.showDialogFailed(
-      //   onPressed: () {
-      //     fetchDashboard();
-      //     Get.back();
-      //   },
-      // );
-
       _prepareStorageDateTime();
       _prepareStorageEvents();
       _prepareStorageAttendanceId();
@@ -370,8 +367,6 @@ class HomeController extends GetxController {
   }
 
   void isAlreadyCheckin() async {
-    print('checkin dipanggil');
-
     if (_organizationId != null) {
       isLoading.value = true;
 
@@ -615,7 +610,11 @@ class HomeController extends GetxController {
           final body = res.body;
           if (body != null) fetchDashboard();
         } else {
-          _initC.handleError(status: res.status, onLoad: fetchDashboard);
+          _initC.handleError(
+            status: res.status,
+            error: res.body['error'],
+            onLoad: fetchDashboard,
+          );
         }
       } on GetHttpException catch (e) {
         _initC.logger.e('Error: rest $e');

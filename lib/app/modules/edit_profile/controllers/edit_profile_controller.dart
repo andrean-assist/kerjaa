@@ -155,7 +155,11 @@ class EditProfileController extends GetxController {
 
         Get.back(result: true);
       } else {
-        _initC.handleError(status: res.status, onLoad: _updateProfile);
+        _initC.handleError(
+          status: res.status,
+          error: res.body['error'],
+          onLoad: _updateProfile,
+        );
       }
     } on DioException catch (e) {
       _initC.logger.e('Error: $e');

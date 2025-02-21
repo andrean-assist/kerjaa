@@ -16,6 +16,7 @@ class ProfileView extends GetView<ProfileController> {
   @override
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
+    final size = context.mediaQuerySize;
 
     return Scaffold(
       appBar: AppBar(
@@ -33,15 +34,17 @@ class ProfileView extends GetView<ProfileController> {
               color: const Color(0xFF2E90C5),
             ),
           ),
-          Align(
-            alignment: Alignment.topCenter,
+          Positioned(
+            top: -100,
+            left: 0,
+            right: 0,
             child: SvgPicture.asset(
               ConstantsAssets.icGSProfile,
               fit: BoxFit.cover,
             ),
           ),
           Positioned.fill(
-            top: 130,
+            top: size.height / 14,
             child: Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(

@@ -17,6 +17,9 @@ _$ShiftModelImpl _$$ShiftModelImplFromJson(Map<String, dynamic> json) =>
       malam: json['malam'] == null
           ? null
           : DetailShiftModel.fromJson(json['malam'] as Map<String, dynamic>),
+      general: json['general'] == null
+          ? null
+          : DetailShiftModel.fromJson(json['general'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$ShiftModelImplToJson(_$ShiftModelImpl instance) =>
@@ -24,4 +27,5 @@ Map<String, dynamic> _$$ShiftModelImplToJson(_$ShiftModelImpl instance) =>
       'pagi': instance.pagi,
       'siang': instance.siang,
       'malam': instance.malam,
+      'general': instance.general,
     };
