@@ -38,9 +38,9 @@ class SharedTheme {
   static const primaryBtnLightColor = Color(0xFFEBF5FB);
   static const disabledColor = Color(0xFF475569);
   static const dividerColor = Color(0xFFE2E8F0);
+  static const inActiveColor = Color(0xFFE2E8F0);
 
   static const lightIconColor = Color(0xFF94A3B8);
-  static const secondaryTextColor = Color(0xFF334155);
 
   static const lightSuccessColor = Color.fromARGB(255, 21, 91, 83);
   static const darkSuccessColor = Color(0xFF249689);
@@ -52,7 +52,10 @@ class SharedTheme {
   static const lightWarningColor = Color(0xFFE57B09);
 
   static const primaryTextColor = Color(0xFF0F172A);
+  static const secondaryTextColor = Color(0xFF334155);
   static const quertenaryTextColor = Color(0xFF64748B);
+
+  static const bgTertiary = Color(0xFFF1F5F9);
 
   static final successColor =
       Get.isDarkMode ? darkSuccessColor : lightSuccessColor;

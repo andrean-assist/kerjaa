@@ -46,4 +46,7 @@ abstract class ConstantsStrings {
 
   static const labelPosition = 'Posisi';
   static const labelName = 'Nama';
+
+  static const labelReason = 'Alasan';
+  static const hintReason = 'Cth: lembur untuk project besar';
 }

@@ -236,7 +236,7 @@ class LocationHelper {
     required String description,
     required Function() onPressed,
   }) {
-    Modals.bottomSheet(
+    Modals.bottomSheetWithClose(
       context: Get.context!,
       content: CustomModal(
         imagePath: ConstantsAssets.imgNoAccessLocation,

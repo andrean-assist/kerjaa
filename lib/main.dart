@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'app/modules/init/bindings/init_binding.dart';
 import 'app/routes/app_pages.dart';
@@ -24,7 +25,9 @@ Future<void> main() async {
   // _initCrashlytics();
   _initOrientation();
 
-  runApp(const MyApp());
+  initializeDateFormatting().then((_) => runApp(const MyApp()));
+
+  // runApp(const MyApp());
 }
 
 Future<void> _initEnv() async {

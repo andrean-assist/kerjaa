@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 import '../../../../shared/shared_enum.dart';
 import '../../../../shared/shared_theme.dart';
 
-class CustomButton extends StatelessWidget {
-  final ButtonType type;
+class CustomChip extends StatelessWidget {
+  final ChipType type;
   final double? width;
   final double? height;
   final EdgeInsetsGeometry? margin;
@@ -16,7 +16,7 @@ class CustomButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool state;
 
-  const CustomButton({
+  const CustomChip({
     super.key,
     required this.type,
     this.width,
@@ -33,23 +33,20 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colorScheme;
-    // final heightCtx = context.height;
 
     return Container(
       width: width,
       margin: margin,
-      // height: height ?? heightCtx * 0.055,
-      child: builderButton(colors),
+      child: builderChip(colors),
     );
   }
 
-  Widget builderButton(ColorScheme colors) {
+  Widget builderChip(ColorScheme colors) {
     return switch (type) {
-      ButtonType.elevated => builderElevated(colors),
-      ButtonType.filled => builderFilled(colors),
-      ButtonType.filledTonal => builderFilledTonal(colors),
-      ButtonType.outlined => builderOutlined(colors),
-      ButtonType.text => builderText(colors),
+      ChipType.elevated => builderElevated(colors),
+      ChipType.filled => builderFilled(colors),
+      ChipType.filledTonal => builderFilledTonal(colors),
+      ChipType.outlined => builderOutlined(colors),
     };
   }
 
@@ -176,76 +173,11 @@ class CustomButton extends StatelessWidget {
             icon: icon!,
             iconAlignment: iconAlignment ?? IconAlignment.start,
             label: child,
-            style: style ??
-                OutlinedButton.styleFrom(
-                  foregroundColor: SharedTheme.textBtnColor,
-                  iconColor: SharedTheme.textBtnColor,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                  // fixedSize: const Size.fromHeight(60),
-                  textStyle: const TextStyle(
-                    fontWeight: SharedTheme.semiBold,
-                    fontSize: 16,
-                  ),
-                  side: const BorderSide(
-                    color: SharedTheme.outlinedBtnColor,
-                  ),
-                ),
+            style: style,
           )
         : OutlinedButton(
             onPressed: state ? null : onPressed,
-            style: style ??
-                OutlinedButton.styleFrom(
-                  foregroundColor: SharedTheme.textBtnColor,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                  // fixedSize: const Size.fromHeight(60),
-                  textStyle: const TextStyle(
-                    fontWeight: SharedTheme.semiBold,
-                    fontSize: 16,
-                  ),
-                  side: const BorderSide(
-                    color: SharedTheme.outlinedBtnColor,
-                  ),
-                ),
-            child: (state)
-                ? SizedBox(
-                    width: 20.0,
-                    height: 20.0,
-                    child: CircularProgressIndicator.adaptive(
-                      backgroundColor: colors.primary,
-                    ),
-                  )
-                : child,
-          );
-  }
-
-  Widget builderText(ColorScheme colors) {
-    return (icon != null)
-        ? TextButton.icon(
-            onPressed: onPressed,
-            icon: icon!,
-            label: child,
-            style: style ??
-                TextButton.styleFrom(
-                  fixedSize: const Size.fromHeight(60),
-                  textStyle: Get.context!.textTheme.titleSmall?.copyWith(
-                    fontWeight: SharedTheme.semiBold,
-                    fontSize: 16,
-                  ),
-                ),
-            iconAlignment: iconAlignment ?? IconAlignment.start,
-          )
-        : TextButton(
-            onPressed: state ? null : onPressed,
-            style: style ??
-                TextButton.styleFrom(
-                  fixedSize: const Size.fromHeight(60),
-                  textStyle: Get.context!.textTheme.titleSmall?.copyWith(
-                    fontWeight: SharedTheme.semiBold,
-                    fontSize: 16,
-                  ),
-                ),
+            style: style,
             child: (state)
                 ? SizedBox(
                     width: 20.0,

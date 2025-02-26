@@ -1002,7 +1002,7 @@ class HomeView extends GetView<HomeController> {
   }
 
   void _showModalShift(BuildContext context) {
-    Modals.bottomSheet(
+    Modals.bottomSheetWithClose(
       context: context,
       content: const ShiftModal(),
       onClosePressed: controller.clearShift,

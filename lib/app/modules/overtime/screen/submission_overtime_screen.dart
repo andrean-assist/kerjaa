@@ -64,7 +64,7 @@ class SubmissionOvertimeScreen extends GetView<SubmissionOvertimeController> {
           ),
           child: Buttons.filled(
             width: double.infinity,
-            onPressed: () {},
+            onPressed: controller.moveToAddOvertime,
             child: const Text('Pengajuan Lembur'),
           ),
         )
@@ -135,7 +135,7 @@ class SubmissionOvertimeScreen extends GetView<SubmissionOvertimeController> {
   }
 
   void _showModal(BuildContext context) {
-    Modals.bottomSheet(
+    Modals.bottomSheetWithClose(
       context: context,
       enableDrag: true,
       isDismissible: false,

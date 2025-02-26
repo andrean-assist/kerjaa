@@ -154,7 +154,7 @@ class LoginController extends GetxController {
   }
 
   void _showDialogWrongEmailOrPassword() {
-    Modals.bottomSheet(
+    Modals.bottomSheetWithClose(
       context: Get.context!,
       content: const FailedLoginModal(),
       actions: Buttons.filled(

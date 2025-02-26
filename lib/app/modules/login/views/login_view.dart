@@ -33,9 +33,6 @@ class LoginView extends GetView<LoginController> {
                 ConstantsAssets.imgLogo,
                 width: 48,
               ),
-              // SvgPicture.asset(
-              //   ConstantsAssets.icLogoLite,
-              // ),
               const SizedBox(height: 14),
               Text(
                 'Masuk ke Akun',

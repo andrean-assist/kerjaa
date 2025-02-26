@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../buttons/buttons.dart';
 
 abstract class Modals {
-  static Future<dynamic> bottomSheet({
+  static Future<dynamic> bottomSheetWithClose({
     required BuildContext context,
     BoxConstraints? constraints,
     bool useSafeArea = true,
@@ -117,7 +117,97 @@ abstract class Modals {
     );
   }
 
-  static Future<bool?> bottomSheetScroll({
+  static Future<dynamic> bottomSheet({
+    required BuildContext context,
+    BoxConstraints? constraints,
+    bool useSafeArea = true,
+    bool enableDrag = true,
+    bool showDragHandle = true,
+    bool isDismissible = true,
+    bool isScrollControlled = true,
+    required Widget content,
+    Widget? actions,
+    bool isAction = false,
+    String startActionText = 'Tutup',
+    String endActionText = 'Simpan',
+    VoidCallback? startOnPressed,
+    VoidCallback? endOnPressed,
+    VoidCallback? onClosePressed,
+  }) {
+    Widget widgetActions;
+
+    if (actions != null) {
+      widgetActions = Column(
+        children: [
+          const SizedBox(height: 8),
+          actions,
+          const SizedBox(height: 21),
+        ],
+      );
+    } else if (isAction) {
+      widgetActions = Column(
+        children: [
+          const SizedBox(height: 21),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Buttons.outlined(
+                    onPressed: startOnPressed ?? () => Get.back(result: false),
+                    child: Text(startActionText),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Buttons.filled(
+                    onPressed: endOnPressed ?? () => Get.back(result: true),
+                    child: Text(endActionText),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 21),
+        ],
+      );
+    } else {
+      widgetActions = const SizedBox.shrink();
+    }
+
+    return showModalBottomSheet<bool?>(
+      context: context,
+      useSafeArea: useSafeArea,
+      constraints: constraints,
+      enableDrag: enableDrag,
+      showDragHandle: showDragHandle,
+      isDismissible: isDismissible,
+      isScrollControlled: isScrollControlled,
+      // backgroundColor: SharedTheme.whiteColor,
+      builder: (context) => Container(
+        width: double.infinity,
+        margin: EdgeInsets.only(
+          bottom: context.mediaQueryViewInsets.bottom,
+        ),
+        decoration: BoxDecoration(
+          color: context.theme.colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            content,
+            widgetActions,
+          ],
+        ),
+      ),
+    );
+  }
+
+  static Future<bool?> bottomSheetWithCloseScroll({
     required BuildContext context,
     bool useSafeArea = true,
     // bool enableDrag = true,
@@ -258,6 +348,4 @@ abstract class Modals {
       ),
     );
   }
-
-  // static closeBottomSheet() {}
 }

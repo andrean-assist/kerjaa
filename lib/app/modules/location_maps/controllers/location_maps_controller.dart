@@ -145,7 +145,7 @@ class LocationMapsController extends GetxController {
   }
 
   void _showDialogOutsideRadius() {
-    Modals.bottomSheetScroll(
+    Modals.bottomSheetWithCloseScroll(
       context: Get.context!,
       initialChildSize: 1,
       minChildSize: 1,
@@ -183,7 +183,7 @@ class LocationMapsController extends GetxController {
   }
 
   void _showDialogUserUsingFakeGPS() {
-    Modals.bottomSheet(
+    Modals.bottomSheetWithClose(
       context: Get.context!,
       content: const CustomModal(
         imagePath: ConstantsAssets.imgFakeGPS,

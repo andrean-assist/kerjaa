@@ -252,7 +252,7 @@ class ActivityHistoryView extends GetView<ActivityHistoryController> {
   }
 
   void _showModal(BuildContext context) {
-    Modals.bottomSheet(
+    Modals.bottomSheetWithClose(
       context: context,
       enableDrag: true,
       isDismissible: false,

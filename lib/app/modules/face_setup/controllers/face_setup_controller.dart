@@ -507,7 +507,7 @@ class FaceSetupController extends GetxController {
   }
 
   void _showModalNotGrantedPermission() {
-    Modals.bottomSheet(
+    Modals.bottomSheetWithClose(
       context: Get.context!,
       isDismissible: false,
       content: const NoAccessCameraModal(),

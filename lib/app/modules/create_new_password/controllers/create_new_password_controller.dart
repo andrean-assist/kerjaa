@@ -70,7 +70,7 @@ class CreateNewPasswordController extends GetxController {
   void moveToLogin() => Get.offAllNamed(Routes.LOGIN);
 
   void _showDialogCreateNewPasswordSuccess() {
-    Modals.bottomSheet(
+    Modals.bottomSheetWithClose(
       context: Get.context!,
       content: const CreateNewPasswordSuccessModal(),
       actions: Buttons.filled(

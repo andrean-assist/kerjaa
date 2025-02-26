@@ -234,7 +234,7 @@ class HomeController extends GetxController {
 
         // mulai istirahat
         if (anchorPosition == 1 && !isRest.value) {
-          Modals.bottomSheet(
+          Modals.bottomSheetWithClose(
             context: Get.context!,
             onClosePressed: () {
               actionSliderC.setAnchorPosition(0);
@@ -471,7 +471,7 @@ class HomeController extends GetxController {
   }
 
   void _showModalNotAllowedAttendance(String title, String description) {
-    Modals.bottomSheet(
+    Modals.bottomSheetWithClose(
       context: Get.context!,
       content: NotAllowedAttendanceModal(title, description),
       actions: Buttons.filled(

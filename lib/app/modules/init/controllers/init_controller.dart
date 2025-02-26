@@ -163,7 +163,7 @@ class InitController extends GetxController {
     _isShowModalInternet = true;
     _isShowModalError = true;
 
-    Modals.bottomSheet(
+    Modals.bottomSheetWithClose(
       context: Get.context!,
       content: const CustomModal(
         imagePath: ConstantsAssets.imgOffline,
@@ -281,7 +281,7 @@ class InitController extends GetxController {
   Future<void> showDialogFailed({required dynamic Function() onPressed}) async {
     _isShowModalError = true;
 
-    Modals.bottomSheet(
+    Modals.bottomSheetWithClose(
       context: Get.context!,
       isDismissible: true,
       enableDrag: false,

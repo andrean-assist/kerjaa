@@ -13,6 +13,7 @@ class CustomTextFormFieldNew extends StatelessWidget {
   final bool isRequired;
   final String? initialValue;
   final String labelText;
+  final TextStyle? labelStyle;
   final String? hintText;
   final int? hintMaxLines;
   final String? helperText;
@@ -53,6 +54,7 @@ class CustomTextFormFieldNew extends StatelessWidget {
     this.isRequired = false,
     this.initialValue,
     required this.labelText,
+    this.labelStyle,
     this.hintText,
     this.hintMaxLines,
     this.helperText,
@@ -141,6 +143,7 @@ class CustomTextFormFieldNew extends StatelessWidget {
       obscuringCharacter: '*',
       decoration: InputDecoration(
         labelText: (isLabel) ? '$labelText ${isRequired ? '*' : ''}' : null,
+        labelStyle: labelStyle,
         hintText: hintText,
         hintStyle: const TextStyle(
           fontWeight: SharedTheme.regular,
