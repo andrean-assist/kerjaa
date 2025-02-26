@@ -12,6 +12,7 @@ class ResErrorModel with _$ResErrorModel {
     bool? isShowMessageError,
     int? status,
     String? stack,
+    String? code,
   }) = _ResErrorModel;
 
   factory ResErrorModel.fromJson(Map<String, Object?> json) =>

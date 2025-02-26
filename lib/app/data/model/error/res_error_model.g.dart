@@ -14,6 +14,7 @@ _$ResErrorModelImpl _$$ResErrorModelImplFromJson(Map<String, dynamic> json) =>
       isShowMessageError: json['isShowMessageError'] as bool?,
       status: (json['status'] as num?)?.toInt(),
       stack: json['stack'] as String?,
+      code: json['code'] as String?,
     );
 
 Map<String, dynamic> _$$ResErrorModelImplToJson(_$ResErrorModelImpl instance) =>
@@ -24,4 +25,5 @@ Map<String, dynamic> _$$ResErrorModelImplToJson(_$ResErrorModelImpl instance) =>
       'isShowMessageError': instance.isShowMessageError,
       'status': instance.status,
       'stack': instance.stack,
+      'code': instance.code,
     };

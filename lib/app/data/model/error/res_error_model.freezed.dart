@@ -26,6 +26,7 @@ mixin _$ResErrorModel {
   bool? get isShowMessageError => throw _privateConstructorUsedError;
   int? get status => throw _privateConstructorUsedError;
   String? get stack => throw _privateConstructorUsedError;
+  String? get code => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -45,7 +46,8 @@ abstract class $ResErrorModelCopyWith<$Res> {
       String? message,
       bool? isShowMessageError,
       int? status,
-      String? stack});
+      String? stack,
+      String? code});
 }
 
 /// @nodoc
@@ -67,6 +69,7 @@ class _$ResErrorModelCopyWithImpl<$Res, $Val extends ResErrorModel>
     Object? isShowMessageError = freezed,
     Object? status = freezed,
     Object? stack = freezed,
+    Object? code = freezed,
   }) {
     return _then(_value.copyWith(
       statusCode: freezed == statusCode
@@ -93,6 +96,10 @@ class _$ResErrorModelCopyWithImpl<$Res, $Val extends ResErrorModel>
           ? _value.stack
           : stack // ignore: cast_nullable_to_non_nullable
               as String?,
+      code: freezed == code
+          ? _value.code
+          : code // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -111,7 +118,8 @@ abstract class _$$ResErrorModelImplCopyWith<$Res>
       String? message,
       bool? isShowMessageError,
       int? status,
-      String? stack});
+      String? stack,
+      String? code});
 }
 
 /// @nodoc
@@ -131,6 +139,7 @@ class __$$ResErrorModelImplCopyWithImpl<$Res>
     Object? isShowMessageError = freezed,
     Object? status = freezed,
     Object? stack = freezed,
+    Object? code = freezed,
   }) {
     return _then(_$ResErrorModelImpl(
       statusCode: freezed == statusCode
@@ -157,6 +166,10 @@ class __$$ResErrorModelImplCopyWithImpl<$Res>
           ? _value.stack
           : stack // ignore: cast_nullable_to_non_nullable
               as String?,
+      code: freezed == code
+          ? _value.code
+          : code // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -170,7 +183,8 @@ class _$ResErrorModelImpl implements _ResErrorModel {
       this.message,
       this.isShowMessageError,
       this.status,
-      this.stack});
+      this.stack,
+      this.code});
 
   factory _$ResErrorModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$ResErrorModelImplFromJson(json);
@@ -187,10 +201,12 @@ class _$ResErrorModelImpl implements _ResErrorModel {
   final int? status;
   @override
   final String? stack;
+  @override
+  final String? code;
 
   @override
   String toString() {
-    return 'ResErrorModel(statusCode: $statusCode, name: $name, message: $message, isShowMessageError: $isShowMessageError, status: $status, stack: $stack)';
+    return 'ResErrorModel(statusCode: $statusCode, name: $name, message: $message, isShowMessageError: $isShowMessageError, status: $status, stack: $stack, code: $code)';
   }
 
   @override
@@ -205,13 +221,14 @@ class _$ResErrorModelImpl implements _ResErrorModel {
             (identical(other.isShowMessageError, isShowMessageError) ||
                 other.isShowMessageError == isShowMessageError) &&
             (identical(other.status, status) || other.status == status) &&
-            (identical(other.stack, stack) || other.stack == stack));
+            (identical(other.stack, stack) || other.stack == stack) &&
+            (identical(other.code, code) || other.code == code));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, statusCode, name, message,
-      isShowMessageError, status, stack);
+      isShowMessageError, status, stack, code);
 
   @JsonKey(ignore: true)
   @override
@@ -234,7 +251,8 @@ abstract class _ResErrorModel implements ResErrorModel {
       final String? message,
       final bool? isShowMessageError,
       final int? status,
-      final String? stack}) = _$ResErrorModelImpl;
+      final String? stack,
+      final String? code}) = _$ResErrorModelImpl;
 
   factory _ResErrorModel.fromJson(Map<String, dynamic> json) =
       _$ResErrorModelImpl.fromJson;
@@ -251,6 +269,8 @@ abstract class _ResErrorModel implements ResErrorModel {
   int? get status;
   @override
   String? get stack;
+  @override
+  String? get code;
   @override
   @JsonKey(ignore: true)
   _$$ResErrorModelImplCopyWith<_$ResErrorModelImpl> get copyWith =>

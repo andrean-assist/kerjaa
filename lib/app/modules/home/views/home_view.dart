@@ -1,7 +1,6 @@
 import 'package:action_slider/action_slider.dart';
 import 'package:assist_hadir/app/data/model/events/events_model.dart';
 import 'package:assist_hadir/app/helpers/format_date_time.dart';
-import 'package:assist_hadir/app/helpers/logger_helper.dart';
 import 'package:assist_hadir/app/helpers/time_helper.dart';
 import 'package:assist_hadir/app/modules/home/widgets/shift_modal.dart';
 import 'package:assist_hadir/app/modules/widgets/modal/modals.dart';
@@ -144,7 +143,6 @@ class HomeView extends GetView<HomeController> {
 
   Widget _builderHeaderCard(BuildContext context) {
     final theme = context.theme;
-    final textTheme = context.textTheme;
 
     return Cards.filled(
       context: context,
@@ -162,6 +160,12 @@ class HomeView extends GetView<HomeController> {
                 final shift = organization?.shift;
                 final haveShift = shift != null && isShift != null && isShift;
                 final isGeneral = shift != null && shift.general != null;
+
+                print('shift general = ${shift?.general}');
+                print('shift general = ${isShift}');
+
+                print('isGeneral $isGeneral');
+                print('haveShift $haveShift');
 
                 // cek apakah non-shift
                 if (isGeneral) {
