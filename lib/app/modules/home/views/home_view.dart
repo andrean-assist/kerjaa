@@ -40,11 +40,8 @@ class HomeView extends GetView<HomeController> {
             spacing: 16,
             children: [
               _builderGreetingMessage(textTheme),
-              // const SizedBox(height: 28),
               _builderHeaderCard(context),
-              // const SizedBox(height: 16),
               _builderAttributesCard(context),
-              // const SizedBox(height: 16),
               _builderLastHistory(context),
             ],
           ),
@@ -161,12 +158,6 @@ class HomeView extends GetView<HomeController> {
                 final haveShift = shift != null && isShift != null && isShift;
                 final isGeneral = shift != null && shift.general != null;
 
-                print('shift general = ${shift?.general}');
-                print('shift general = ${isShift}');
-
-                print('isGeneral $isGeneral');
-                print('haveShift $haveShift');
-
                 // cek apakah non-shift
                 if (isGeneral) {
                   return _builderItemCard(context: context, isShift: false);
@@ -250,7 +241,7 @@ class HomeView extends GetView<HomeController> {
                 ),
               )
             ],
-          ),
+          ), 
           _builderBtnAbsence(context, isShift),
         ],
       ),
@@ -577,8 +568,6 @@ class HomeView extends GetView<HomeController> {
 
           String? assetIcon;
           var type = '-';
-          // var date = '-- ---, ----';
-          // var time = '--:--';
 
           switch (event.eventType) {
             case 'checkIn':

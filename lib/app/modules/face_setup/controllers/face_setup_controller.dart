@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:assist_hadir/app/data/model/error/res_error_model.dart';
 import 'package:image/image.dart' as img;
 
 import 'package:app_settings/app_settings.dart';
@@ -417,7 +418,7 @@ class FaceSetupController extends GetxController {
         } else {
           _initC.handleError(
             status: res.status,
-            error: res.body['error'],
+            error: ResErrorModel.fromJson(res.body['error']),
             onLoad: _actionRegisterFace,
           );
         }
@@ -502,7 +503,7 @@ class FaceSetupController extends GetxController {
         } else {
           _initC.handleError(
             status: res.status,
-            error: res.body['error'],
+            error: ResErrorModel.fromJson(res.body['error']),
             onLoad: _actionAttendance,
           );
         }

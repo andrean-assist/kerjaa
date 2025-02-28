@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:action_slider/action_slider.dart';
 import 'package:assist_hadir/app/data/model/dashboard/res/res_dashboard_model.dart';
+import 'package:assist_hadir/app/data/model/error/res_error_model.dart';
 import 'package:assist_hadir/app/data/model/events/events_model.dart';
 import 'package:assist_hadir/app/data/model/navigations/navigation_model.dart';
 import 'package:assist_hadir/app/data/model/user/user_model.dart';
@@ -276,8 +277,7 @@ class HomeController extends GetxController {
 
         print('res isOk = ${res.isOk}');
         print('res statusCode = ${res.statusCode}');
-        // print('res statusText = ${res.statusText}');
-        // print('res ${res.headers}');
+        print('res body error = ${res.body['error']}');
 
         if (res.isOk) {
           final body = res.body;
@@ -350,7 +350,7 @@ class HomeController extends GetxController {
         } else {
           _initC.handleError(
             status: res.status,
-            error: res.body['error'],
+            error: ResErrorModel.fromJson(res.body['error']),
             onLoad: fetchDashboard,
           );
         }
@@ -612,7 +612,7 @@ class HomeController extends GetxController {
         } else {
           _initC.handleError(
             status: res.status,
-            error: res.body['error'],
+            error: ResErrorModel.fromJson(res.body['error']),
             onLoad: fetchDashboard,
           );
         }

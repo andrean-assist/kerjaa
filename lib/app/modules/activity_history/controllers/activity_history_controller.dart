@@ -1,5 +1,6 @@
 import 'package:assist_hadir/app/data/model/attendance/res/data/data_attendance_model.dart';
 import 'package:assist_hadir/app/data/model/attendance/res/res_attendance_model.dart';
+import 'package:assist_hadir/app/data/model/error/res_error_model.dart';
 import 'package:assist_hadir/app/helpers/format_date_time.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -173,7 +174,7 @@ class ActivityHistoryController extends GetxController
         } else {
           _initC.handleError(
             status: res.status,
-            error: res.body['error'],
+            error: ResErrorModel.fromJson(res.body['error']),
             onLoad: () => fetchHistory(index),
           );
 
