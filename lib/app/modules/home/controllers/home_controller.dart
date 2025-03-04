@@ -270,6 +270,8 @@ class HomeController extends GetxController {
 
   Future<void> fetchDashboard() async {
     if (_organizationId != null) {
+      print('organizationId = $_organizationId');
+      
       isLoading.value = true;
 
       try {
@@ -277,12 +279,11 @@ class HomeController extends GetxController {
 
         print('res isOk = ${res.isOk}');
         print('res statusCode = ${res.statusCode}');
-        print('res body error = ${res.body['error']}');
+        print('res body = ${res.body}');
+        print('res status text = ${res.statusText}');
 
         if (res.isOk) {
           final body = res.body;
-
-          // LoggerHelper.printPrettyJson(body);
 
           if (body != null) {
             final resBody = ResDashboardModel.fromJson(body);
@@ -514,7 +515,6 @@ class HomeController extends GetxController {
   void _checkAndReadAttendanceId() {
     _attendanceId =
         _initC.localStorage.read<String>(ConstantsKeys.attendanceId);
-    print('attendanceId = $_attendanceId');
   }
 
   void _checkAndReadDateTimeInLocalStorage({

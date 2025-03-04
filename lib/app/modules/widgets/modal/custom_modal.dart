@@ -1,3 +1,4 @@
+import 'package:assist_hadir/shared/shared_enum.dart';
 import 'package:assist_hadir/shared/shared_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

@@ -1,5 +1,6 @@
 import 'package:action_slider/action_slider.dart';
 import 'package:assist_hadir/app/data/model/events/events_model.dart';
+import 'package:assist_hadir/app/data/model/shift/detail_shift/absen/absen_model.dart';
 import 'package:assist_hadir/app/helpers/format_date_time.dart';
 import 'package:assist_hadir/app/helpers/time_helper.dart';
 import 'package:assist_hadir/app/modules/home/widgets/shift_modal.dart';
@@ -155,16 +156,64 @@ class HomeView extends GetView<HomeController> {
                 final organization = controller.dataDashboard?.organization;
                 final isShift = organization?.isShift;
                 final shift = organization?.shift;
+                final general = shift?.general;
                 final haveShift = shift != null && isShift != null && isShift;
-                final isGeneral = shift != null && shift.general != null;
+                final isGeneral = shift != null && general != null;
 
-                // cek apakah non-shift
                 if (isGeneral) {
-                  return _builderItemCard(context: context, isShift: false);
+                  return _builderItemCard(
+                    context: context,
+                    isShift: false,
+                    absen: general.absen,
+                  );
                 }
 
                 if (haveShift) {
-                  return _builderItemCard(context: context, isShift: true);
+                  final pagi = shift.pagi;
+                  final siang = shift.siang;
+                  final malam = shift.malam;
+                  final absenPagi = shift.pagi?.absen;
+                  final absenSiang = shift.siang?.absen;
+                  final absenMalam = shift.malam?.absen;
+                  final isShiftPagiDisabled =
+                      pagi != null && (pagi.disabledShift ?? true);
+                  final isShiftSiangDisabled =
+                      siang != null && (siang.disabledShift ?? true);
+                  final isShiftMalamDisabled =
+                      malam != null && (malam.disabledShift ?? true);
+
+                  final now = DateTime.now();
+
+                  if (pagi != null &&
+                      absenPagi != null &&
+                      absenPagi.start != null &&
+                      absenPagi.end != null &&
+                      !isShiftPagiDisabled) {
+                    return _builderItemCard(
+                      context: context,
+                      isShift: true,
+                    );
+                  } else if (siang != null &&
+                      absenSiang != null &&
+                      absenSiang.start != null &&
+                      absenSiang.end != null &&
+                      !isShiftSiangDisabled) {
+                    return _builderItemCard(
+                      context: context,
+                      isShift: true,
+                    );
+                  } else if (malam != null &&
+                      absenMalam != null &&
+                      absenMalam.start != null &&
+                      absenMalam.end != null &&
+                      !isShiftMalamDisabled) {
+                    return _builderItemCard(
+                      context: context,
+                      isShift: true,
+                    );
+                  }
+
+                  return _builderDisabledShift(context);
                 }
 
                 return _builderDisabledShift(context);
@@ -179,6 +228,7 @@ class HomeView extends GetView<HomeController> {
   Widget _builderItemCard({
     required BuildContext context,
     required bool isShift,
+    AbsenModel? absen,
   }) {
     final theme = context.theme;
     final textTheme = context.textTheme;
@@ -241,7 +291,16 @@ class HomeView extends GetView<HomeController> {
                 ),
               )
             ],
-          ), 
+          ),
+          const SizedBox(height: 8),
+          Visibility(
+            visible: absen != null,
+            child: Text(
+              'Shift ${absen?.start} WIB to ${absen?.end} WIB',
+              style: textTheme.labelMedium,
+              textAlign: TextAlign.center,
+            ),
+          ),
           _builderBtnAbsence(context, isShift),
         ],
       ),

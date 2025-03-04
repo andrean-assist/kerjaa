@@ -28,212 +28,98 @@ class LocationHelper {
   }) async {
     try {
       var record = await _initC.determinePosition();
-
       print('state services = ${record.$2}');
 
-      // jika lokasi tidak aktif
-      if (record.$2 == StatePermission.notActive) {
-        _showModalLocation(
-            title: 'Aktifkan layanan lokasi di-HP Anda',
-            description:
-                'Lokasi Anda akan terdeteksi secara otomatis untuk mempercepat proses absensi.',
-            onPressed: () async {
-              final state = await Geolocator.openLocationSettings();
-
-              print('state open location = $state');
-
-              if (state) {
-                Get.back();
-
-                _subService = Geolocator.getServiceStatusStream().listen(
-                  (event) async {
-                    print('state event = $event');
-
-                    if (event == ServiceStatus.enabled) {
-                      final permission = await Geolocator.checkPermission();
-
-                      print('state permission in onData = $permission');
-
-                      // jika perizinan lokasi ditolak
-                      if (permission == LocationPermission.denied) {
-                        _showModalLocation(
-                          title: 'Aktifkan perizinal lokasi di-HP Anda',
-                          description:
-                              'Perizinan lokasi dibutuhkan untuk mempercepat proses absensi.',
-                          onPressed: () async {
-                            fetchPosition(obs: obs);
-                            Get.back();
-                          },
-                        );
-                      } else {
-                        record = await _initC.determinePosition();
-
-                        print('record: $record');
-                        obs.value = record.$1;
-                        // _subService.cancel();
-                      }
-
-                      // Get.back();
-                    } else {
-                      _showModalLocation(
-                          title: 'Aktifkan layanan lokasi di-HP Anda',
-                          description:
-                              'Lokasi Anda akan terdeteksi secara otomatis untuk mempercepat proses absensi.',
-                          onPressed: () async {
-                            fetchPosition(obs: obs);
-                            Get.back();
-                          });
-                    }
-
-                    print('fetchPosition dipanggil');
-                    print('subService onData');
-                  },
-                );
-
-                // _subService.onData(
-                //   (data) async {
-                //     print('data = $data');
-
-                //     if (data == ServiceStatus.enabled) {
-                //       final permission = await Geolocator.checkPermission();
-
-                //       // jika perizinan lokasi ditolak
-                //       if (permission == LocationPermission.denied) {
-                //         _showModalLocation(() async {
-                //           fetchPosition(obs: obs);
-                //           Get.back();
-                //         });
-                //       } else {
-                //         record = await _initC.determinePosition();
-
-                //         print('record: $record');
-                //         obs.value = record.$1;
-                //         _subService.cancel();
-                //       }
-
-                //       print('permission in onData = $permission');
-                //       // Get.back();
-                //     } else {
-                //       _showModalLocation(() async {
-                //         fetchPosition(obs: obs);
-                //         Get.back();
-                //       });
-                //     }
-
-                //     print('fetchPosition dipanggil');
-                //     print('subService onData');
-                //   },
-                // );
-              }
-            });
-      }
-
-      // jika lokasi perizinan ditolak
-      if (record.$2 == StatePermission.denied) {
-        _showModalLocation(
-          title: 'Aktifkan perizinal lokasi di-HP Anda',
-          description:
-              'Perizinan lokasi dibutuhkan untuk mempercepat proses absensi.',
-          onPressed: () async {
-            fetchPosition(obs: obs);
-            Get.back();
-          },
-        );
-      }
-
-      // jika lokasi perizinan ditolak permanen
-      if (record.$2 == StatePermission.deniedForever) {
-        _showModalLocation(
-          title: 'Aktifkan perizinal lokasi di-HP Anda',
-          description:
-              'Perizinan lokasi dibutuhkan untuk mempercepat proses absensi.',
-          onPressed: () async {
-            await Geolocator.openAppSettings();
-            Get.back();
-          },
-        );
-      }
-
-      if (record.$2 == StatePermission.active) {
-        final record = await _initC.determinePosition();
-        obs.value = record.$1;
+      switch (record.$2) {
+        case StatePermission.notActive:
+          _handleNotActiveState(obs, record);
+          break;
+        case StatePermission.denied:
+          _handleDeniedState(obs, record);
+          break;
+        case StatePermission.deniedForever:
+          _handleDeniedForeverState(record);
+          break;
+        case StatePermission.active:
+          final record = await _initC.determinePosition();
+          obs.value = record.$1;
+          break;
       }
 
       print('position = ${record.$1}');
-
-      // return record.$1;
     } catch (e) {
       Logger().d('Error: $e');
     }
-
-    return null;
   }
 
-  // static Stream<Position?> fetchPositionStream(InitController initC) async* {
-  //   try {
-  //     var record = await initC.determinePosition();
-  //     print('state services = ${record.$2}');
+  void _handleNotActiveState(Rxn<Position> obs, var record) {
+    _showModalLocation(
+      title: 'Aktifkan layanan lokasi di-HP Anda',
+      description:
+          'Lokasi Anda akan terdeteksi secara otomatis untuk mempercepat proses absensi.',
+      state: record.$2,
+      onPressed: () async {
+        final state = await Geolocator.openLocationSettings();
+        print('state open location = $state');
 
-  //     switch (record.$2) {
-  //       case StatePermission.notActive:
-  //         _showModalLocation(() async {
-  //           final state = await Geolocator.openLocationSettings();
-  //           if (state) {
-  //             final subService = initC.subscriptionServiceLocation;
-  //             subService.onData((data) async {
-  //               if (data == ServiceStatus.enabled) {
-  //                 Get.back();
-  //                 final permission = await Geolocator.checkPermission();
-  //                 print('permission after activated location = $permission');
+        if (state) {
+          Get.back();
+          _subService = Geolocator.getServiceStatusStream().listen(
+            (event) async {
+              print('state event = $event');
+              if (event == ServiceStatus.enabled) {
+                final permission = await Geolocator.checkPermission();
+                print('state permission in onData = $permission');
 
-  //                 if (permission == LocationPermission.denied) {
-  //                   _showModalLocation(() async {
-  //                     Get.back();
-  //                     fetchPositionStream(initC); // Re-trigger the stream.
-  //                   });
-  //                 } else {
-  //                   record = await initC.determinePosition();
-  //                   print('record: $record');
-  //                   // yield record.$1; // Emit the updated position.
-  //                 }
-  //                 print('permission in onData = $permission');
-  //               }
-  //               print('fetchPosition dipanggil');
-  //               print('subService onData');
-  //             });
-  //           }
-  //         });
-  //         break;
+                if (permission == LocationPermission.denied) {
+                  _handleDeniedState(obs, record);
+                } else {
+                  record = await _initC.determinePosition();
+                  print('record: $record');
+                  obs.value = record.$1;
+                }
+              } else {
+                _handleNotActiveState(obs, record);
+              }
+              print('fetchPosition dipanggil');
+              print('subService onData');
+            },
+          );
+        }
+      },
+    );
+  }
 
-  //       case StatePermission.denied:
-  //         _showModalLocation(() async {
-  //           fetchPositionStream(initC); // Re-trigger the stream.
-  //           Get.back();
-  //         });
-  //         break;
+  void _handleDeniedState(Rxn<Position> obs, var record) {
+    _showModalLocation(
+      title: 'Aktifkan perizinal lokasi di-HP Anda',
+      description:
+          'Perizinan lokasi dibutuhkan untuk mempercepat proses absensi.',
+      state: record.$2,
+      onPressed: () async {
+        fetchPosition(obs: obs);
+        Get.back();
+      },
+    );
+  }
 
-  //       case StatePermission.deniedForever:
-  //         _showModalLocation(() async {
-  //           await Geolocator.openAppSettings();
-  //           Get.back();
-  //         });
-  //         break;
-
-  //       default:
-  //         print('state permission default case');
-  //     }
-
-  //     print('position = ${record.$1}');
-  //     yield record.$1; // Emit the position.
-  //   } catch (e) {
-  //     Logger().d('Error: $e');
-  //     yield null; // Emit null in case of an error.
-  //   }
-  // }
+  void _handleDeniedForeverState(var record) {
+    _showModalLocation(
+      title: 'Aktifkan perizinal lokasi di-HP Anda',
+      description:
+          'Perizinan lokasi dibutuhkan untuk mempercepat proses absensi.',
+      state: record.$2,
+      onPressed: () async {
+        await Geolocator.openAppSettings();
+        Get.back();
+      },
+    );
+  }
 
   static void _showModalLocation({
     required String title,
     required String description,
+    required StatePermission state,
     required Function() onPressed,
   }) {
     Modals.bottomSheet(
@@ -248,6 +134,15 @@ class LocationHelper {
         onPressed: onPressed,
         child: const Text('Aktifkan Lokasi'),
       ),
+      onClosePressed: () {
+        if (state != StatePermission.active) {
+          // kembali ke halaman home view
+          Get.back();
+          Get.back(result: false);
+        } else {
+          Get.back(result: false);
+        }
+      },
     );
   }
 }

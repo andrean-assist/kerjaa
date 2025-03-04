@@ -16,6 +16,8 @@ class HomeServices extends GetConnect {
     if (token != null) {
       headers['Authorization'] = token;
     }
+
+    print('token = $token');
   }
 
   @override
