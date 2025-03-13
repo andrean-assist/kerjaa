@@ -51,6 +51,15 @@ abstract class ConstantsAssets {
   static const icRating = '${_icPath}ic_rating.svg';
   static const icGSProfile = '${_icPath}ic_gs_profile.svg';
 
+  static const icDateOverTime = '${_icPath}ic_calendar_time.svg';
+  static const icPaid = '${_icPath}ic_paid.svg';
+  static const icNotPaid = '${_icPath}ic_not_paid.svg';
+  static const icOnHolidays = '${_icPath}ic_on_holidays.svg';
+
+  static const icFolder = '${_icPath}ic_folder.svg';
+  static const icPDFFile = '${_icPath}ic_pdf_file.svg';
+  static const icDayNight = '${_icPath}ic_day_night.svg';
+
   // IMAGE
   static const imgLogo = '${_imgPath}img_logo.png';
   static const imgNoPhoto = '${_imgPath}img_no_photo.png';

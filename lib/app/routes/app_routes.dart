@@ -19,6 +19,7 @@ abstract class Routes {
   static const CREATE_NEW_PASSWORD = _Paths.CREATE_NEW_PASSWORD;
   static const OVERTIME = _Paths.OVERTIME;
   static const ADD_OVERTIME = _Paths.ADD_OVERTIME;
+  static const LEAVE = _Paths.LEAVE;
 }
 
 abstract class _Paths {
@@ -39,4 +40,5 @@ abstract class _Paths {
   static const CREATE_NEW_PASSWORD = '/create-new-password';
   static const OVERTIME = '/overtime';
   static const ADD_OVERTIME = '/add-overtime';
+  static const LEAVE = '/leave';
 }

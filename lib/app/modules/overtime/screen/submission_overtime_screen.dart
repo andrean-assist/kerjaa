@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../shared/shared_theme.dart';
-import '../../activity_history/widgets/modals/custom_date_activity_history_modal.dart';
 import '../../widgets/buttons/buttons.dart';
-import '../../widgets/modal/modals.dart';
+import '../../widgets/chip/builder_filter_chips.dart';
 import '../controllers/submission_overtime_controller.dart';
 
 class SubmissionOvertimeScreen extends GetView<SubmissionOvertimeController> {
@@ -19,7 +18,7 @@ class SubmissionOvertimeScreen extends GetView<SubmissionOvertimeController> {
     return Scaffold(
       appBar: AppBar(
         leading: const SizedBox(),
-        flexibleSpace: _builderFilterChips(context),
+        flexibleSpace: BuilderFilterChips(controller.filters),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -58,10 +57,7 @@ class SubmissionOvertimeScreen extends GetView<SubmissionOvertimeController> {
       ),
       persistentFooterButtons: [
         Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Buttons.filled(
             width: double.infinity,
             onPressed: controller.moveToAddOvertime,
@@ -69,77 +65,6 @@ class SubmissionOvertimeScreen extends GetView<SubmissionOvertimeController> {
           ),
         )
       ],
-    );
-  }
-
-  Widget _builderFilterChips(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: controller.filters
-            .map((e) => _builderItemChip(context: context, text: e))
-            .toList(),
-      ),
-    );
-  }
-
-  Widget _builderItemChip({
-    required BuildContext context,
-    required String text,
-  }) {
-    final index = controller.filters.indexOf(text);
-    return Container(
-      margin: EdgeInsets.only(
-        left: (index == 0) ? 12 : 0,
-        right: 12,
-      ),
-      child: Obx(
-        () {
-          final selectedFilter = controller.selectedFilter.value;
-          final isSelected = index == selectedFilter;
-
-          return InputChip(
-            label: Text(
-              text,
-              style: const TextStyle(
-                color: Colors.black,
-              ),
-            ),
-            selected: isSelected,
-            color: WidgetStatePropertyAll(
-              isSelected ? const Color(0xFFEBF5FB) : SharedTheme.whiteColor,
-            ),
-            shape: RoundedRectangleBorder(
-              side: BorderSide(
-                width: 1,
-                color: isSelected
-                    ? const Color(0xFFCBD5E1)
-                    : const Color(0xFFE2E8F0),
-              ),
-              borderRadius: BorderRadius.circular(100),
-            ),
-            deleteIcon: const Icon(Icons.keyboard_arrow_down_rounded),
-            onSelected: (_) async {
-              controller.setFilter(index);
-
-              if (index == 2) {
-                _showModal(context);
-              }
-            },
-            onDeleted: () {},
-            showCheckmark: false,
-          );
-        },
-      ),
-    );
-  }
-
-  void _showModal(BuildContext context) {
-    Modals.bottomSheetWithClose(
-      context: context,
-      enableDrag: true,
-      isDismissible: false,
-      content: const CustomDateActivityHistoryModal(),
     );
   }
 }

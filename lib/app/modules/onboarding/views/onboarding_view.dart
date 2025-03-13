@@ -144,7 +144,7 @@ class OnboardingView extends GetView<OnboardingController> {
     required BoxDecoration decoration,
   }) {
     return AnimatedContainer(
-      duration: Durations.long1,
+      duration: Durations.medium4,
       curve: Curves.fastOutSlowIn,
       width: width,
       height: 10,

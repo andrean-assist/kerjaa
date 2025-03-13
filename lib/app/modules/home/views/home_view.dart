@@ -26,8 +26,6 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(HomeController());
-
     return Scaffold(
       body: NestedScrollView(
         controller: controller.scrollC,
@@ -771,7 +769,8 @@ class HomeView extends GetView<HomeController> {
                 child: Column(
                   children: [
                     Skeleton.shade(
-                      child: _builderItemHistory(controller.events),
+                      child: _builderItemHistory(
+                          context: context, events: controller.events),
                     ),
                     const SizedBox(height: 16),
                     Padding(
@@ -828,7 +827,7 @@ class HomeView extends GetView<HomeController> {
                   spacing: 16,
                   children: [
                     Skeleton.shade(
-                      child: _builderItemAnnouncement(),
+                      child: _builderItemAnnouncement(textTheme),
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -855,7 +854,11 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  Widget _builderItemHistory(RxList<EventsModel> events) {
+  Widget _builderItemHistory({
+    required BuildContext context,
+    required RxList<EventsModel> events,
+  }) {
+    final textTheme = context.textTheme;
     if (events.isNotEmpty) {
       return ListView.builder(
         shrinkWrap: true,
@@ -891,12 +894,19 @@ class HomeView extends GetView<HomeController> {
             contentPadding: const EdgeInsets.symmetric(horizontal: 16),
             leading: (assetIcon != null) ? SvgPicture.asset(assetIcon) : null,
             title: Text(type),
+            titleTextStyle: textTheme.titleSmall?.copyWith(
+              fontWeight: SharedTheme.semiBold,
+            ),
             subtitle: Text(
               FormatDateTime.dateToString(
                     newPattern: 'dd MMM, yyyy',
                     value: event.eventTime,
                   ) ??
                   '-- ---, ----',
+            ),
+            subtitleTextStyle: textTheme.bodyMedium?.copyWith(
+              fontWeight: SharedTheme.medium,
+              color: SharedTheme.quertenaryTextColor,
             ),
             trailing: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -906,6 +916,9 @@ class HomeView extends GetView<HomeController> {
                   FormatDateTime.dateToString(
                     newPattern: 'HH:mm',
                     value: event.eventTime,
+                  ),
+                  style: textTheme.labelLarge?.copyWith(
+                    fontWeight: SharedTheme.semiBold,
                   ),
                 ),
                 _builderState(context, event),
@@ -929,7 +942,7 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  Widget _builderItemAnnouncement() {
+  Widget _builderItemAnnouncement(TextTheme textTheme) {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -940,7 +953,13 @@ class HomeView extends GetView<HomeController> {
           contentPadding: const EdgeInsets.symmetric(horizontal: 16),
           leading: SvgPicture.asset(ConstantsAssets.icAnnouncement),
           title: Text(dummyItem['title'].toString()),
+          titleTextStyle:
+              textTheme.titleSmall?.copyWith(fontWeight: SharedTheme.semiBold),
           subtitle: const Text('24 Sep, 2024'),
+          subtitleTextStyle: textTheme.bodyMedium?.copyWith(
+            fontWeight: SharedTheme.medium,
+            color: SharedTheme.quertenaryTextColor,
+          ),
           shape: const Border(
             bottom: BorderSide(color: SharedTheme.dividerColor),
           ),
@@ -977,7 +996,10 @@ class HomeView extends GetView<HomeController> {
       ),
       child: Text(
         (event.approved != null) ? event.approved!.capitalizeFirst! : '-',
-        style: textTheme.labelSmall?.copyWith(color: theme.colorScheme.surface),
+        style: textTheme.labelMedium?.copyWith(
+          color: theme.colorScheme.surface,
+          height: 1.5,
+        ),
       ),
     );
   }
@@ -1001,33 +1023,33 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  void _showModalShift(BuildContext context) {
-    Modals.bottomSheetWithClose(
-      context: context,
-      content: const ShiftModal(),
-      onClosePressed: controller.clearShift,
-      actions: Column(
-        children: [
-          Obx(
-            () => Buttons.filled(
-              width: double.infinity,
-              state: controller.isLoading.value,
-              onPressed: (controller.shift.value != null)
-                  ? controller.isAlreadyCheckin
-                  : null,
-              child: const Text('Mulai bekerja'),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Buttons.text(
-            width: double.infinity,
-            onPressed: Get.back,
-            child: const Text('Nanti saja'),
-          ),
-        ],
-      ),
-    );
-  }
+  // void _showModalShift(BuildContext context) {
+  //   Modals.bottomSheetWithClose(
+  //     context: context,
+  //     content: const ShiftModal(),
+  //     onClosePressed: controller.clearShift,
+  //     actions: Column(
+  //       children: [
+  //         Obx(
+  //           () => Buttons.filled(
+  //             width: double.infinity,
+  //             state: controller.isLoading.value,
+  //             onPressed: (controller.shift.value != null)
+  //                 ? controller.isAlreadyCheckin
+  //                 : null,
+  //             child: const Text('Mulai bekerja'),
+  //           ),
+  //         ),
+  //         const SizedBox(height: 12),
+  //         Buttons.text(
+  //           width: double.infinity,
+  //           onPressed: Get.back,
+  //           child: const Text('Nanti saja'),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   String _textShiftMessage({required String? start, required String? end}) {
     return 'Shift ${start ?? '--:--'} WIB to ${end ?? '--:--'} WIB';

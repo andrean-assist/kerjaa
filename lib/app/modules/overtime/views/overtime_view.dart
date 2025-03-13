@@ -1,3 +1,4 @@
+import 'package:assist_hadir/app/modules/overtime/screen/assigned_overtime_screen_view.dart';
 import 'package:assist_hadir/app/modules/overtime/screen/submission_overtime_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -62,113 +63,9 @@ class OvertimeView extends GetView<OvertimeController> {
         controller: controller.tabC,
         children: const [
           SubmissionOvertimeScreen(),
-          Center(
-            child: Text('Ditugaskan'),
-          ),
+          AssignedOvertimeScreenView(),
         ],
       ),
-      // body: NestedScrollView(
-      //   // physics: const NeverScrollableScrollPhysics(),
-      //   floatHeaderSlivers: true,
-      //   headerSliverBuilder: (context, innerBoxIsScrolled) => [
-      //     SliverAppBar(
-      //       title: const Text('Lembur'),
-      //       surfaceTintColor: SharedTheme.whiteColor,
-      //       centerTitle: false,
-      //       pinned: true,
-      //       bottom: PreferredSize(
-      //         preferredSize: Size.fromHeight(100),
-      //         child: Column(
-      //           children: [
-      //             const Divider(
-      //               height: 1.0,
-      //               color: SharedTheme.dividerColor,
-      //             ),
-      //             Cards.filled(
-      //               context: context,
-      //               inPadding: const EdgeInsets.all(8),
-      //               outPadding: const EdgeInsets.symmetric(
-      //                 horizontal: 16,
-      //                 vertical: 8,
-      //               ),
-      //               shape: RoundedRectangleBorder(
-      //                 borderRadius: BorderRadius.circular(1000),
-      //               ),
-      //               color: SharedTheme.whiteColor,
-      //               child: ObxValue(
-      //                 (state) => Row(
-      //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                   spacing: 8,
-      //                   children: [
-      //                     _builderCustomTab(
-      //                       isActive: state.value == 0,
-      //                       text: 'Pengajuan',
-      //                       onPressed: () => controller.changeScreen(0),
-      //                     ),
-      //                     _builderCustomTab(
-      //                       isActive: state.value == 1,
-      //                       text: 'Ditugaskan',
-      //                       onPressed: () => controller.changeScreen(1),
-      //                     ),
-      //                   ],
-      //                 ),
-      //                 controller.currentScreen,
-      //               ),
-      //             ),
-      //           ],
-      //         ),
-      //         // child: Divider(
-      //         //   height: 1.0,
-      //         //   color: SharedTheme.dividerColor,
-      //         // ),
-      //       ),
-
-      //       backgroundColor: SharedTheme.whiteColor,
-      //     ),
-      //     // SliverToBoxAdapter(
-      //     //   child: Cards.filled(
-      //     //     context: context,
-      //     //     inPadding: const EdgeInsets.all(8),
-      //     //     outPadding: const EdgeInsets.symmetric(
-      //     //       horizontal: 16,
-      //     //       vertical: 8,
-      //     //     ),
-      //     //     shape: RoundedRectangleBorder(
-      //     //       borderRadius: BorderRadius.circular(1000),
-      //     //     ),
-      //     //     color: SharedTheme.whiteColor,
-      //     //     child: ObxValue(
-      //     //       (state) => Row(
-      //     //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //     //         spacing: 8,
-      //     //         children: [
-      //     //           _builderCustomTab(
-      //     //             isActive: state.value == 0,
-      //     //             text: 'Pengajuan',
-      //     //             onPressed: () => controller.changeScreen(0),
-      //     //           ),
-      //     //           _builderCustomTab(
-      //     //             isActive: state.value == 1,
-      //     //             text: 'Ditugaskan',
-      //     //             onPressed: () => controller.changeScreen(1),
-      //     //           ),
-      //     //         ],
-      //     //       ),
-      //     //       controller.currentScreen,
-      //     //     ),
-      //     //   ),
-      //     // ),
-      //   ],
-      //   body: TabBarView(
-      //     controller: controller.tabC,
-      //     children: const [
-      //       SubmissionScreen(),
-      //       Center(
-      //         child: Text('Ditugaskan'),
-      //       ),
-      //     ],
-      //   ),
-      // ),
     );
   }
 
@@ -219,4 +116,5 @@ class OvertimeView extends GetView<OvertimeController> {
       );
     }
   }
+
 }

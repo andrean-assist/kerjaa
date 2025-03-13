@@ -291,4 +291,5 @@ class ActivityHistoryView extends GetView<ActivityHistoryController> {
       ),
     );
   }
+
 }

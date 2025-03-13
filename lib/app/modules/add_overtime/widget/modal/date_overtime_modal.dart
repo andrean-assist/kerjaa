@@ -8,106 +8,128 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../../widgets/buttons/buttons.dart';
 
 class DateOvertimeModal extends GetView<AddOvertimeController> {
-  final bool isTimeOff;
+  final bool isUpdate;
 
-  const DateOvertimeModal(this.isTimeOff, {super.key});
+  const DateOvertimeModal(this.isUpdate, {super.key});
 
   @override
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Tanggal lembur',
-          style: textTheme.titleLarge?.copyWith(
-            fontSize: 18,
-            fontWeight: SharedTheme.semiBold,
+    if (isUpdate) {
+      controller.selectedDate.value = controller.overtimeStartDate.value;
+    }
+
+    return Obx(
+      () => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _builderTitleModal(textTheme),
+          const SizedBox(height: 20),
+          _builderTableCalendar(textTheme),
+          const SizedBox(height: 12),
+          const Divider(),
+          const SizedBox(height: 16),
+          Buttons.filled(
+            width: double.infinity,
+            onPressed: controller.selectedDate.value != null
+                ? () => controller.confirmDate(isUpdate)
+                : null,
+            child: const Text('Konfirmasi'),
           ),
+          const Divider(height: 36),
+        ],
+      ),
+    );
+  }
+
+  Widget _builderTitleModal(TextTheme textTheme) {
+    final title = switch (isUpdate) {
+      true => controller.indexScreenOvertime.value == 0 ? 'lembur' : 'time off',
+      false =>
+        controller.indexScreenOvertime.value == 0 ? 'time off' : 'lembur',
+    };
+
+    return Text(
+      'Tanggal $title',
+      style: textTheme.titleLarge?.copyWith(
+        fontSize: 18,
+        fontWeight: SharedTheme.semiBold,
+      ),
+    );
+  }
+
+  Widget _builderTableCalendar(TextTheme textTheme) {
+    final date = switch (controller.indexScreenOvertime.value) {
+      1 => (
+          controller.overtimeStartDate.value ?? controller.dateNow,
+          controller.overtimeEndDate.value
         ),
-        const SizedBox(height: 20),
-        Obx(
-          () {
-            return TableCalendar(
-              firstDay: DateTime.now(),
-              lastDay: DateTime(2100),
-              focusedDay: controller.focusedDay.value,
-              // focusedDay: controller.overtimeOffDate.value ?? isTimeOff
-              //     ? controller.overtimeOffDate.value ??
-              //         controller.currentMonth.value
-              //     : controller.overtimeDate.value ??
-              //         controller.currentMonth.value,
-              // currentDay: isTimeOff
-              //     ? controller.overtimeOffDate.value ?? DateTime.now()
-              //     : controller.overtimeDate.value ?? DateTime.now(),
-              calendarBuilders: CalendarBuilders(
-                headerTitleBuilder: (context, day) {
-                  return Row(
-                    children: [
-                      Text(
-                        FormatDateTime.dateToString(
-                          newPattern: 'EEEE, dd MMMM yyyy',
-                          value: day.toIso8601String(),
-                        ),
-                        style: textTheme.titleSmall?.copyWith(
-                          fontWeight: SharedTheme.bold,
-                          color: SharedTheme.quertenaryTextColor,
-                        ),
-                      ),
-                      const Spacer(),
-                      IconButton(
-                        onPressed: controller.previousMonth,
-                        icon: const Icon(
-                          Icons.chevron_left_rounded,
-                          color: SharedTheme.lightIconColor,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: controller.nextMonth,
-                        icon: const Icon(
-                          Icons.chevron_right_rounded,
-                          color: SharedTheme.lightIconColor,
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-              headerStyle: const HeaderStyle(
-                formatButtonVisible: false,
-                leftChevronVisible: false,
-                rightChevronVisible: false,
-              ),
-              calendarStyle: const CalendarStyle(
-                isTodayHighlighted: false,
-                selectedDecoration: BoxDecoration(
-                  color: SharedTheme.filledBtnColor,
-                  shape: BoxShape.circle,
+      _ => (controller.dateNow, controller.overtimeStartDate.value),
+    };
+
+    return TableCalendar(
+      firstDay: date.$1,
+      lastDay: controller.lastDate,
+      focusedDay: controller.focusedDay.value ?? controller.dateNow,
+      calendarBuilders: CalendarBuilders(
+        headerTitleBuilder: (context, day) {
+          return Row(
+            children: [
+              Text(
+                FormatDateTime.dateToString(
+                  newPattern: 'EEEE, dd MMMM yyyy',
+                  value: (day.month != controller.selectedDate.value?.month)
+                      ? day.toIso8601String()
+                      : controller.selectedDate.value?.toIso8601String(),
+                ),
+                style: textTheme.titleSmall?.copyWith(
+                  fontWeight: SharedTheme.bold,
+                  color: SharedTheme.quertenaryTextColor,
                 ),
               ),
-              selectedDayPredicate: (day) => isSameDay(
-                day,
-                isTimeOff
-                    ? controller.overtimeOffDate.value
-                    : controller.overtimeDate.value,
+              const Spacer(),
+              IconButton(
+                onPressed: controller.isPreviousButtonEnabled()
+                    ? controller.previousMonth
+                    : null,
+                icon: const Icon(
+                  Icons.chevron_left_rounded,
+                  color: SharedTheme.lightIconColor,
+                ),
               ),
-              onDaySelected: (selectedDay, focusedDay) {
-                controller.selectedDate(selectedDay, isTimeOff);
-              },
-            );
-          },
+              IconButton(
+                onPressed: controller.nextMonth,
+                icon: const Icon(
+                  Icons.chevron_right_rounded,
+                  color: SharedTheme.lightIconColor,
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+      headerStyle: const HeaderStyle(
+        formatButtonVisible: false,
+        leftChevronVisible: false,
+        rightChevronVisible: false,
+      ),
+      calendarStyle: const CalendarStyle(
+        isTodayHighlighted: false,
+        selectedDecoration: BoxDecoration(
+          color: SharedTheme.filledBtnColor,
+          shape: BoxShape.circle,
         ),
-        const SizedBox(height: 12),
-        const Divider(),
-        const SizedBox(height: 16),
-        Buttons.filled(
-          width: double.infinity,
-          onPressed: () {},
-          child: const Text('Konfirmasi'),
-        ),
-        const Divider(height: 36),
-      ],
+      ),
+      selectedDayPredicate: (day) => isSameDay(
+        day,
+        isUpdate && controller.selectedDate.value == null
+            ? date.$2
+            : controller.selectedDate.value,
+      ),
+      onDaySelected: (selectedDay, focusedDay) {
+        controller.onSelectedDate(selectedDay);
+      },
     );
   }
 }

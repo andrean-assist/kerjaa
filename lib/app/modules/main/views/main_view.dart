@@ -46,7 +46,7 @@ class MainView extends GetView<MainController> {
       floatingActionButton: FloatingActionButton(
         elevation: 0,
         backgroundColor: const Color.fromRGBO(235, 245, 251, 1),
-        onPressed: () {},
+        onPressed: controller.leaveApplication,
         shape: const CircleBorder(
           side: BorderSide(
             color: Color.fromRGBO(50, 158, 216, 0.2),

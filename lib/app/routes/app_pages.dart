@@ -14,6 +14,8 @@ import '../modules/face_setup/bindings/face_setup_binding.dart';
 import '../modules/face_setup/views/face_setup_view.dart';
 import '../modules/forgot_password/bindings/forgot_password_binding.dart';
 import '../modules/forgot_password/views/forgot_password_view.dart';
+import '../modules/leave/bindings/leave_binding.dart';
+import '../modules/leave/views/leave_view.dart';
 import '../modules/location_maps/bindings/location_maps_binding.dart';
 import '../modules/location_maps/views/location_maps_view.dart';
 import '../modules/login/bindings/login_binding.dart';
@@ -116,6 +118,11 @@ class AppPages {
       name: _Paths.ADD_OVERTIME,
       page: () => const AddOvertimeView(),
       binding: AddOvertimeBinding(),
+    ),
+    GetPage(
+      name: _Paths.LEAVE,
+      page: () => const LeaveView(),
+      binding: LeaveBinding(),
     ),
   ];
 }

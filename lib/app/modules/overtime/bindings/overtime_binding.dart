@@ -1,3 +1,4 @@
+import 'package:assist_hadir/app/modules/overtime/controllers/assigned_overtime_controller.dart';
 import 'package:assist_hadir/app/modules/overtime/controllers/submission_overtime_controller.dart';
 import 'package:get/get.dart';
 
@@ -9,6 +10,9 @@ class OvertimeBinding extends Bindings {
     Get.lazyPut<OvertimeController>(() => OvertimeController());
     Get.lazyPut<SubmissionOvertimeController>(
       () => SubmissionOvertimeController(),
+    );
+    Get.lazyPut<AssignedOvertimeController>(
+      () => AssignedOvertimeController(),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../shared/shared_theme.dart';
 import '../buttons/buttons.dart';
 
 abstract class Modals {
@@ -184,15 +185,14 @@ abstract class Modals {
       showDragHandle: showDragHandle,
       isDismissible: isDismissible,
       isScrollControlled: isScrollControlled,
-      // backgroundColor: SharedTheme.whiteColor,
+      backgroundColor: SharedTheme.whiteColor,
       builder: (context) => Container(
         width: double.infinity,
         margin: EdgeInsets.only(
           bottom: context.mediaQueryViewInsets.bottom,
         ),
-        decoration: BoxDecoration(
-          color: context.theme.colorScheme.surface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(

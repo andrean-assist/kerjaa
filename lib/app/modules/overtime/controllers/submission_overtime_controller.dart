@@ -6,6 +6,18 @@ import '../../../routes/app_pages.dart';
 class SubmissionOvertimeController extends GetxController {
   late final InitController _initC;
 
+  // final filters = [
+  //   {
+  //     'text': 'Tanggal',
+  //   },
+  //   {
+  //     'text': 'Jenis pengajuan',
+  //   },
+  //   {
+  //     'text': 'Status',
+  //   }
+  // ];
+
   final filters = ['Tanggal', 'Jenis pengajuan', 'Status'];
 
   final selectedFilter = 0.obs;
