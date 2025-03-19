@@ -26,8 +26,6 @@ Future<void> main() async {
   _initOrientation();
 
   initializeDateFormatting().then((_) => runApp(const MyApp()));
-
-  // runApp(const MyApp());
 }
 
 Future<void> _initEnv() async {
