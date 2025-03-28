@@ -5,6 +5,7 @@ import 'package:action_slider/action_slider.dart';
 import 'package:assist_hadir/app/data/model/dashboard/res/res_dashboard_model.dart';
 import 'package:assist_hadir/app/data/model/events/events_model.dart';
 import 'package:assist_hadir/app/data/model/navigations/navigation_model.dart';
+import 'package:assist_hadir/app/data/model/user/user_model.dart';
 import 'package:assist_hadir/app/modules/home/widgets/not_allowed_attendance_modal.dart';
 import 'package:assist_hadir/app/modules/init/controllers/init_controller.dart';
 import 'package:assist_hadir/app/helpers/logger_helper.dart';
@@ -50,7 +51,6 @@ class HomeController extends GetxController {
   final restTime = RxnString();
   final workTime = RxnString();
   final events = RxList<EventsModel>();
-  final isShiftEnabled = false.obs;
 
   // untuk cek apakah slide mulai istirahat atau tidak
   final isRest = false.obs;
@@ -78,7 +78,6 @@ class HomeController extends GetxController {
 
     _homeS = HomeServices(_initC);
     _attendanceS = AttendanceServices(_initC);
-
     actionSliderC = ActionSliderController();
 
     _prepareStorage();
@@ -275,24 +274,34 @@ class HomeController extends GetxController {
       try {
         final res = await _homeS.dashboard(organizationId: _organizationId!);
 
+        print('res isOk = ${res.isOk}');
+        print('res statusCode = ${res.statusCode}');
+        // print('res statusText = ${res.statusText}');
+        // print('res ${res.headers}');
+
         if (res.isOk) {
           final body = res.body;
+
+          // LoggerHelper.printPrettyJson(body);
 
           if (body != null) {
             final resBody = ResDashboardModel.fromJson(body);
             dataDashboard = resBody.data;
-            final eventDate = dataDashboard?.date;
-            final dataEvent = dataDashboard?.events;
-            isShiftEnabled.value = dataDashboard?.shift != null;
+
+            final attendance = dataDashboard?.attendance;
+            final user = dataDashboard?.user;
+
+            final eventDate = attendance?.date;
+            final dataEvent = attendance?.events;
 
             if (eventDate != null) {
-              final attendanceId = dataDashboard?.id;
-              final startWork = dataDashboard?.checkIn;
-              final endWork = dataDashboard?.checkOut;
-              final breakStart = dataDashboard?.breakStart;
-              final breakStop = dataDashboard?.breakStop;
-              final breakHours = dataDashboard?.breakHours;
-              final workHours = dataDashboard?.workHours;
+              final attendanceId = attendance?.id;
+              final startWork = attendance?.checkIn;
+              final endWork = attendance?.checkOut;
+              final breakStart = attendance?.breakStart;
+              final breakStop = attendance?.breakStop;
+              final breakHours = attendance?.breakHours;
+              final workHours = attendance?.workHours;
 
               await _checkAndWriteAttendanceId(attendanceId);
               await _checkAndWriteDateTimeInLocalStorage(
@@ -331,9 +340,14 @@ class HomeController extends GetxController {
                 _prepareStorageEvents();
               }
             }
+
+            if (user != null) {
+              profilePicture.value = user.avatar;
+
+              await _checkAndWriteProfile(user);
+            }
           }
         } else {
-          print('isConnectedInternet = ${res.request?.persistentConnection}');
           _initC.handleError(status: res.status, onLoad: fetchDashboard);
         }
       } on GetHttpException catch (e) {
@@ -355,22 +369,21 @@ class HomeController extends GetxController {
     }
   }
 
-  void checkIsAlreadyCheckin() async {
+  void isAlreadyCheckin() async {
     if (_organizationId != null) {
       isLoading.value = true;
 
       final params = {
         'shift': shift.value,
         'organizationId': _organizationId,
+        'date': FormatDateTime.dateToString(
+          newPattern: 'yyyy-MM-dd',
+          value: DateTime.now().toString(),
+        ),
       };
-
-      print('req params = $params ');
 
       try {
         final res = await _homeS.isAlreadyCheckedIn(params);
-
-        print('res statusCode = ${res.statusCode}');
-        print('res body = ${res.body}');
 
         if (res.isOk) {
           moveToMaps(StatusAbsenceSetup.checkIn);
@@ -381,7 +394,20 @@ class HomeController extends GetxController {
             if (res.statusCode == HttpStatus.unauthorized) {
               _initC.redirectLogout(Get.context!);
             } else {
-              _showModalNotAllowedAttendance();
+              String title;
+              String description;
+
+              if (res.statusCode == HttpStatus.preconditionFailed) {
+                title = 'Opps.. Anda tidak bisa menggunakan absen!';
+                description = 'Kamu sudah absen sebelumnya pada shift ini';
+              } else {
+                title =
+                    'Opps.. Anda tidak bisa menggunakan absen mobile di hari ini!';
+                description =
+                    'Karena di awal Anda absen di Website, untuk saat ini hanya bisa istirahat dan checkout di Website ya.';
+              }
+
+              _showModalNotAllowedAttendance(title, description);
             }
           }
         }
@@ -393,10 +419,10 @@ class HomeController extends GetxController {
     }
   }
 
-  void _showModalNotAllowedAttendance() {
+  void _showModalNotAllowedAttendance(String title, String description) {
     Modals.bottomSheet(
       context: Get.context!,
-      content: const NotAllowedAttendanceModal(),
+      content: NotAllowedAttendanceModal(title, description),
       actions: Buttons.filled(
         width: double.infinity,
         onPressed: Get.back,
@@ -418,6 +444,15 @@ class HomeController extends GetxController {
         await _initC.localStorage.write(ConstantsKeys.attendanceId, id);
       }
     }
+  }
+
+  Future<void> _checkAndWriteProfile(UserModel user) async {
+    _initC.localStorage
+      ..write(ConstantsKeys.name, user.name)
+      ..write(ConstantsKeys.profilPicture, user.avatar)
+      ..write(ConstantsKeys.organizationId, user.organizationId)
+      ..write(ConstantsKeys.position, user.position)
+      ..write(ConstantsKeys.email, user.email);
   }
 
   Future<void> _checkAndWriteDateTimeInLocalStorage({
@@ -492,9 +527,6 @@ class HomeController extends GetxController {
       final localTime = _initC.localStorage.read<String>(keyLocalDateTime);
       final fLocal = FormatDateTime.iso8601ToDateTime(value: localTime)!;
 
-      print('keyLocalDateTime = $keyLocalDateTime');
-      print('localTime = $localTime');
-
       switch (keyLocalDateTime) {
         // jika jam masuk maka jalankan timer kedepan
         case ConstantsKeys.startTimeWork:
@@ -541,8 +573,6 @@ class HomeController extends GetxController {
   }
 
   void rest(bool isFinish) async {
-    print('function rest dipanggil');
-
     final now = FormatDateTime.dateToString(
       newPattern: 'yyyy-MM-dd',
       value: DateTime.now().toString(),
@@ -571,7 +601,11 @@ class HomeController extends GetxController {
           type: 'breakStart',
         );
 
+        LoggerHelper.logPrettyJson(reqAttendance.toJson());
+
         final res = await _attendanceS.updateAttendance(reqAttendance.toJson());
+
+        print('res status text = ${res.statusText}');
 
         if (res.isOk) {
           final body = res.body;
@@ -589,24 +623,25 @@ class HomeController extends GetxController {
   }
 
   Future<void> moveToMaps(StatusAbsenceSetup typeAbsence) async {
+    final organization = dataDashboard?.organization;
+    final isShift = organization?.isShift ?? false;
+
     final navModel = NavigationModel(
       absenceType: typeAbsence,
-      shift: shift.value,
-      clinicPosition: (dataDashboard?.position != null)
+      shift: isShift ? shift.value : 'general',
+      clinicPosition: (organization != null && organization.position != null)
           ? LatLng(
-              dataDashboard!.position!.lat ?? 0,
-              dataDashboard!.position!.lng ?? 0,
+              organization.position!.lat ?? 0,
+              organization.position!.lng ?? 0,
             )
           : null,
-      radius: (dataDashboard?.radius != null)
-          ? dataDashboard?.radius?.toDouble()
+      radius: (organization?.radius != null)
+          ? organization?.radius?.toDouble()
           : 0.0,
     );
 
-    LoggerHelper.logPrettyJson(navModel.toJson());
-
     if (typeAbsence == StatusAbsenceSetup.checkIn) {
-      Get.offAndToNamed(Routes.LOCATION_MAPS, arguments: navModel);
+      Get.toNamed(Routes.LOCATION_MAPS, arguments: navModel);
     } else {
       final result =
           await Get.toNamed(Routes.LOCATION_MAPS, arguments: navModel);

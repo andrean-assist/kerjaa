@@ -29,13 +29,13 @@ class LoginView extends GetView<LoginController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SvgPicture.asset(
-                ConstantsAssets.icLogoLite,
+              Image.asset(
+                ConstantsAssets.imgLogo,
+                width: 48,
               ),
               const SizedBox(height: 14),
               Text(
                 'Masuk ke Akun',
-                // minFontSize: 20,
                 style: textTheme.headlineSmall?.copyWith(
                   fontSize: 20,
                   fontWeight: SharedTheme.bold,
@@ -52,12 +52,14 @@ class LoginView extends GetView<LoginController> {
               ),
               const SizedBox(height: 24),
               _builderForm(),
-              // const SizedBox(height: 8),
-              // Buttons.text(
-              //   onPressed: () {},
-              //   child: const Text('Lupa Password ?'),
+              // TextButton(
+              //   onPressed: controller.moveToForgotPassword,
+              //   child: const Text(
+              //     'Lupa Password ?',
+              //     style: TextStyle(fontWeight: SharedTheme.semiBold),
+              //   ),
               // ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 18),
               Obx(
                 () {
                   final isEnabled = controller.email.value.isNotEmpty &&
@@ -80,8 +82,6 @@ class LoginView extends GetView<LoginController> {
                   children: [
                     TextHelper.buildRichMultiText(
                       text: 'By log in, I agree to the Terms of Service',
-                      // and Privacy Policy
-                      // highlights: ['Terms of Service', 'Privacy Policy'],
                       highlights: ['Terms of Service'],
                       highlightStyle: TextStyle(
                         fontWeight: SharedTheme.bold,
@@ -138,13 +138,14 @@ class LoginView extends GetView<LoginController> {
           Obx(
             () {
               final isVisible = controller.isVisiblePassword.value;
+
               return CustomTextFormFieldNew(
                 controller: controller.passwordC,
                 focusNode: controller.passwordF,
                 labelText: ConstantsStrings.labelPassword,
                 hintText: ConstantsStrings.hintPassword,
                 isFilled: true,
-                obscureText: isVisible,
+                obscureText: !isVisible,
                 keyboardType: TextInputType.visiblePassword,
                 textCapitalization: TextCapitalization.none,
                 maxLines: 1,

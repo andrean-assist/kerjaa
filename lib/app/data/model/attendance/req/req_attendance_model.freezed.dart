@@ -23,8 +23,10 @@ mixin _$ReqAttendanceModel {
   String? get userId => throw _privateConstructorUsedError;
   String? get organizationId => throw _privateConstructorUsedError;
   String? get date => throw _privateConstructorUsedError;
+  @JsonKey(includeIfNull: false)
   String? get shift => throw _privateConstructorUsedError;
   String? get type => throw _privateConstructorUsedError;
+  @JsonKey(includeIfNull: false)
   String? get userReasonLocation => throw _privateConstructorUsedError;
   @JsonKey(includeIfNull: false)
   String? get attendanceId => throw _privateConstructorUsedError;
@@ -49,9 +51,9 @@ abstract class $ReqAttendanceModelCopyWith<$Res> {
       {String? userId,
       String? organizationId,
       String? date,
-      String? shift,
+      @JsonKey(includeIfNull: false) String? shift,
       String? type,
-      String? userReasonLocation,
+      @JsonKey(includeIfNull: false) String? userReasonLocation,
       @JsonKey(includeIfNull: false) String? attendanceId,
       @JsonKey(includeIfNull: false) String? approved,
       @JsonKey(includeIfNull: false) VerificationsModel? verifications});
@@ -147,9 +149,9 @@ abstract class _$$ReqAttendanceModelImplCopyWith<$Res>
       {String? userId,
       String? organizationId,
       String? date,
-      String? shift,
+      @JsonKey(includeIfNull: false) String? shift,
       String? type,
-      String? userReasonLocation,
+      @JsonKey(includeIfNull: false) String? userReasonLocation,
       @JsonKey(includeIfNull: false) String? attendanceId,
       @JsonKey(includeIfNull: false) String? approved,
       @JsonKey(includeIfNull: false) VerificationsModel? verifications});
@@ -227,9 +229,9 @@ class _$ReqAttendanceModelImpl implements _ReqAttendanceModel {
       {required this.userId,
       required this.organizationId,
       required this.date,
-      this.shift,
+      @JsonKey(includeIfNull: false) this.shift,
       this.type,
-      this.userReasonLocation,
+      @JsonKey(includeIfNull: false) this.userReasonLocation,
       @JsonKey(includeIfNull: false) this.attendanceId,
       @JsonKey(includeIfNull: false) this.approved,
       @JsonKey(includeIfNull: false) this.verifications});
@@ -244,10 +246,12 @@ class _$ReqAttendanceModelImpl implements _ReqAttendanceModel {
   @override
   final String? date;
   @override
+  @JsonKey(includeIfNull: false)
   final String? shift;
   @override
   final String? type;
   @override
+  @JsonKey(includeIfNull: false)
   final String? userReasonLocation;
   @override
   @JsonKey(includeIfNull: false)
@@ -310,9 +314,9 @@ abstract class _ReqAttendanceModel implements ReqAttendanceModel {
       {required final String? userId,
       required final String? organizationId,
       required final String? date,
-      final String? shift,
+      @JsonKey(includeIfNull: false) final String? shift,
       final String? type,
-      final String? userReasonLocation,
+      @JsonKey(includeIfNull: false) final String? userReasonLocation,
       @JsonKey(includeIfNull: false) final String? attendanceId,
       @JsonKey(includeIfNull: false) final String? approved,
       @JsonKey(includeIfNull: false)
@@ -328,10 +332,12 @@ abstract class _ReqAttendanceModel implements ReqAttendanceModel {
   @override
   String? get date;
   @override
+  @JsonKey(includeIfNull: false)
   String? get shift;
   @override
   String? get type;
   @override
+  @JsonKey(includeIfNull: false)
   String? get userReasonLocation;
   @override
   @JsonKey(includeIfNull: false)

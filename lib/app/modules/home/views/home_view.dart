@@ -1,6 +1,7 @@
 import 'package:action_slider/action_slider.dart';
 import 'package:assist_hadir/app/data/model/events/events_model.dart';
 import 'package:assist_hadir/app/helpers/format_date_time.dart';
+import 'package:assist_hadir/app/helpers/logger_helper.dart';
 import 'package:assist_hadir/app/helpers/time_helper.dart';
 import 'package:assist_hadir/app/modules/home/widgets/shift_modal.dart';
 import 'package:assist_hadir/app/modules/widgets/modal/modals.dart';
@@ -57,28 +58,16 @@ class HomeView extends GetView<HomeController> {
       title: null,
       leading: Padding(
         padding: const EdgeInsets.fromLTRB(16, 12, 0, 12),
-        child: SvgPicture.asset(
-          ConstantsAssets.icLogoLite,
+        child: Image.asset(
+          ConstantsAssets.imgLogo,
           alignment: Alignment.topLeft,
         ),
       ),
+      backgroundColor: SharedTheme.filledBtnColor,
       leadingWidth: 100,
       toolbarHeight: 68,
       forceMaterialTransparency: true,
       actions: [
-        // IconButton(
-        //   onPressed: () {},
-        //   icon: SvgPicture.asset(
-        //     ConstantsAssets.icNotification,
-        //     colorFilter: const ColorFilter.mode(
-        //       SharedTheme.lightIconColor,
-        //       BlendMode.srcIn,
-        //     ),
-        //     width: 24,
-        //     height: 24,
-        //   ),
-        // ),
-        // const SizedBox(width: 4),
         GestureDetector(
           onTap: controller.moveToProfile,
           child: Padding(
@@ -162,11 +151,17 @@ class HomeView extends GetView<HomeController> {
       color: theme.colorScheme.surfaceContainerLowest,
       child: SizedBox(
         width: double.infinity,
-        child: Obx(
-          () => Skeletonizer(
+        child: Obx(() {
+          final organization = controller.dataDashboard?.organization;
+          final isShift = organization?.isShift;
+          final shift = organization?.shift;
+          final haveShift = isShift != null && shift != null;
+          LoggerHelper.printPrettyJson(organization?.toJson() ?? '');
+
+          return Skeletonizer(
             enabled: controller.isLoading.value,
             child: Visibility(
-              visible: controller.isShiftEnabled.value,
+              visible: haveShift,
               replacement: _builderDisabledShift(context),
               child: Column(
                 children: [
@@ -225,12 +220,12 @@ class HomeView extends GetView<HomeController> {
                       )
                     ],
                   ),
-                  _builderBtnAbsence(context),
+                  _builderBtnAbsence(context, isShift),
                 ],
               ),
             ),
-          ),
-        ),
+          );
+        }),
       ),
     );
   }
@@ -290,7 +285,7 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  Widget _builderBtnAbsence(BuildContext context) {
+  Widget _builderBtnAbsence(BuildContext context, [bool? isShift = false]) {
     final textTheme = context.textTheme;
 
     return Obx(
@@ -321,7 +316,8 @@ class HomeView extends GetView<HomeController> {
           isVisibleBtnSlider = true;
 
           // jika jam istirahat sudah ada maka tampilan slide akan gone
-          if (restStartTime != null && restEndTime != null) {
+          if ((restStartTime != null && restEndTime != null) ||
+              endTime != null) {
             isVisibleBtnSlider = false;
           }
 
@@ -346,7 +342,11 @@ class HomeView extends GetView<HomeController> {
                   style: style,
                   onPressed: () {
                     if (statusAbsence == StatusAbsenceSetup.checkIn) {
-                      _showModalShift(context);
+                      if (isShift ?? false) {
+                        _showModalShift(context);
+                      } else {
+                        controller.moveToMaps(statusAbsence);
+                      }
                     } else {
                       controller.moveToMaps(statusAbsence);
                     }
@@ -675,7 +675,7 @@ class HomeView extends GetView<HomeController> {
               width: double.infinity,
               state: controller.isLoading.value,
               onPressed: (controller.shift.value != null)
-                  ? controller.checkIsAlreadyCheckin
+                  ? controller.isAlreadyCheckin
                   : null,
               child: const Text('Mulai bekerja'),
             ),

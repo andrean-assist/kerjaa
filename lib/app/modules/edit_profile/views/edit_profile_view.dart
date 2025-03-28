@@ -8,6 +8,8 @@ import 'package:get/get.dart';
 
 import '../../../../shared/shared_theme.dart';
 import '../../../../utils/constants_connect.dart';
+import '../../../../utils/constants_strings.dart';
+import '../../../helpers/validations.dart';
 import '../../widgets/buttons/buttons.dart';
 import '../controllers/edit_profile_controller.dart';
 
@@ -62,6 +64,12 @@ class EditProfileView extends GetView<EditProfileController> {
                 labelText: 'Nama',
                 isFilled: false,
                 isRequired: true,
+                isEnable: false,
+                validator: (value) => Validation.formField(
+                  value: value,
+                  titleField: ConstantsStrings.labelPosition,
+                  isRequired: true,
+                ),
               ),
               const SizedBox(height: 24),
               CustomTextFormFieldNew(
@@ -69,6 +77,12 @@ class EditProfileView extends GetView<EditProfileController> {
                 labelText: 'Posisi',
                 isFilled: false,
                 isRequired: true,
+                isEnable: false,
+                validator: (value) => Validation.formField(
+                  value: value,
+                  titleField: ConstantsStrings.labelPosition,
+                  isRequired: true,
+                ),
               ),
               const SizedBox(height: 24),
               CustomTextFormFieldNew(
@@ -88,7 +102,7 @@ class EditProfileView extends GetView<EditProfileController> {
           () => Buttons.filled(
             width: double.infinity,
             state: controller.isLoading.value,
-            onPressed: controller.save,
+            onPressed: controller.isEnabled.value ? controller.save : null,
             child: const Text('Simpan'),
           ),
         ),

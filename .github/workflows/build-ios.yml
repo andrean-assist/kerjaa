@@ -1,0 +1,66 @@
+name: Kerjaa iOS Build V1.0.0-alpha-1.41
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    name: 🎉 Kerjaa iOS Build V1.0.0-alpha-1.41
+    runs-on: macos-latest
+    steps:
+      # Checkout the repository
+      - uses: actions/checkout@v3
+
+      # Install Flutter stable channel
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          architecture: x64
+
+      # Install CocoaPods with a specific version (compatible with Xcode 14.2)
+      - name: Install CocoaPods
+        run: sudo gem install cocoapods -v 1.11.3
+
+      # Install FlutterFire CLI (if needed for the project)
+      - name: Install FlutterFire CLI
+        run: dart pub global activate flutterfire_cli
+
+      # Get Flutter dependencies
+      - run: flutter pub get
+
+      # Update CocoaPods repository
+      - run: pod repo update
+        working-directory: ios
+
+      # Build the iOS release app without code signing
+      - run: flutter build ios --release --no-codesign
+
+      # Create a Payload folder for the .ipa file
+      - run: mkdir Payload
+        working-directory: build/ios/iphoneos
+
+      # Move the app to the Payload folder
+      - run: mv Runner.app Payload
+        working-directory: build/ios/iphoneos
+
+      # Create the .ipa file by zipping the Payload folder
+      - name: Create .ipa file
+        run: zip -qq -r -9 kerjaa-v1.0.0-alpha-1.41.ipa Payload
+        working-directory: build/ios/iphoneos
+
+      # Upload the generated .ipa file as a GitHub release asset
+      - name: Upload .ipa to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/ios/iphoneos/kerjaa-v1.0.0-alpha-1.41.ipa
+          tag: v1.0.0-alpha-1.41
+          overwrite: true
+          body: "Versi alpha pertama Kerjaa"
+
+      # Optionally: Upload build artifacts for debugging
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ios-build-artifacts
+          path: build/ios/iphoneos/
