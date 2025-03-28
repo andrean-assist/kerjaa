@@ -2,12 +2,14 @@ import 'package:assist_hadir/shared/shared_theme.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:get/get.dart';
 
 import '../../../../utils/constants_assets.dart';
 import '../../widgets/buttons/buttons.dart';
 import '../../widgets/chip/builder_filter_chips.dart';
+import '../../widgets/modal/modals.dart';
 import '../controllers/leave_controller.dart';
 
 class LeaveView extends GetView<LeaveController> {
@@ -25,73 +27,173 @@ class LeaveView extends GetView<LeaveController> {
       body: FlutterCarousel.builder(
         itemCount: controller.dataLeave.length,
         itemBuilder: (context, index, realIndex) => Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           margin: const EdgeInsets.only(top: 16, left: 16),
-          decoration: ShapeDecoration(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            color: SharedTheme.dividerColor,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Stack(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    spacing: 4,
-                    children: [
-                      Text(
-                        'Sisa cuti tahunan',
-                        style: textTheme.bodyMedium,
-                      ),
-                      GestureDetector(
-                        onTap: () {},
-                        child: const Icon(
-                          Icons.info_rounded,
-                          color: SharedTheme.lightIconColor,
-                          size: 14,
-                        ),
-                      ),
-                    ],
+              Positioned.fill(
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(16)),
+                  child: SvgPicture.asset(
+                    ConstantsAssets
+                        .icBgCardLeave, // Ganti dengan path file SVG Anda
+                    fit: BoxFit.fill,
                   ),
-                  Text(
-                    '12 hari',
-                    style: textTheme.titleMedium?.copyWith(
-                      fontWeight: SharedTheme.semiBold,
-                    ),
-                  ),
-                ],
+                ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.center,
-                spacing: 2,
-                children: [
-                  Text(
-                    'Masa berlaku',
-                    style: textTheme.bodyMedium?.copyWith(
-                      fontSize: 12,
-                      height: 1.5,
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 4,
+                          children: [
+                            Text(
+                              'Sisa cuti tahunan',
+                              style: textTheme.bodyMedium,
+                            ),
+                            GestureDetector(
+                              onTap: () {},
+                              child: const Icon(
+                                Icons.info_rounded,
+                                color: SharedTheme.lightIconColor,
+                                size: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          '12 hari',
+                          style: textTheme.titleMedium?.copyWith(
+                            fontWeight: SharedTheme.semiBold,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  // const SizedBox(height: 2),
-                  Text(
-                    '01 Des 2024',
-                    style: textTheme.labelMedium?.copyWith(
-                      fontWeight: SharedTheme.bold,
-                      height: 1.5,
-                    ),
-                  ),
-                ],
-              )
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      spacing: 2,
+                      children: [
+                        Text(
+                          'Masa berlaku',
+                          style: textTheme.bodyMedium?.copyWith(
+                            fontSize: 12,
+                            height: 1.5,
+                          ),
+                        ),
+                        // const SizedBox(height: 2),
+                        Text(
+                          '01 Des 2024',
+                          style: textTheme.labelMedium?.copyWith(
+                            fontWeight: SharedTheme.bold,
+                            height: 1.5,
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
             ],
           ),
         ),
+        // itemBuilder: (context, index, realIndex) => ClipRRect(
+        //   borderRadius: const BorderRadius.all(Radius.circular(16)),
+        //   child: Container(
+        // margin: const EdgeInsets.only(top: 16, left: 16),
+        //     child: Stack(
+        //       children: [
+        //         Positioned.fill(
+        //           child: SvgPicture.asset(
+        //             ConstantsAssets
+        //                 .icBgCardLeave, // Ganti dengan path file SVG Anda
+        //             fit: BoxFit.fill,
+        //           ),
+        //         ),
+        //         Container(
+        //           padding: const EdgeInsets.symmetric(
+        //             horizontal: 16,
+        //             vertical: 12,
+        //           ),
+        //           // decoration: ShapeDecoration(
+        //           //   shape: RoundedRectangleBorder(
+        //           //     borderRadius: BorderRadius.circular(16),
+        //           //   ),
+        //           //   // color: SharedTheme.dividerColor,
+        //           // ),
+        //           child: Row(
+        //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //             children: [
+        //               Column(
+        //                 crossAxisAlignment: CrossAxisAlignment.start,
+        //                 mainAxisAlignment: MainAxisAlignment.center,
+        //                 children: [
+        //                   Row(
+        //                     mainAxisAlignment: MainAxisAlignment.center,
+        //                     mainAxisSize: MainAxisSize.min,
+        //                     spacing: 4,
+        //                     children: [
+        //                       Text(
+        //                         'Sisa cuti tahunan',
+        //                         style: textTheme.bodyMedium,
+        //                       ),
+        //                       GestureDetector(
+        //                         onTap: () {},
+        //                         child: const Icon(
+        //                           Icons.info_rounded,
+        //                           color: SharedTheme.lightIconColor,
+        //                           size: 14,
+        //                         ),
+        //                       ),
+        //                     ],
+        //                   ),
+        //                   Text(
+        //                     '12 hari',
+        //                     style: textTheme.titleMedium?.copyWith(
+        //                       fontWeight: SharedTheme.semiBold,
+        //                     ),
+        //                   ),
+        //                 ],
+        //               ),
+        //               Column(
+        //                 crossAxisAlignment: CrossAxisAlignment.end,
+        //                 mainAxisAlignment: MainAxisAlignment.center,
+        //                 spacing: 2,
+        //                 children: [
+        //                   Text(
+        //                     'Masa berlaku',
+        //                     style: textTheme.bodyMedium?.copyWith(
+        //                       fontSize: 12,
+        //                       height: 1.5,
+        //                     ),
+        //                   ),
+        //                   // const SizedBox(height: 2),
+        //                   Text(
+        //                     '01 Des 2024',
+        //                     style: textTheme.labelMedium?.copyWith(
+        //                       fontWeight: SharedTheme.bold,
+        //                       height: 1.5,
+        //                     ),
+        //                   ),
+        //                 ],
+        //               )
+        //             ],
+        //           ),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
         options: FlutterCarouselOptions(
           height: width / 3.5,
           floatingIndicator: false,
@@ -135,7 +237,7 @@ class LeaveView extends GetView<LeaveController> {
                         _builderCustomTab(
                           isActive: false,
                           // isActive: state.value == 1,
-                          text: 'Ditugaskan',
+                          text: 'Delegasi',
                           onPressed: () {},
                           // onPressed: () => controller.changeScreen(1),
                         ),
@@ -180,10 +282,9 @@ class LeaveView extends GetView<LeaveController> {
                 Buttons.filled(
                   width: double.infinity,
                   margin: const EdgeInsets.only(bottom: 21),
-                  onPressed: () {},
+                  onPressed: controller.moveToAddLeave,
                   child: const Text('Buat pengajuan'),
                 ),
-                // const SizedBox(height: 32),
               ],
             ),
           );

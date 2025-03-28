@@ -3,10 +3,10 @@ abstract class ConstantsAssets {
   static const _icPath = 'assets/ic/';
 
   // ICON
-
   static const icLogoLite = '${_icPath}ic_logo_lite.svg';
   static const icLogoAssist = '${_icPath}ic_logo_assist.png';
   static const icLogoPoweredAssist = '${_icPath}ic_logo_powered_assist.svg';
+  static const icLogoSplash = '${_icPath}ic_splash_screen.svg';
 
   // BOTTOM NAVIGATION BAR
   static const icHomeNavbar = '${_icPath}ic_home_navbar.svg';
@@ -59,6 +59,9 @@ abstract class ConstantsAssets {
   static const icFolder = '${_icPath}ic_folder.svg';
   static const icPDFFile = '${_icPath}ic_pdf_file.svg';
   static const icDayNight = '${_icPath}ic_day_night.svg';
+
+  static const icListRequest = '${_icPath}ic_hamburger.svg';
+  static const icBgCardLeave = '${_icPath}ic_bg_card_leave.svg';
 
   // IMAGE
   static const imgLogo = '${_imgPath}img_logo.png';

@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 
 import '../modules/activity_history/bindings/activity_history_binding.dart';
 import '../modules/activity_history/views/activity_history_view.dart';
+import '../modules/add_leave/bindings/add_leave_binding.dart';
+import '../modules/add_leave/views/add_leave_view.dart';
 import '../modules/add_overtime/bindings/add_overtime_binding.dart';
 import '../modules/add_overtime/views/add_overtime_view.dart';
 import '../modules/check_email/bindings/check_email_binding.dart';
@@ -123,6 +125,11 @@ class AppPages {
       name: _Paths.LEAVE,
       page: () => const LeaveView(),
       binding: LeaveBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADD_LEAVE,
+      page: () => const AddLeaveView(),
+      binding: AddLeaveBinding(),
     ),
   ];
 }

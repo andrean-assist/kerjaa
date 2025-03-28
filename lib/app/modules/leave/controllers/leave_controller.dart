@@ -2,6 +2,8 @@ import 'package:assist_hadir/app/modules/init/controllers/init_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../routes/app_pages.dart';
+
 class LeaveController extends GetxController {
   late final InitController _initC;
   late final PageController pageC;
@@ -9,7 +11,7 @@ class LeaveController extends GetxController {
   final currentPage = 0.obs;
 
   final filters = ['Tanggal', 'Jenis pengajuan', 'Status'];
-
+  
   final dataLeave = [
     {
       'title': 'Sisa cuti tahunan',
@@ -56,4 +58,6 @@ class LeaveController extends GetxController {
   void _setCurrentPage() {
     currentPage.value = pageC.page?.toInt() ?? 0;
   }
+
+  void moveToAddLeave() => Get.toNamed(Routes.ADD_LEAVE);
 }

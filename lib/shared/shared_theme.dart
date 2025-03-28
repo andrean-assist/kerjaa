@@ -27,6 +27,7 @@ class SharedTheme {
     seedColor: const Color(0xFF329ED8),
   );
 
+  static const bgBrand = Color(0xFF2E90C5);
   static const appBarColor = Color(0xFF329ED8);
   static const textBtnColor = Color(0xFF329ED8);
   static const textSuccessColor = Color(0xFF22C55E);

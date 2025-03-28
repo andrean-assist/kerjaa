@@ -20,6 +20,7 @@ abstract class Routes {
   static const OVERTIME = _Paths.OVERTIME;
   static const ADD_OVERTIME = _Paths.ADD_OVERTIME;
   static const LEAVE = _Paths.LEAVE;
+  static const ADD_LEAVE = _Paths.ADD_LEAVE;
 }
 
 abstract class _Paths {
@@ -41,4 +42,5 @@ abstract class _Paths {
   static const OVERTIME = '/overtime';
   static const ADD_OVERTIME = '/add-overtime';
   static const LEAVE = '/leave';
+  static const ADD_LEAVE = '/add-leave';
 }

@@ -20,8 +20,6 @@ class AddOvertimeView extends GetView<AddOvertimeController> {
   const AddOvertimeView({super.key});
   @override
   Widget build(BuildContext context) {
-    final textTheme = context.textTheme;
-
     return Scaffold(
       backgroundColor: SharedTheme.dividerColor,
       appBar: AppBar(
